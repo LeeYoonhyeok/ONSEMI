@@ -297,7 +297,7 @@ def my_task():
   models = {}
  
   # 작물별 학습 및 예측
-#   for crop_index in range(1, data.shape[1] - 2):  # 컬럼 제외
+  # for crop_index in range(1, data.shape[1] - 2):  # 컬럼 제외
   for crop_index in range(1, data.shape[1]):  # 컬럼 제외
       crop_name = data.columns[crop_index]
       print(f"Preprocessing column: {crop_name}")
@@ -363,9 +363,8 @@ def my_task():
 
   return "작업 완료"
 
-# from celery import shared_task
 
 # @shared_task
-# def debug_task():
+# def my_task():
 #     print('고생했다')
 #     return 'Task completed'
