@@ -45,16 +45,17 @@ def report_list(request):
     paginator = Paginator(reports, 10)
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
+    senior_list = seniors.all()
 
     # 각 report에 대한 이미지와 senior 정보 추가
     report_details = []
     for report in page_obj:
         imgs = ReportImage.objects.filter(report=report)
-        seniors = report.care.seniors.all()
+        seniors = report.care.seniors.all()        
         report_details.append({
             'report': report,
             'images': imgs,
-            'seniors': seniors
+            'seniors': seniors,
         })
 
     context = {
@@ -69,7 +70,8 @@ def report_list(request):
         "type_filter": type_filter,
         'form': form,
         "reports_details": report_details,
-        'page_obj': page_obj
+        'page_obj': page_obj,
+        'senior_list' : senior_list,
     }
     return render(request, "monitoring_app/monitor_report_list.html", context)
 

@@ -626,7 +626,7 @@
                 <div class="health-box card">
                     <div class="card-header">
                         <h3>건강 상태</h3>
-                        <button class="plus-button" onclick="location.href='/monitoring/family_monitor/report/list/?selected_senior_id={{ selected_senior_id }}';">+<span class="tooltip">건강 상태 추가</span></button>
+                        <button class="plus-button" onclick="location.href='/monitoring/family_monitor/report/list/?selected_senior_id={{ selected_senior_id }}';">+<span class="tooltip">보고서 목록</span></button>
                     </div>
                     <div class="card-body">
                         {% if selected_senior_id %}
@@ -682,7 +682,8 @@
                         <h3>주문 및 돌봄 내역</h3>
                         <div style="margin-top: 10px;">                            
                             <a href='/management/add/care/?selected_senior_id={{ selected_senior.id }}' class="add-button">케어 요청하기</a>
-                            <button class="plus-button" onclick="location.href='{% url 'monitoring_app:generate' %}';">+<span class="tooltip">주문 내역 추가</span></button>
+                            {% comment %} <button class="plus-button" onclick="location.href='/monitoring/family_monitor/report/list/?selected_senior_id={{ selected_senior_id }}';">+<span class="tooltip">보고서 목록</span></button> {% endcomment %}
+                            <button class="plus-button" onclick="location.href='{% url 'monitoring_app:generate' %}';">+<span class="tooltip">케어 요청 목록</span></button>
                         </div>
                     </div>
                     <div class="card-body">

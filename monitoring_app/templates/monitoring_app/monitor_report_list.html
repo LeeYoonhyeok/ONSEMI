@@ -56,7 +56,7 @@
 
     .senior-photo {
         text-align: center;
-        margin-bottom: 0px;
+        margin-bottom: 10px;
     }
 
     header .hamburger {
@@ -139,6 +139,8 @@
     .table-report {
         width: 100%;
         border-collapse: collapse;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        border-radius: 5px;
     }
 
     .table-report th, .table-report td {
@@ -157,6 +159,7 @@
 
     .table-report td {
         max-width: 200px;
+        border-color : #9da4a8;
     }
     .table-report tbody tr:hover {
         background-color: #bebebe;
@@ -193,7 +196,7 @@
             <h3>{{ selected_senior.name }}</h3>
             <form method="get" id="seniorForm">
                 <select name="selected_senior_id" onchange="document.getElementById('seniorForm').submit();">
-                    {% for senior in seniors %}
+                    {% for senior in senior_list %}
                         <option value="{{ senior.id }}" {% if selected_senior_id == senior.id|stringformat:"s" %}selected{% endif %}>{{ senior.name }}</option>
                     {% endfor %}
                 </select>
