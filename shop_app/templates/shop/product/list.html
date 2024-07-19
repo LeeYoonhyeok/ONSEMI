@@ -275,10 +275,10 @@
       <a href="{% url 'orders_app:my_orders' %}" class="ordered-list">주문 내역</a></h2>
   </div>
   <div class="predict-price">
-    <button id="show-decrease">하락 예측</button>
     <button id="show-increase">상승 예측</button>
+    <button id="show-decrease">하락 예측</button>
   </div>
-  <div id="predict-price-increase" class="predict-price-section" style="display: none;">
+  <div id="predict-price-increase" class="predict-price-section">
     <h2>가격 <span class="highlight-increase">상승&uarr;</span> 전망 목록</h2>
     <table class="price-list">
       <tr>
@@ -301,7 +301,7 @@
   </tr>
   </table>
   </div>
-  <div id="predict-price-decrease" class="predict-price-section">
+  <div id="predict-price-decrease" class="predict-price-section" style="display: none;">
     <h2>가격 <span class="highlight-decrease">하락&darr;</span> 전망 목록</h2>
     <table class="price-list">
       <tr>
