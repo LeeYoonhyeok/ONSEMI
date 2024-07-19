@@ -62,7 +62,7 @@ def add_care(request):
         ).first()
 
         if existing_care:
-            message = f"{senior.name}님은 승인 되지 않은 요청 건이 존재합니다. 요청은 1개만 보낼 수 있습니다. 마이 페이지에서 수정 및 확인이 가능합니다."
+            message = f"{senior.name}님은 승인 되지 않은 요청 건이 존재합니다. \n마이 페이지에서 확인 및 수정하시기 바랍니다. \n※승인 되기 전까지 케어 요청을 무한히 보내는 것을 방지"
             return JsonResponse({'error': message})
 
         care = Care(

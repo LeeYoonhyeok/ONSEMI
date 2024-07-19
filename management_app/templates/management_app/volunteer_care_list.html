@@ -263,7 +263,7 @@
                     <th class="content">내용</th>
                     <th>파킨슨병 진단 요청</th>
                     <th>주소</th>
-                    <th>케어 신청 날짜</th> 
+                    <th>케어 신청 날짜 / 방문 예정 날짜</th> 
                 </tr>
             </thead>
             <tbody>
@@ -282,7 +282,7 @@
                         <td>{% for senior in care.seniors.all %}
                             {{ senior.address }} {{senior.detail_address}}{% if not forloop.last %}, {% endif %}
                         {% endfor %}</td>
-                        <td>{{ care.datetime|date:"Y년 n월 j일 A g:i" }}</td>
+                        <td>{{ care.datetime|date:"Y년 n월 j일 A g:i" }}{% if care.visit_date and care.visit_time %} / <br>{{ care.visit_date|date:"Y년 n월 j일" }} {{ care.visit_time|date:"A g:i" }}{% endif %}</td>
                     </tr>
                 {% endfor %}
             </tbody>
