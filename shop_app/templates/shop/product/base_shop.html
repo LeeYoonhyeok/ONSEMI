@@ -39,15 +39,7 @@
         <div class="wrapper">
             {% block content %}{% endblock %}
         </div>
-        {% if request.user.is_authenticated %}
-        <div id="chat-link-container">
-            <a href="{% url 'qa:chatting' %}" id="chat-link">
-                <span class="material-symbols-outlined">
-                    chat
-                </span>
-            </a>
-        </div>
-        {% endif %}
+        
         <footer id="footer">
             <div class="footer-content">
                 <p><a href="terms/">이용약관</a></p>
