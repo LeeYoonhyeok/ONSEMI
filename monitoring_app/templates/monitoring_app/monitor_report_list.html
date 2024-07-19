@@ -91,15 +91,18 @@
         max-width: 600px;
         box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
         animation-name: animatetop;
-        animation-duration: 0.4s;
+        animation-duration: 1s;
         overflow-y: auto;
         max-height: 80vh;
         word-wrap: break-word;
+        position: relative;
+        top: 50%;
+        transform: translateY(-50%);
     }
 
     @keyframes animatetop {
-        from {top: -300px; opacity: 0}
-        to {top: 0; opacity: 1}
+        from {opacity: 0}
+        to {opacity: 1}
     }
 
     .close {
@@ -161,6 +164,14 @@
 
     .table-report .clickable-row {
         cursor: pointer;
+    }
+
+    /* 이미지 스타일 추가 */
+    .report-image {
+        display: block;
+        margin: 10px auto;
+        max-width: 100%;
+        height: auto;
     }
 </style>
 {% endblock %}
@@ -341,8 +352,9 @@
                         if (this.dataset.skin === 'True') issues += '피부 ';
                         if (this.dataset.back === 'True') issues += '허리 ';
                         if (issues != '') issues += '진찰 필요';
-                        if (this.dataset.other === 'True') issues += "<br> 기타 사항: " + this.dataset.otherText;
+                        if (this.dataset.other === 'True') issues += "<br> + 기타 사항: " + this.dataset.otherText;
                     }
+                    if (issues === '') issues = '특이사항 없음';
                     document.getElementById('reportIssues').innerHTML = issues;
 
                     var imagesDiv = document.getElementById('reportImages');
@@ -353,8 +365,7 @@
                             var imgElement = document.createElement('img');
                             imgElement.src = imageUrl;
                             imgElement.alt = 'Report Image';
-                            imgElement.style.maxWidth = '200px';
-                            imgElement.style.maxHeight = '200px';
+                            imgElement.className = 'report-image';  // 클래스 추가
                             imagesDiv.appendChild(imgElement);
                         }
                     });
