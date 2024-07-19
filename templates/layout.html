@@ -23,7 +23,7 @@
         }
 
         body::-webkit-scrollbar {
-            display: none;
+            display: none; /* Hide scrollbars */
         }
 
         nav ul {
@@ -38,10 +38,11 @@
             align-items: center;
         }
 
+        
         #chat-link2 {
-            display: none; /* Initially hide the button */
+            display: none; /* Hide initially */
             position: fixed;
-            bottom: 90px; /* Adjust to ensure it doesn't overlap with chat-link */
+            bottom: 150px;
             right: 10px;
             background-color: rgba(0, 0, 0, 0.5);
             color: white;
@@ -49,12 +50,98 @@
             padding: 10px;
             cursor: pointer;
             font-size: 16px;
-            border-radius: 50%; /* Circular button */
+            border-radius: 50%;
             width: 50px;
             height: 50px;
             align-items: center;
             justify-content: center;
-            z-index: 1000; /* Ensure it is above other elements */
+            z-index: 1000;
+        }
+
+        .chat-modal {
+            display: none; /* Initially hide the chat modal */
+            position: fixed;
+            bottom: 70px;
+            right: 10px;
+            width: 300px;
+            max-height: 400px;
+            background-color: white;
+            border: 1px solid #ccc;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            z-index: 1001;
+            overflow: hidden;
+            flex-direction: column;
+        }
+
+        .chat-header {
+            padding: 10px;
+            background-color: #4CAF50;
+            color: white;
+            text-align: center;
+            border-bottom: 1px solid #ccc;
+        }
+
+        .chat-body {
+            flex: 1;
+            padding: 10px;
+            overflow-y: auto;
+        }
+
+        .chat-message {
+            margin-bottom: 10px;
+        }
+
+        .chat-message.user {
+            text-align: right;
+        }
+
+        .chat-message.bot {
+            text-align: left;
+        }
+
+        .chat-footer {
+            padding: 10px;
+            background-color: #f1f1f1;
+            display: flex;
+            align-items: center;
+            border-top: 1px solid #ccc;
+        }
+
+        .chat-footer2 {
+            margin-top: 10px;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .chat-footer input[type="text"] {
+            flex: 1;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            margin-right: 10px;
+        }
+
+        .chat-footer button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+
+        .chat-footer2 button {
+            background-color: #f44336;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+
+        .chat-footer2 button:nth-child(2) {
+            background-color: #f39c12;
         }
 
         /* Responsive Styles */
@@ -149,7 +236,6 @@
                         <li><a href="/user/login/">로그인</a></li>
                         <li><a href="/user/register/">회원가입</a></li>
                         {% endif %}
-                        
                     </ul>
                 </nav>
             </div>
@@ -159,16 +245,32 @@
         </div>
         {% if request.user.is_authenticated %}
         <div id="chat-link-container">
-            <a href="{% url 'qa:chatting' %}" id="chat-link">
+            <button id="chat-link">
                 <span class="material-symbols-outlined">
                     chat
                 </span>
-            </a>
-            <a href="#start-image" id="chat-link2">
-                <span class="material-symbols-outlined">
-                    arrow_upward
-                </span>
-            </a>
+            </button>
+        </div>
+
+        <a href="#start-image" id="chat-link2">
+            <span class="material-symbols-outlined">
+                arrow_upward
+            </span>
+        </a>
+
+        <div class="chat-modal" id="chatModal">
+            <div class="chat-header">
+                <p>온새미 챗봇</p>
+            </div>
+            <div class="chat-body" id="chatBody"></div>
+            <div class="chat-footer">
+                <input type="text" id="chatInput" placeholder="질문을 입력하세요..." />
+                <button id="sendChat">보내기</button>
+            </div>
+            <div class="chat-footer2">
+                <button id="closeChat">뒤돌아가기</button>
+                <button id="resetChat">대화내용 초기화</button>
+            </div>
         </div>
         {% endif %}
         <footer id="footer">
@@ -182,6 +284,7 @@
         </footer>
     </div>
     <script>
+
         function handleScroll() {
             const chatLink2 = document.getElementById('chat-link2');
             const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
@@ -199,6 +302,102 @@
             window.addEventListener('scroll', handleScroll);
 
             window.scrollTo(0, 0);
+        });
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const chatLink = document.getElementById('chat-link');
+            const chatModal = document.getElementById('chatModal');
+            const closeChat = document.getElementById('closeChat');
+            const resetChat = document.getElementById('resetChat');
+            const sendChat = document.getElementById('sendChat');
+            const chatInput = document.getElementById('chatInput');
+            const chatBody = document.getElementById('chatBody');
+
+            chatLink.addEventListener('click', () => {
+                if (chatModal.style.display === 'flex') {
+                    chatModal.style.display = 'none';
+                } else {
+                    chatModal.style.display = 'flex';
+                    loadChatHistory();
+                }
+            });
+
+            closeChat.addEventListener('click', () => {
+                chatModal.style.display = 'none';
+            });
+
+            resetChat.addEventListener('click', () => {
+                resetChatHistory();
+            });
+
+            sendChat.addEventListener('click', () => {
+                sendMessage();
+            });
+
+            chatInput.addEventListener('keypress', (event) => {
+                if (event.key === 'Enter') {
+                    sendMessage();
+                }
+            });
+
+            function sendMessage() {
+                const message = chatInput.value.trim();
+                if (message !== '') {
+                    appendMessage('user', message);
+                    chatInput.value = '';
+
+                    fetch('{% url "qa:chatting" %}', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRFToken': '{{ csrf_token }}'
+                        },
+                        body: JSON.stringify({ question: message })
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        appendMessage('bot', data.answer);
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                    });
+                }
+            }
+
+            function appendMessage(sender, message) {
+                const messageElement = document.createElement('div');
+                messageElement.classList.add('chat-message', sender);
+                messageElement.innerText = message;
+                chatBody.appendChild(messageElement);
+                chatBody.scrollTop = chatBody.scrollHeight;
+            }
+
+            function loadChatHistory() {
+                fetch('{% url "qa:chatting" %}')
+                    .then(response => response.json())
+                    .then(data => {
+                        chatBody.innerHTML = '';
+                        data.conversation.forEach(item => {
+                            appendMessage(item.sender, item.message);
+                        });
+                    });
+            }
+
+            function resetChatHistory() {
+                fetch('{% url "qa:reset" %}', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': '{{ csrf_token }}'
+                    }
+                })
+                .then(() => {
+                    chatBody.innerHTML = '';
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
+            }
         });
     </script>
 </body>

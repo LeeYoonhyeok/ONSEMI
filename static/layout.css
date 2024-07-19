@@ -118,6 +118,7 @@ nav ul li a:hover {
     text-decoration: none;
     font-size: 24px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    border:none;
 }
 
 #chat-link:hover {
@@ -138,6 +139,7 @@ nav ul li a:hover {
     font-size: 24px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
     margin-top:20px;
+    
 }
 
 #chat-link:hover2 {

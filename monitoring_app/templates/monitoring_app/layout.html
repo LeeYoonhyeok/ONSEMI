@@ -46,6 +46,161 @@
         visibility: visible;
         opacity: 1;
     }
+
+    /* Chatbot Styles */
+    .chat-modal {
+        display: none; /* Initially hide the chat modal */
+        position: fixed;
+        bottom: 70px;
+        right: 10px;
+        width: 300px;
+        max-height: 400px;
+        background-color: white;
+        border: 1px solid #ccc;
+        border-radius: 10px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        z-index: 1001;
+        overflow: hidden;
+        flex-direction: column;
+    }
+
+    .chat-header {
+        padding: 10px;
+        background-color: #4CAF50;
+        color: white;
+        text-align: center;
+        border-bottom: 1px solid #ccc;
+    }
+
+    .chat-body {
+        
+        padding: 10px;
+        overflow-y: auto;
+        height:auto;
+    }
+
+    .chat-message {
+        margin-bottom: 10px;
+    }
+
+    .chat-message.user {
+        text-align: right;
+    }
+
+    .chat-message.bot {
+        text-align: left;
+    }
+
+    .chat-footer {
+        padding: 10px;
+        background-color: #f1f1f1;
+        display: flex;
+        align-items: center;
+        border-top: 1px solid #ccc;
+    }
+
+    .chat-footer2 {
+        margin-top: 10px;
+        display: flex;
+        justify-content: space-between;
+    }
+
+    .chat-footer input[type="text"] {
+        flex: 1;
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        margin-right: 10px;
+    }
+
+    .chat-footer button {
+        background-color: #4CAF50;
+        color: white;
+        border: none;
+        padding: 10px 15px;
+        cursor: pointer;
+        border-radius: 5px;
+    }
+
+    .chat-footer2 button {
+        background-color: #f44336;
+        color: white;
+        border: none;
+        padding: 10px 15px;
+        cursor: pointer;
+        border-radius: 5px;
+    }
+
+    .chat-footer2 button:nth-child(2) {
+        background-color: #f39c12;
+    }
+
+    /* Responsive Styles */
+    @media (max-width: 1200px) {
+        .container {
+            padding: 0 15px;
+        }
+    }
+
+    @media (max-width: 992px) {
+        .container {
+            padding: 0 10px;
+        }
+        .logo img {
+            height: 45px;
+            width: 45px;
+        }
+        nav ul li a {
+            padding: 5px 8px;
+        }
+    }
+
+    @media (max-width: 768px) {
+        .container {
+            flex-direction: column;
+            align-items: flex-start;
+        }
+        nav ul {
+            flex-direction: column;
+            gap: 10px;
+            width: 100%;
+        }
+        nav ul li {
+            justify-content: center;
+            width: 100%;
+        }
+        .logo img {
+            height: 40px;
+            width: 40px;
+        }
+        nav ul li a {
+            padding: 5px 6px;
+        }
+    }
+
+    @media (max-width: 576px) {
+        .container {
+            padding: 0 5px;
+        }
+        .logo img {
+            height: 35px;
+            width: 35px;
+        }
+        nav ul {
+            flex-direction: row;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        nav ul li {
+            width: auto;
+            flex: 1 1 auto;
+            display: flex;
+            justify-content: center;
+        }
+        nav ul li a {
+            padding: 5px 4px;
+        }
+    }
 </style>
 <body>
     <div class="header">
@@ -88,11 +243,26 @@
     </div>
     {% if request.user.is_authenticated %}
     <div id="chat-link-container">
-        <a href="{% url 'qa:chatting' %}" id="chat-link">
+        <button id="chat-link">
             <span class="material-symbols-outlined">
                 chat
             </span>
-        </a>
+        </button>
+    </div>
+    
+    <div class="chat-modal" id="chatModal">
+        <div class="chat-header">
+            <p>온새미 챗봇</p>
+        </div>
+        <div class="chat-body" id="chatBody"></div>
+        <div class="chat-footer">
+            <input type="text" id="chatInput" placeholder="질문을 입력하세요..." />
+            <button id="sendChat">보내기</button>
+        </div>
+        <div class="chat-footer2">
+            <button id="closeChat">뒤돌아가기</button>
+            <button id="resetChat">대화내용 초기화</button>
+        </div>
     </div>
     {% endif %}
 </body>
@@ -164,6 +334,101 @@
             localStorage.removeItem('signalMessage');
             console.log('Message cleared'); // Debug message
         });
+
+        // Chatbot functionality
+        const chatLink = document.getElementById('chat-link');
+        const chatModal = document.getElementById('chatModal');
+        const closeChat = document.getElementById('closeChat');
+        const resetChat = document.getElementById('resetChat');
+        const sendChat = document.getElementById('sendChat');
+        const chatInput = document.getElementById('chatInput');
+        const chatBody = document.getElementById('chatBody');
+
+        chatLink.addEventListener('click', () => {
+            if (chatModal.style.display === 'flex') {
+                chatModal.style.display = 'none';
+            } else {
+                chatModal.style.display = 'flex';
+                loadChatHistory();
+            }
+        });
+
+        closeChat.addEventListener('click', () => {
+            chatModal.style.display = 'none';
+        });
+
+        resetChat.addEventListener('click', () => {
+            resetChatHistory();
+        });
+
+        sendChat.addEventListener('click', () => {
+            sendMessage();
+        });
+
+        chatInput.addEventListener('keypress', (event) => {
+            if (event.key === 'Enter') {
+                sendMessage();
+            }
+        });
+
+        function sendMessage() {
+            const message = chatInput.value.trim();
+            if (message !== '') {
+                appendMessage('user', message);
+                chatInput.value = '';
+
+                fetch('{% url "qa:chatting" %}', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': '{{ csrf_token }}'
+                    },
+                    body: JSON.stringify({ question: message })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    appendMessage('bot', data.answer);
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
+            }
+        }
+
+        function appendMessage(sender, message) {
+            const messageElement = document.createElement('div');
+            messageElement.classList.add('chat-message', sender);
+            messageElement.innerText = message;
+            chatBody.appendChild(messageElement);
+            chatBody.scrollTop = chatBody.scrollHeight;
+        }
+
+        function loadChatHistory() {
+            fetch('{% url "qa:chatting" %}')
+                .then(response => response.json())
+                .then(data => {
+                    chatBody.innerHTML = '';
+                    data.conversation.forEach(item => {
+                        appendMessage(item.sender, item.message);
+                    });
+                });
+        }
+
+        function resetChatHistory() {
+            fetch('{% url "qa:reset" %}', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': '{{ csrf_token }}'
+                }
+            })
+            .then(() => {
+                chatBody.innerHTML = '';
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        }
     });
  
         function toggleSidebar() {
@@ -191,6 +456,7 @@
             }
         });
    
+ 
  
 </script>
 {% block script %}
