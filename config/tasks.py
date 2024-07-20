@@ -335,7 +335,10 @@ def my_task():
       results.append((crop_name, start_price, end_price, rise_ratio))
       models[crop_name] = (gru_model, scalers, future_prices)
  
- 
+  # 상품에 가격을 반영할 전용 csv 생성
+  results_shop = pd.DataFrame(results, columns=["작물명", "시작 가격", "종료 가격", "상승 비율"])
+  results_shop.to_csv('result_shop.csv',index = False, encoding = 'UTF-8')
+
   # 상승 상위5개
   results_top = sorted(results, key=lambda x: x[3], reverse=True)[:5]
   results_bottom = sorted(results, key=lambda x: x[3], reverse=True)[-5:]
