@@ -16,13 +16,13 @@ import pandas as pd
 def product_list(request, category_slug=None):
     
     # 예측 결과 불러오기 및 정렬
-    price_predict = pd.read_csv('./result.csv')
-    price_predict.sort_values(by='3', ascending=True)
+    price_predict = pd.read_csv('./result_total.csv')
+    price_predict.sort_values(by='상승 비율', ascending=True)
     
     # 예측 결과 데이터 전처리
-    price_predict['3'] = round(price_predict['3'] * 100, 2) # 가격 변동률 100분위로 변경
-    price_predict['2'] = price_predict['2'].astype(int)     # 변동된 가격 int로 변경
-    price_predict['1'] = price_predict['1'].astype(int)     # 변동된 가격 int로 변경
+    price_predict['상승 비율'] = round(price_predict['상승 비율'] * 100, 2) # 가격 변동률 100분위로 변경
+    price_predict['종료 가격'] = price_predict['종료 가격'].astype(int)     # 변동된 가격 int로 변경
+    price_predict['시작 가격'] = price_predict['시작 가격'].astype(int)     # 변동된 가격 int로 변경
     
     # 가격 상승 상품 3개 저장
     increases = price_predict.iloc[: 3].values.tolist()
