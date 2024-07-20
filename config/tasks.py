@@ -288,7 +288,7 @@ def my_task():
 
   data = pd.read_csv('total.csv')
   print(data.head()) 
-  data = data[['datetime', '양배추']]
+  # data = data[['datetime', '양배추']]
   data['datetime'] = pd.to_datetime(data['datetime'])
  
   time_step = 7
@@ -297,8 +297,8 @@ def my_task():
   models = {}
  
   # 작물별 학습 및 예측
-  # for crop_index in range(1, data.shape[1] - 2):  # 컬럼 제외
-  for crop_index in range(1, data.shape[1]):  # 컬럼 제외
+  for crop_index in range(1, data.shape[1] - 2):  # 컬럼 제외
+  # for crop_index in range(1, data.shape[1]):  # 컬럼 제외
       crop_name = data.columns[crop_index]
       print(f"Preprocessing column: {crop_name}")
       X, y, scalers = preprocess_time(data, crop_index, time_step)
