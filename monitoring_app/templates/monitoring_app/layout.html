@@ -135,6 +135,8 @@
         background-color: #f39c12;
     }
 
+    
+
     /* Responsive Styles */
     @media (max-width: 1200px) {
         .container {
@@ -206,20 +208,26 @@
     <div class="header">
         <div class="left-controls">
             <span class="material-symbols-outlined hamburger-menu" onclick="toggleSidebar()" title="메뉴">menu</span>
+            <a href="/">
             <img src="{% static 'main/onsemi_logos.png' %}" alt="Main Image">
+            </a>
         </div>
        
         <div class="user-controls" class="home">
             <div class="nav-item">
             <a href="/">
-                <span class="material-symbols-outlined nav-icon selected" title="홈">home</span>
+                <span class="material-symbols-outlined nav-icon selected" title="홈" id="home">home</span>
                 <span class="tooltip">홈</span>
             </a>
         </div>
  
             <a href="/shop">
-                <span class="material-symbols-outlined nav-icon" title="상점">storefront</span>
+                <span class="material-symbols-outlined nav-icon" title="상점" id="shop">storefront</span>
             </a>
+            <a href="/user_page/">
+            <span class="material-symbols-outlined" title="마이페이지">
+                account_circle
+                </span></a>
             <div class="user-profile" onclick="toggleInfoBox()">
                 <span class="material-symbols-outlined icon" id="notification-icon" title="알림">notifications</span>
                 <div id="infoBox" class="info-box">

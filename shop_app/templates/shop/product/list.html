@@ -10,10 +10,48 @@
 {% block content %}
 {{ block.super }}
 <style>
+  body {
+    margin: 0;
+    padding: 0;
+    overflow-x: hidden; /* Prevent horizontal scrolling */
+  }
+
+  .banner {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #026738; /* Green background color */
+    padding-right:80px;
+    padding-left:80px;
+    color: white;
+    margin-bottom: 20px; /* Add some space below the banner */
+  }
+
+  .banner-text {
+    max-width: 50%;
+  }
+
+  .banner-text h1 {
+    font-size: 2em;
+    margin: 0 0 10px;
+  }
+
+  .banner-text p {
+    font-size: 1.2em;
+    margin: 0;
+  }
+
+  .banner img {
+    max-width: 45%;
+    height: auto;
+  }
+
   #content {
     display: flex;
-    flex-direction: column;
-    align-items: center;
+    flex-direction: row;
+    align-items: flex-start;
+    width: 100%;
+    max-width: 100%;
   }
 
   .header {
@@ -22,15 +60,17 @@
     width: 100%;
     border-bottom: 1px solid #ddd;
     align-items: center;
+    margin-bottom: 20px;
   }
-  h2{
-    text-align:center;
-  }
+
   .categories {
     display: flex;
     flex-direction: column;
-    align-items: center;
-    width: 100%;
+    align-items: flex-start;
+    width: 20%;
+    padding: 20px;
+    border-right: 1px solid #ddd;
+    box-sizing: border-box;
   }
 
   .cate {
@@ -41,15 +81,14 @@
   .categories ul {
     list-style: none;
     padding: 0;
+    margin: 0;
     display: flex;
-    justify-content: center;
+    flex-direction: column;
     width: 100%;
-    margin-bottom: 10px; /* Adjust spacing */
-    flex-wrap: wrap; /* Allow wrapping on smaller screens */
   }
 
   .categories li {
-    margin: 0 15px; /* Add horizontal spacing */
+    margin-bottom: 10px;
   }
 
   .categories li a {
@@ -57,6 +96,9 @@
     padding: 10px 20px;
     border-radius: 4px;
     transition: background-color 0.3s, color 0.3s;
+    display: block;
+    width: 100%;
+    box-sizing: border-box;
   }
 
   .categories li.selected a,
@@ -80,6 +122,7 @@
     border: 1px solid #ddd;
     border-radius: 4px;
     transition: background-color 0.3s, color 0.3s;
+    margin-left: 10px;
   }
 
   .order-history a:hover {
@@ -88,56 +131,13 @@
   }
 
   .main-content {
-    display: flex;
-    width: 100%;
-    justify-content: space-between;
-    margin-top: 20px;
-    flex-wrap: wrap; /* Allow wrapping on smaller screens */
-  }
-
-  .price-prediction {
-    flex: 3;
-    padding: 20px;
-    width: 100%; /* Make sure it takes full width on smaller screens */
-  }
-
-  .price-prediction .predict-price {
-    text-align: center;
-    margin-bottom: 20px;
-  }
-
-  .price-prediction button {
-    background-color: #ff4d4d;
-    color: white;
-    border: none;
-    padding: 10px 20px;
-    margin: 5px;
-    border-radius: 4px;
-    cursor: pointer;
-    transition: background-color 0.3s;
-  }
-
-  .price-prediction button:nth-child(2) {
-    background-color: #008cba;
-    color: white;
-    border: none;
-    padding: 10px 20px;
-    margin: 5px;
-    border-radius: 4px;
-    cursor: pointer;
-    transition: background-color 0.3s;
-  }
-
-  .price-prediction button:nth-child(1):hover {
-    background-color: #e60000; /* Hover color for 상승 예측 */
-  }
-
-  .price-prediction button:nth-child(2):hover {
-    background-color: #005f5f; /* Hover color for 하락 예측 */
+    flex-direction: column;
+    width: 60%;
+    margin-left: 20px;
   }
 
   .price-list {
-    width: 50%; 
+    width: 100%;
     margin: 0 auto; /* Center the table */
     border-collapse: collapse;
     border: 1px solid #ddd;
@@ -167,7 +167,7 @@
   .item-name {
     font-weight: bold;
     display: inline-block;
-    width: 70%;
+    width: 15%;
   }
 
   .price {
@@ -256,7 +256,7 @@
   .product-list {
     display: flex;
     flex-wrap: wrap;
-    justify-content: {% if products|length == 1 %}flex-start{% else %}space-around{% endif %};
+    justify-content: space-around;
     width: 100%;
   }
 
@@ -304,18 +304,32 @@
 
   /* 반응형 스타일 */
   @media (max-width: 768px) {
-    .categories ul {
+    #content {
       flex-direction: column;
       align-items: center;
+      padding: 0;
+    }
+
+    .categories {
+      width: 100%;
+      align-items: center;
+      border-right: none;
+      border-bottom: 1px solid #ddd;
+    }
+
+    .categories ul {
+      flex-direction: row;
+      flex-wrap: wrap;
+      justify-content: center;
     }
 
     .categories li {
-      margin: 5px 0; /* Vertical spacing for smaller screens */
+      margin: 5px;
     }
 
     .main-content {
-      flex-direction: column;
-      align-items: center;
+      width: 100%;
+      margin-left: 0;
     }
 
     .price-list {
@@ -344,11 +358,75 @@
       width: 140px;
     }
   }
+
+  .price-prediction {
+    width: 100%;
+    margin-top: 20px;
+  }
+
+  .price-prediction-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+    padding: 10px;
+    background-color: #f8f9fa;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+  }
+
+  .price-prediction-content {
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-top: none;
+  }
+
+  .predict-price {
+    display: flex;
+    justify-content: space-around;
+    margin-top: 10px;
+  }
+
+  .predict-price button {
+    background-color: #f44336;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+  }
+
+  .predict-price button:nth-child(2) {
+    background-color: blue;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+  }
+
+  .price-prediction button:nth-child(1):hover {
+    background-color: darkred; /* 상승 예측 버튼 호버 효과 */
+  }
+
+  .price-prediction button:nth-child(2):hover {
+    background-color: darkblue; /* 하락 예측 버튼 호버 효과 */
+  }
+
+
 </style>
 
 <body>
-<div id="content">
-  <div class="header">
+  <div class="banner">
+    <div class="banner-text">
+      <h1>신선한 식품 주문 및 배송도 온새미에서</h1>
+      <p>온새미를 통해서 부모님에게 신선식품과 마음을 전달하세요</p>
+    </div>
+    <img src="{% static 'image/onsemi_img.png' %}" alt="Delivery Image">
+  </div>
+  <div id="content">
     <div class="categories">
       <h1 class="cate">카테고리</h1>
       <ul>
@@ -361,64 +439,70 @@
           </li>
         {% endfor %}
       </ul>
+      <div class="price-prediction">
+        <div class="price-prediction-header" onclick="togglePricePrediction()">
+          <span>가격변동</span>
+          <span id="price-toggle-icon">-</span>
+        </div>
+        <div id="price-prediction-content" class="price-prediction-content">
+          <div id="predict-price-increase" class="predict-price-section">
+            <h2>가격 <span class="highlight-increase" style="color:red;">상승&uarr;</span> 전망 목록</h2>
+            <table class="price-list">
+              <tr>
+                <td><span class="number">1</span>
+                <span class="item-name">{{ increases.0.0 }}</span>
+                <span class="price">{{ increases.0.1 }}원 &nbsp;&rarr;</span>
+                <span class="change-increase">{{ increases.0.2 }}원</span></td>
+              </tr>
+              <tr>
+                <td><span class="number">2</span>
+                <span class="item-name">{{ increases.1.0 }}</span>
+                <span class="price">{{ increases.1.1 }}원 &nbsp;&rarr;</span>
+                <span class="change-increase">{{ increases.1.2 }}원</span></td>
+              </tr>
+              <tr>
+                <td><span class="number">3</span>
+                <span class="item-name">{{ increases.2.0 }}</span>
+                <span class="price">{{ increases.2.1 }}원 &nbsp;&rarr;</span>
+                <span class="change-increase">{{ increases.2.2 }}원</span></td>
+              </tr>
+            </table>
+          </div>
+          <div id="predict-price-decrease" class="predict-price-section" style="display: none;">
+            <h2>가격 <span class="highlight-decrease" style="color:blue;">하락&darr;</span> 전망 목록</h2>
+            <table class="price-list">
+              <tr>
+                <td><span class="number">1</span>
+                <span class="item-name">{{ decreases.0.0 }}</span>
+                <span class="price">{{ decreases.0.1 }}원 &nbsp;&rarr;</span>
+                <span class="change-decrease">{{ decreases.0.2 }}원</span></td>
+              </tr>
+              <tr>
+                <td><span class="number">2</span>
+                <span class="item-name">{{ decreases.1.0 }}</span>
+                <span class="price">{{ decreases.1.1 }}원 &nbsp;&rarr;</span>
+                <span class="change-decrease">{{ decreases.1.2 }}원</span></td>
+              </tr>
+              <tr>
+                <td><span class="number">3</span>
+                <span class="item-name">{{ decreases.2.0 }}</span>
+                <span class="price">{{ decreases.2.1 }}원 &nbsp;&rarr;</span>
+                <span class="change-decrease">{{ decreases.2.2 }}원</span></td>
+              </tr>
+            </table>
+          </div>
+          <div class="predict-price">
+            <button id="show-increase">상승 예측</button>
+            <button id="show-decrease">하락 예측</button>
+          </div>
+        </div>
+      </div>
     </div>
-    <div class="order-history">
-      <a href="{% url 'orders_app:my_orders' %}">주문 내역</a>
-    </div>
-  </div>
-  <div class="main-content">
-    <div class="price-prediction">
-      <div id="predict-price-increase" class="predict-price-section">
-        <h2>가격 <span class="highlight-increase" style="color:red;">상승&uarr;</span> 전망 목록</h2>
-        <table class="price-list">
-          <tr>
-            <td><span class="number">1</span>
-            <span class="item-name">{{ increases.0.0 }}</span>
-            <span class="price">{{ increases.0.1 }}원 &nbsp;&rarr;</span>
-            <span class="change-increase">{{ increases.0.2 }}원</span></td>
-          </tr>
-          <tr>
-            <td><span class="number">2</span>
-            <span class="item-name">{{ increases.1.0 }}</span>
-            <span class="price">{{ increases.1.1 }}원 &nbsp;&rarr;</span>
-            <span class="change-increase">{{ increases.1.2 }}원</span></td>
-          </tr>
-          <tr>
-            <td><span class="number">3</span>
-            <span class="item-name">{{ increases.2.0 }}</span>
-            <span class="price">{{ increases.2.1 }}원 &nbsp;&rarr;</span>
-            <span class="change-increase">{{ increases.2.2 }}원</span></td>
-          </tr>
-        </table>
+    <div class="main-content">
+      <div class="order-history">
+        <a href="{% url 'orders_app:my_orders' %}">주문 내역</a>
       </div>
-      <div id="predict-price-decrease" class="predict-price-section" style="display: none;">
-        <h2>가격 <span class="highlight-decrease" style="color:blue;">하락&darr;</span> 전망 목록</h2>
-        <table class="price-list">
-          <tr>
-            <td><span class="number">1</span>
-            <span class="item-name">{{ decreases.0.0 }}</span>
-            <span class="price">{{ decreases.0.1 }}원 &nbsp;&rarr;</span>
-            <span class="change-decrease">{{ decreases.0.2 }}원</span></td>
-          </tr>
-          <tr>
-            <td><span class="number">2</span>
-            <span class="item-name">{{ decreases.1.0 }}</span>
-            <span class="price">{{ decreases.1.1 }}원 &nbsp;&rarr;</span>
-            <span class="change-decrease">{{ decreases.1.2 }}원</span></td>
-          </tr>
-          <tr>
-            <td><span class="number">3</span>
-            <span class="item-name">{{ decreases.2.0 }}</span>
-            <span class="price">{{ decreases.2.1 }}원 &nbsp;&rarr;</span>
-            <span class="change-decrease">{{ decreases.2.2 }}원</span></td>
-          </tr>
-        </table>
-      </div>
-      <div class="predict-price">
-        <button id="show-increase">상승 예측</button>
-        <button id="show-decrease">하락 예측</button>
-      </div>
-      <h1>{% if category %}{{ category.name }}{% else %}전체 상품{% endif %}</h1>
+      <h1 style="width: 100%;">{% if category %}{{ category.name }}{% else %}전체 상품{% endif %}</h1>
       <div id="main" class="product-list">
         {% for product in products %}
           <div class="item">
@@ -431,31 +515,42 @@
           </div>
         {% endfor %}
       </div>
-    </div>
-    <div class="recent-products-container">
-      <div class="recent-products-header">최근 본 상품</div>
-      <div class="recent-products-content">
-        {% for product in recent_products %}
-          <div class="product-item">
-            <a href="{% url 'shop_app:product_detail' product.id product.slug %}">
-              <img src="{% if product.image %}{{ product.image.url }}{% else %}{% static "img/no_image.png" %}{% endif %}" alt="{{ product.name }}">
-              <h3>{{ product.name }}</h3>
-            </a>
-            <form action="{% url 'shop_app:remove_from_recent_products' product.id %}" method="post">
-              {% csrf_token %}
-              <button type="submit">X</button>
-            </form>
-          </div>
-        {% endfor %}
+      <div class="recent-products-container">
+        <div class="recent-products-header">최근 본 상품</div>
+        <div class="recent-products-content">
+          {% for product in recent_products %}
+            <div class="product-item">
+              <a href="{% url 'shop_app:product_detail' product.id product.slug %}">
+                <img src="{% if product.image %}{{ product.image.url }}{% else %}{% static "img/no_image.png" %}{% endif %}" alt="{{ product.name }}">
+                <h3>{{ product.name }}</h3>
+              </a>
+              <form action="{% url 'shop_app:remove_from_recent_products' product.id %}" method="post">
+                {% csrf_token %}
+                <button type="submit">X</button>
+              </form>
+            </div>
+          {% endfor %}
+        </div>
       </div>
     </div>
   </div>
-</div>
 </body>
 {% endblock %}
 
 {% block script %}
 <script>
+  function togglePricePrediction() {
+    var content = document.getElementById('price-prediction-content');
+    var icon = document.getElementById('price-toggle-icon');
+    if (content.style.display === 'none' || content.style.display === '') {
+      content.style.display = 'block';
+      icon.textContent = '-';
+    } else {
+      content.style.display = 'none';
+      icon.textContent = '+';
+    }
+  }
+
   document.getElementById('show-decrease').addEventListener('click', function() {
     document.getElementById('predict-price-decrease').style.display = 'block';
     document.getElementById('predict-price-increase').style.display = 'none';

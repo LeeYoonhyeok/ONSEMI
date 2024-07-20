@@ -37,7 +37,7 @@ li{
 }
 
 .header img {
-    height: 50px;
+    height: 40px;
 }
 
 .header nav {
@@ -142,6 +142,7 @@ li{
     padding-left: 20px;
     padding-right: 20px;
     padding-bottom: 20px;
+    height: 100vh;
     
 }
 
@@ -149,7 +150,8 @@ li{
     color: #34495e;
     font-size: 1.8em;
     margin-bottom: 20px;
-    margin-top: -20px;
+    margin-top: 0px;
+    text-align:center;
 }
 
 .charts-wrapper {
