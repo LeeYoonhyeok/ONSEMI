@@ -327,7 +327,7 @@ ul.errorlist {
 /* 아이템이 2개 이하일 때의 스타일 */
 .product-list .item:nth-child(1),
 .product-list .item:nth-child(2) {
-    width: calc(33.333% - 40px); /* 여전히 3개 열의 크기를 유지 */
+    width: calc(33.333% - 25px); /* 여전히 3개 열의 크기를 유지 */
 }
  
 h2{
@@ -485,7 +485,24 @@ form div.field {
 img{
     height : 300px;
 }
- 
+
+.product-item img{
+    width: 60px;
+    height: 60px;
+    margin: auto;
+    display: block;
+}
+
+.product-item h3{
+   text-align: center;
+   font-size: 12px;
+}
+
+.product-item button{
+    width: 30%;
+    margin: auto;
+    display: block;
+ }
   .cart-container {
     width: 80%;
     max-width: 1200px;

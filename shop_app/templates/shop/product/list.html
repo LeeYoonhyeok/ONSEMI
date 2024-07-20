@@ -10,54 +10,210 @@
 {% block content %}
 {{ block.super }}
 <style>
-  .cate {
-    text-align: center;
-  }
   #content {
     display: flex;
-    flex-wrap: wrap;
+    flex-direction: column;
+    align-items: center;
   }
 
-  #sidebar {
-    order: 1;
-    width: 100%; /* 사이드바를 전체 너비로 설정 */
+  .header {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    border-bottom: 1px solid #ddd;
+    align-items: center;
   }
 
-  #main {
-    order: 3;
-    flex: 3; /* 나머지 공간을 차지하도록 설정 */
-    margin-right: 20px;
+  .categories {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
   }
 
-  .recent-products {
-    order: 4;
-    margin-top: 30px;
-    margin-left: 20px;
+  .cate {
+    font-size: 1.5em;
+    margin-bottom: 10px;
+  }
+
+  .categories ul {
+    list-style: none;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    margin-bottom: 10px; /* Adjust spacing */
+  }
+
+  .categories li {
+    margin: 0 15px; /* Add horizontal spacing */
+  }
+
+  .categories li a {
+    text-decoration: none;
+    
+    padding: 10px 20px;
+    border-radius: 4px;
+    transition: background-color 0.3s, color 0.3s;
+  }
+
+  .categories li.selected a,
+  .categories li a:hover {
+    background-color: #156741;
+    color: #fff;
+  }
+
+  .order-history {
+    display: flex;
+    justify-content: flex-end;
+    width: 100%;
+    margin-bottom: 10px;
+  }
+
+  .order-history a {
+    text-decoration: none;
+    color: #fff;
+    background-color: #156741;
+    padding: 10px 20px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    transition: background-color 0.3s, color 0.3s;
+  }
+
+  .order-history a:hover {
+    background-color: #218838; /* Darker green for hover */
+    color: #fff;
+  }
+
+  .main-content {
+    display: flex;
+    width: 100%;
+    justify-content: space-between;
+    margin-top: 20px;
+  }
+
+  .price-prediction {
+    flex: 3;
     padding: 20px;
-    background-color: #f9f9f9;
-    border-radius: 8px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    max-width: 150px; /* Adjusted width */
-    margin-bottom: 30px;
-    position: sticky;
   }
 
-  .recent-products h2 {
+  .price-prediction .predict-price {
     text-align: center;
     margin-bottom: 20px;
-    font-size: 1.5em;
-    color: #333;
+  }
+
+  .price-prediction button {
+    background-color: #ff4d4d;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    margin: 5px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+  }
+
+  .price-prediction button:nth-child(2) {
+    background-color: #008cba;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    margin: 5px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+  }
+
+  .price-prediction button:nth-child(1):hover {
+    background-color: #e60000; /* Hover color for 상승 예측 */
+  }
+
+  .price-prediction button:nth-child(2):hover {
+    background-color: #005f5f; /* Hover color for 하락 예측 */
+  }
+
+  .price-list {
+    width: 50%; 
+    margin: 0 auto; /* Center the table */
+    border-collapse: collapse;
+    border: 1px solid #ddd;
+    {% comment %} box-shadow: 10px 10px 5px rgb(0, 0, 0, 0.6); {% endcomment %}
+  }
+
+  .price-list tr {
+    border-bottom: 1px solid #ddd;
+  }
+
+  .price-list th, .price-list td {
+    padding: 10px;
+    text-align: left;
+  }
+
+  .number {
+    background-color: #156741;
+    color: white;
+    border-radius: 50%;
+    width: 30px;
+    height: 30px;
+    line-height: 30px;
+    display: inline-block;
+    text-align: center;
+    margin-right: 10px;
+  }
+
+  .item-name {
+    font-weight: bold;
+    display: inline-block;
+    width:70%;
+  }
+
+  .price {
+    display: inline-block;
+  }
+
+  .change-increase {
+    color: red;
+    display: inline-block;
+  }
+
+  .change-decrease {
+    color: blue;
+    display: inline-block;
+  }
+
+  .recent-products-container {
+    position: fixed;
+    bottom: 10px;
+    right: 10px;
+    width: 100px;
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    z-index: 1000;
+    overflow-y: auto;
+  }
+
+  .recent-products-header {
+    background-color: #f8f9fa;
+    padding: 10px;
+    text-align: center;
+    font-weight: bold;
+    border-bottom: 1px solid #ddd;
+    font-size:12px;
+  }
+
+  .recent-products-content {
+    max-height: 300px;
+    overflow-y: auto;
   }
 
   .recent-products .product-item {
     display: flex;
     flex-direction: column;
     align-items: center;
-    margin-bottom: 20px;
-    padding: 20px;
-    background-color: #fff;
-    border: 1px solid #ddd;
-    border-radius: 8px;
+    padding: 5px;
+    border-bottom: 1px solid #ddd;
     transition: transform 0.2s, box-shadow 0.2s;
   }
 
@@ -67,292 +223,189 @@
   }
 
   .recent-products img {
-    width: 100px;
-    height: 100px;
-    margin-bottom: 10px;
-    border: 2px solid #eee;
-    border-radius: 8px;
+    width: 80px;
+    height: 80px;
+    margin-bottom: 5px;
+    border-radius: 4px;
   }
 
   .recent-products h3 {
+    font-size: 0.8em;
+    margin-bottom: 5px;
     text-align: center;
-    margin: 10px 0;
-    font-size: 1.2em;
-    color: #333;
-  }
-
-  .recent-products form {
-    display: flex;
-    justify-content: center;
-    margin-top: 10px;
   }
 
   .recent-products button {
     background-color: #ff4d4d;
     color: white;
     border: none;
-    padding: 5px 10px;
+    padding: 3px 5px;
     border-radius: 4px;
     cursor: pointer;
     transition: background-color 0.2s;
+    font-size: 0.8em;
   }
 
   .recent-products button:hover {
     background-color: #e60000;
   }
 
-  #sidebar ul {
-    display: flex; /* ul 내부 요소를 가로로 배치 */
-    flex-direction: row; /* 방향을 가로로 설정 */
-    list-style: none; /* 기본 목록 스타일 제거 */
-    padding: 0; /* 기본 패딩 제거 */
-    margin: 0; /* 기본 마진 제거 */
-    justify-content: space-between; /* 가로 방향으로 중앙 정렬 */
-    align-items: center; /* 세로 방향으로 중앙 정렬 */
-    margin-bottom: 15px;
-  }
-
-  #sidebar li {
-    margin: 0 50px; /* 각 항목 간의 간격을 50px로 설정 */
-  }
-
-  #sidebar li a {
-    display: inline-block; /* a 요소를 인라인 블록으로 설정하여 가로로 나열 */
-    padding: 5px 10px; /* 적절한 패딩 추가 */
-    text-decoration: none; /* 텍스트 밑줄 제거 */
-    color: #000; /* 텍스트 색상 설정 */
-  }
-
-  #sidebar li.selected a {
-    color: white; /* 선택된 항목 글자색 */
-    border-radius: 4px; /* 선택된 항목 모서리 둥글게 */
-  }
-
   .product-list {
     display: flex;
-    justify-content: center;
-    flex-wrap: wrap;  /*줄바꿈 설정 */
-    gap: 20px; /* 요소 간의 간격 설정 */
+    flex-wrap: wrap;
+    justify-content: {% if products|length == 1 %}flex-start{% else %}space-around{% endif %};
+    width: 100%;
   }
 
-  .product-list h1 {
-    flex-basis: 100%; /* h1이 전체 너비를 차지하도록 설정 */
-    /*margin-bottom: 10px; /* h1과 나머지 요소 간의 간격 설정 */
-  }
-
-  .ordered-list-container {
+  .product-list .item {
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    text-align: center;
+    margin-bottom: 20px;
+    padding: 10px;
+    transition: transform 0.3s, box-shadow 0.3s;
+    width: calc(33% - 20px); /* Adjust as needed */
+    box-sizing: border-box;
+    height: 300px; /* Fixed height */
     display: flex;
-    justify-content: flex-end;
-    padding-right: 20px;
-  }
-  .ordered-list {
-      text-decoration: none; /* 밑줄 제거 */
-      color: black; /* 원하는 색상으로 변경하세요 */
-      padding: 0; /* 패딩을 0으로 설정하여 텍스트 부분만 클릭 가능하게 함 */
+    flex-direction: column;
+    justify-content: space-between;
   }
 
-  #predict-price-increase {
-    order: 2; /* 사이드바와 메인 콘텐츠 사이에 위치하도록 설정 */
-    width: 100%; /* 너비를 전체 너비로 설정 */
-    text-align: center; /* 텍스트를 중앙 정렬 */
-    margin: 20px 0; /* 위아래 마진 설정 */
-    font-size: 1.5em; /* 글자 크기 설정 */
-    color: #333; /* 글자 색상 설정 */
+  .product-list .item:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   }
 
-  #predict-price-decrease {
-    order: 2; /* 사이드바와 메인 콘텐츠 사이에 위치하도록 설정 */
-    width: 100%; /* 너비를 전체 너비로 설정 */
-    text-align: center; /* 텍스트를 중앙 정렬 */
-    margin: 20px 0; /* 위아래 마진 설정 */
-    font-size: 1.5em; /* 글자 크기 설정 */
-    color: #333; /* 글자 색상 설정 */
+  .product-list img {
+    max-width: 100%;
+    max-height: 150px; /* Adjust height */
+    margin-bottom: 10px;
+    object-fit: contain; /* Ensure the image fits within the container */
   }
 
-  .predict-price {
-    order: 2; /* 사이드바와 메인 콘텐츠 사이에 위치하도록 설정 */
-    width: 100%; /* 너비를 전체 너비로 설정 */
-    text-align: center; /* 텍스트를 중앙 정렬 */
-    margin: 20px 0; /* 위아래 마진 설정 */
-    font-size: 1.5em; /* 글자 크기 설정 */
-    color: #333; /* 글자 색상 설정 */
+  .product-list a {
+    text-decoration: none;
+    color: #333;
+    font-size: 1.1em;
+    margin-bottom: 10px;
+    flex-grow: 1;
   }
 
-  .highlight-increase {
-    color: red;
+  .product-list .item .price {
+    font-size: 1em;
+    color: #000;
+    margin-top: auto; /* Push the price to the bottom */
   }
-
-  .highlight-decrease {
-    color: blue;
-  }
-
-  .price-list {
-    width: 40%;
-    border-collapse: collapse;
-    margin: 0 auto;
-  }
-  .price-list tr {
-    border-bottom: 1px dotted #ccc;
-  }
-  .number {
-    display: inline-block;
-    background-color: #156741;
-    color: white;
-    border-radius: 50%;
-    width: 50px;
-    height: 50px;
-    line-height: 50px;
-    margin-right: 10px;
-    font-size: 20px;
-  }
-  .item-name {
-    font-size: 25px;
-    font-weight: bold;
-    margin-right: 100px;
-  }
-  .price {
-    font-size: 20px;
-  }
-  .change-decrease {
-    font-size: 20px;
-    color: blue;
-  }
-  .change-increase{
-    font-size: 20px;
-    color: red;
-  }
-  button {
-    border: none; /* Remove borders */
-    color: white; /* White text */
-    padding: 15px 32px; /* Some padding */
-    text-align: center; /* Centered text */
-    display: inline-block; /* Make the buttons appear inline */
-    font-size: 16px; /* Increase font size */
-    font-weight: bold;
-    margin: 4px 2px; /* Some margin */
-    cursor: pointer; /* Pointer/hand icon */
-    border-radius: 20px; /* Rounded corners */
-  }
-
-  button:hover {
-      color: black; /* Black text on hover */
-  }
-
-  #show-decrease {
-      background-color: #008CBA; /* Blue background for increase button */
-  }
-
-  #show-decrease:hover {
-      border: 2px solid #008CBA; /* Blue border on hover */
-  }
-
-  #show-increase {
-      background-color: #f44336; /* Red background for decrease button */
-  }
-
-  #show-increase:hover {
-      border: 2px solid #f44336; /* Red border on hover */
-      
-  }
-
 </style>
+
 <body>
 <div id="content">
-  <div id="sidebar">
-    <h1 class="cate">카테고리</h1>
-    <ul>
-      <li {% if not category %}class="selected"{% endif %}>
-        <a href="{% url "shop_app:product_list" %}">전체</a>
-      </li>
-      {% for c in categories %}
-        <li {% if category.slug == c.slug %}class="selected"{% endif %}>
-          <a href="{% url 'shop_app:product_list_by_category' category_slug=c.slug %}">{{ c.name }}</a>
+  <div class="header">
+    <div class="categories">
+      <h1 class="cate">카테고리</h1>
+      <ul>
+        <li {% if not category %}class="selected"{% endif %}>
+          <a href="{% url "shop_app:product_list" %}">전체</a>
         </li>
-      {% endfor %}
-    </ul>
-    <hr>
-    <h2><div class="ordered-list-container">
-      <a href="{% url 'orders_app:my_orders' %}" class="ordered-list">주문 내역</a></h2>
+        {% for c in categories %}
+          <li {% if category.slug == c.slug %}class="selected"{% endif %}>
+            <a href="{% url 'shop_app:product_list_by_category' category_slug=c.slug %}">{{ c.name }}</a>
+          </li>
+        {% endfor %}
+      </ul>
+    </div>
+    <div class="order-history">
+      <a href="{% url 'orders_app:my_orders' %}">주문 내역</a>
+    </div>
   </div>
-  <div class="predict-price">
-    <button id="show-increase">상승 예측</button>
-    <button id="show-decrease">하락 예측</button>
-  </div>
-  <div id="predict-price-increase" class="predict-price-section">
-    <h2>가격 <span class="highlight-increase">상승&uarr;</span> 전망 목록</h2>
-    <table class="price-list">
-      <tr>
-          <td><span class="number">1</span>
-          <span class="item-name">{{ increases.0.0 }}</span>
-          <span class="price">{{ increases.0.1 }}원 &nbsp;&rarr;</span>
-          <span class="change-increase">{{ increases.0.2 }}원</span></td>
-      </tr>
-      <tr>
-        <td><span class="number">2</span>
-        <span class="item-name">{{ increases.1.0 }}</span>
-        <span class="price">{{ increases.1.1 }}원 &nbsp;&rarr;</span>
-        <span class="change-increase">{{ increases.1.2 }}원</span></td>
-    </tr>
-    <tr>
-      <td><span class="number">3</span>
-      <span class="item-name">{{ increases.2.0 }}</span>
-      <span class="price">{{ increases.2.1 }}원 &nbsp;&rarr;</span>
-      <span class="change-increase">{{ increases.2.2 }}원</span></td>
-  </tr>
-  </table>
-  </div>
-  <div id="predict-price-decrease" class="predict-price-section" style="display: none;">
-    <h2>가격 <span class="highlight-decrease">하락&darr;</span> 전망 목록</h2>
-    <table class="price-list">
-      <tr>
-          <td><span class="number">1</span>
-          <span class="item-name">{{ decreases.0.0 }}</span>
-          <span class="price">{{ decreases.0.1 }}원 &nbsp;&rarr;</span>
-          <span class="change-decrease">{{ decreases.0.2 }}원</span></td>
-      </tr>
-      <tr>
-        <td><span class="number">2</span>
-        <span class="item-name">{{ decreases.1.0 }}</span>
-        <span class="price">{{ decreases.1.1 }}원 &nbsp;&rarr;</span>
-        <span class="change-decrease">{{ decreases.1.2 }}원</span></td>
-    </tr>
-    <tr>
-      <td><span class="number">3</span>
-      <span class="item-name">{{ decreases.2.0 }}</span>
-      <span class="price">{{ decreases.2.1 }}원 &nbsp;&rarr;</span>
-      <span class="change-decrease">{{ decreases.2.2 }}원</span></td>
-  </tr>
-  </table>
-  </div>
-  <div id="main" class="product-list">
-    <h1>{% if category %}{{ category.name }}{% else %}전체 상품{% endif %}</h1>
-    {% for product in products %}
-      <div class="item">
-        <a href="{{ product.get_absolute_url }}">
-          <img src="{% if product.image %}{{ product.image.url }}{% else %}{% static "img/no_image.png" %}{% endif %}">
-        </a>
-        <a href="{{ product.get_absolute_url }}">{{ product.name }}</a>
-        <br>
-        {{ product.price }}원
+  <div class="main-content">
+    <div class="price-prediction">
+      <div id="predict-price-increase" class="predict-price-section">
+        <h2>가격 <span class="highlight-increase" style="color:red;">상승&uarr;</span> 전망 목록</h2>
+        <table class="price-list">
+          <tr>
+            <td><span class="number">1</span>
+            <span class="item-name">{{ increases.0.0 }}</span>
+            <span class="price">{{ increases.0.1 }}원 &nbsp;&rarr;</span>
+            <span class="change-increase">{{ increases.0.2 }}원</span></td>
+          </tr>
+          <tr>
+            <td><span class="number">2</span>
+            <span class="item-name">{{ increases.1.0 }}</span>
+            <span class="price">{{ increases.1.1 }}원 &nbsp;&rarr;</span>
+            <span class="change-increase">{{ increases.1.2 }}원</span></td>
+          </tr>
+          <tr>
+            <td><span class="number">3</span>
+            <span class="item-name">{{ increases.2.0 }}</span>
+            <span class="price">{{ increases.2.1 }}원 &nbsp;&rarr;</span>
+            <span class="change-increase">{{ increases.2.2 }}원</span></td>
+          </tr>
+        </table>
       </div>
-    {% endfor %}
-  </div>
-  <div class="recent-products">
-    <h2>최근 본 상품</h2>
-    {% for product in recent_products %}
-      <div class="product-item">
-        <a href="{% url 'shop_app:product_detail' product.id product.slug %}">
-          <img src="{% if product.image %}{{ product.image.url }}{% else %}{% static "img/no_image.png" %}{% endif %}" alt="{{ product.name }}">
-          <h3>{{ product.name }}</h3>
-        </a>
-        <form action="{% url 'shop_app:remove_from_recent_products' product.id %}" method="post">
-          {% csrf_token %}
-          <button type="submit">X</button>
-        </form>
+      <div id="predict-price-decrease" class="predict-price-section" style="display: none;">
+        <h2>가격 <span class="highlight-decrease" style="color:blue;">하락&darr;</span> 전망 목록</h2>
+        <table class="price-list">
+          <tr>
+            <td><span class="number">1</span>
+            <span class="item-name">{{ decreases.0.0 }}</span>
+            <span class="price">{{ decreases.0.1 }}원 &nbsp;&rarr;</span>
+            <span class="change-decrease">{{ decreases.0.2 }}원</span></td>
+          </tr>
+          <tr>
+            <td><span class="number">2</span>
+            <span class="item-name">{{ decreases.1.0 }}</span>
+            <span class="price">{{ decreases.1.1 }}원 &nbsp;&rarr;</span>
+            <span class="change-decrease">{{ decreases.1.2 }}원</span></td>
+          </tr>
+          <tr>
+            <td><span class="number">3</span>
+            <span class="item-name">{{ decreases.2.0 }}</span>
+            <span class="price">{{ decreases.2.1 }}원 &nbsp;&rarr;</span>
+            <span class="change-decrease">{{ decreases.2.2 }}원</span></td>
+          </tr>
+        </table>
       </div>
-    {% endfor %}
+      <div class="predict-price">
+        <button id="show-increase">상승 예측</button>
+        <button id="show-decrease">하락 예측</button>
+      </div>
+      <h1>{% if category %}{{ category.name }}{% else %}전체 상품{% endif %}</h1>
+      <div id="main" class="product-list">
+        {% for product in products %}
+          <div class="item">
+            <a href="{{ product.get_absolute_url }}">
+              <img src="{% if product.image %}{{ product.image.url }}{% else %}{% static "img/no_image.png" %}{% endif %}">
+            </a>
+            <a href="{{ product.get_absolute_url }}">{{ product.name }}</a>
+            <br>
+            {{ product.price }}원
+          </div>
+        {% endfor %}
+      </div>
+    </div>
+    <div class="recent-products-container">
+      <div class="recent-products-header">최근 본 상품</div>
+      <div class="recent-products-content">
+        {% for product in recent_products %}
+          <div class="product-item">
+            <a href="{% url 'shop_app:product_detail' product.id product.slug %}">
+              <img src="{% if product.image %}{{ product.image.url }}{% else %}{% static "img/no_image.png" %}{% endif %}" alt="{{ product.name }}">
+              <h3>{{ product.name }}</h3>
+            </a>
+            <form action="{% url 'shop_app:remove_from_recent_products' product.id %}" method="post">
+              {% csrf_token %}
+              <button type="submit">X</button>
+            </form>
+          </div>
+        {% endfor %}
+      </div>
+    </div>
   </div>
 </div>
+</body>
 {% endblock %}
 
 {% block script %}
