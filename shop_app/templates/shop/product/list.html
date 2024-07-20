@@ -23,7 +23,9 @@
     border-bottom: 1px solid #ddd;
     align-items: center;
   }
-
+  h2{
+    text-align:center;
+  }
   .categories {
     display: flex;
     flex-direction: column;
@@ -43,6 +45,7 @@
     justify-content: center;
     width: 100%;
     margin-bottom: 10px; /* Adjust spacing */
+    flex-wrap: wrap; /* Allow wrapping on smaller screens */
   }
 
   .categories li {
@@ -51,7 +54,6 @@
 
   .categories li a {
     text-decoration: none;
-    
     padding: 10px 20px;
     border-radius: 4px;
     transition: background-color 0.3s, color 0.3s;
@@ -90,11 +92,13 @@
     width: 100%;
     justify-content: space-between;
     margin-top: 20px;
+    flex-wrap: wrap; /* Allow wrapping on smaller screens */
   }
 
   .price-prediction {
     flex: 3;
     padding: 20px;
+    width: 100%; /* Make sure it takes full width on smaller screens */
   }
 
   .price-prediction .predict-price {
@@ -137,7 +141,6 @@
     margin: 0 auto; /* Center the table */
     border-collapse: collapse;
     border: 1px solid #ddd;
-    {% comment %} box-shadow: 10px 10px 5px rgb(0, 0, 0, 0.6); {% endcomment %}
   }
 
   .price-list tr {
@@ -164,7 +167,7 @@
   .item-name {
     font-weight: bold;
     display: inline-block;
-    width:70%;
+    width: 70%;
   }
 
   .price {
@@ -200,7 +203,7 @@
     text-align: center;
     font-weight: bold;
     border-bottom: 1px solid #ddd;
-    font-size:12px;
+    font-size: 12px;
   }
 
   .recent-products-content {
@@ -298,6 +301,49 @@
     color: #000;
     margin-top: auto; /* Push the price to the bottom */
   }
+
+  /* 반응형 스타일 */
+  @media (max-width: 768px) {
+    .categories ul {
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .categories li {
+      margin: 5px 0; /* Vertical spacing for smaller screens */
+    }
+
+    .main-content {
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .price-list {
+      width: 100%;
+    }
+
+    .product-list .item {
+      width: calc(50% - 20px); /* Two items per row on medium screens */
+    }
+
+    .recent-products-container {
+      bottom: 20px;
+      right: 20px;
+      width: 120px;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .product-list .item {
+      width: calc(100% - 20px); /* One item per row on small screens */
+    }
+
+    .recent-products-container {
+      bottom: 30px;
+      right: 30px;
+      width: 140px;
+    }
+  }
 </style>
 
 <body>
@@ -381,7 +427,7 @@
             </a>
             <a href="{{ product.get_absolute_url }}">{{ product.name }}</a>
             <br>
-            {{ product.price }}원
+            <span style="color: #B41C11;">{{ product.price }}원</span> 
           </div>
         {% endfor %}
       </div>
