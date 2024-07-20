@@ -179,11 +179,7 @@ def generate(request):
             # 데이터가 없을 경우 빈 꺾은선 그래프 생성
             plt.figure(figsize=(10, 6))
             plt.title('요청된 데이터가 없습니다', fontproperties=fm.FontProperties(fname=font_path))
-            plt.xlabel('기간', fontproperties=fm.FontProperties(fname=font_path))
-            plt.ylabel('요청횟수', fontproperties=fm.FontProperties(fname=font_path))
-            plt.xticks(rotation=45, fontproperties=fm.FontProperties(fname=font_path))
-            plt.yticks(fontproperties=fm.FontProperties(fname=font_path))
-            plt.tight_layout()
+            plt.axis('off')  # x축과 y축을 숨김
 
             # 빈 그래프 이미지를 메모리에 저장
             buffer = BytesIO()
@@ -231,7 +227,7 @@ def generate(request):
         else:
             plt.figure(figsize=(10, 6))
             plt.title('요청된 데이터가 없습니다', fontproperties=fm.FontProperties(fname=font_path))
-            plt.axis('equal')
+            plt.axis('off')  # x축과 y축을 숨김
 
             buffer = BytesIO()
             plt.savefig(buffer, format='png')
