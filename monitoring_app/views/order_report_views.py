@@ -44,7 +44,7 @@ def order_to_dataframe(orders):
             })
     df = pd.DataFrame(data)
     if 'created' in df.columns: #임의로 만든 데이터들은 created고 서비스 상에서 데이터를 쌓으면 Created임
-        df['created'] = pd.to_datetime(df['created'], format='ISO8601', errors='coerce')
+        df['Created'] = pd.to_datetime(df['created'], format='ISO8601', errors='coerce')
 
     if 'Created' in df.columns: #임의로 만든 데이터들은 created고 서비스 상에서 데이터를 쌓으면 Created임
         df['Created'] = pd.to_datetime(df['Created'], format='ISO8601', errors='coerce')
@@ -53,7 +53,7 @@ def order_to_dataframe(orders):
         df['Date'] = pd.to_datetime(df['Date'], format='ISO8601', errors='coerce')
 
     if 'quantity' in df.columns: #임의로 만든 데이터들은 created고 서비스 상에서 데이터를 쌓으면 Created임
-        df['quantity'] = df['quantity'].astype(float)
+        df['Quantity'] = df['quantity'].astype(float)
 
     if 'Quantity' in df.columns: #임의로 만든 데이터들은 created고 서비스 상에서 데이터를 쌓으면 Created임
         df['Quantity'] = df['Quantity'].astype(float)
@@ -210,9 +210,9 @@ def generate(request):
                     'Quantity': item.quantity,
                 })
         all_df = pd.DataFrame(all_data)
-        all_df['Quantity'] = all_df['Quantity'].astype(float)
 
         if not all_df.empty:
+            all_df['Quantity'] = all_df['Quantity'].astype(float)
             plt.figure(figsize=(10, 6))
             category_counts = all_df.groupby('Category')['Quantity'].sum()
             plt.pie(category_counts, labels=category_counts.index, colors=colors[:len(category_counts)], autopct='%1.1f%%', startangle=140,

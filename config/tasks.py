@@ -352,7 +352,7 @@ def my_task():
 #   results_bottom = pd.DataFrame(results_bottom)
  
   results_df = pd.concat([results_top,results_bottom], axis = 0)
-  print(results_df.head()) 
+  print(results_df.tail()) 
   results_df.to_csv('result_total.csv',index = False, encoding = 'UTF-8')
 #   results_df[[0,3]].to_csv('result.csv',index = False, encoding = 'UTF-8')
   results_df.iloc[:, [0, 3]].to_csv('result.csv', index=False, encoding='UTF-8')
