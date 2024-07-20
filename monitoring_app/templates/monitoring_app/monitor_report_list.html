@@ -1,20 +1,59 @@
-{% extends "monitoring_app/layout.html" %}
-{% load static %}
-
-{% block title %}ONSEMI{% endblock %}
 <!DOCTYPE html>
 <html lang="ko">
+{% extends "monitoring_app/layout.html" %}
+{% load static %}
+{% block title %}ONSEMI{% endblock %}
 {% block extra_css %}
 <link rel="stylesheet" href="{% static 'css/styles.css' %}">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
 <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/ko.js"></script>
 <style>
+
+    body, html {
+        margin: 0;
+        padding: 0;
+        height: 100%;
+        width: 100%;
+        overflow: hidden; /* Prevent scrolling */
+        font-family: Arial, sans-serif;
+    }
+    .container {
+        
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            height: 100vh; /* Full height */
+            width: 100vw; /* Full width */
+            box-sizing: border-box;
+            min-height:100vh;
+      
+    }
+
     .sidebar {
+        background-color: #fff;
+        color: black;
+        padding: 20px;
+        width: 300px;
         display: flex;
         flex-direction: column;
         align-items: center;
+        box-sizing: border-box;
+        overflow-y: auto;
+        position: sticky;
+        min-height:100vh;
+        top: 0;
     }
+
+    .main-content {
+        flex: 1;
+        overflow-y: auto;
+        padding: 20px;
+        height:100vh;
+    }
+
+    
+
     .sidebar form input,
     .sidebar form select {
         margin-bottom: 10px;

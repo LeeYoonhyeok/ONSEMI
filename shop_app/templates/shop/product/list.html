@@ -388,7 +388,7 @@
   }
 
   .predict-price button {
-    background-color: #156741;
+    background-color: #f44336;
     color: white;
     border: none;
     padding: 10px 20px;
@@ -397,9 +397,24 @@
     transition: background-color 0.3s;
   }
 
-  .predict-price button:hover {
-    background-color: #218838;
+  .predict-price button:nth-child(2) {
+    background-color: blue;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s;
   }
+
+  .price-prediction button:nth-child(1):hover {
+    background-color: darkred; /* 상승 예측 버튼 호버 효과 */
+  }
+
+  .price-prediction button:nth-child(2):hover {
+    background-color: darkblue; /* 하락 예측 버튼 호버 효과 */
+  }
+
 
 </style>
 
