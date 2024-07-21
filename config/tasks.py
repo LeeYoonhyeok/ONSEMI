@@ -287,7 +287,7 @@ def my_task():
 #   data['datetime'] = pd.to_datetime(data['datetime'])
 
   data = pd.read_csv('total.csv')
-  print(data.head()) 
+  print(data.tail()) 
   # data = data[['datetime', '양배추']]
   data['datetime'] = pd.to_datetime(data['datetime'])
  
@@ -339,26 +339,26 @@ def my_task():
   results_shop = pd.DataFrame(results, columns=["작물명", "시작 가격", "종료 가격", "상승 비율"])
   results_shop.to_csv('result_shop.csv',index = False, encoding = 'UTF-8')
 
-  # 상승 상위5개
-  results_top = sorted(results, key=lambda x: x[3], reverse=True)[:5]
-  results_bottom = sorted(results, key=lambda x: x[3], reverse=True)[-5:]
+#   # 상승 상위5개
+#   results_top = sorted(results, key=lambda x: x[3], reverse=True)[:5]
+#   results_bottom = sorted(results, key=lambda x: x[3], reverse=True)[-5:]
 
-  results_top = pd.DataFrame(results_top, columns=["작물명", "시작 가격", "종료 가격", "상승 비율"])
-  results_bottom = pd.DataFrame(results_bottom, columns=["작물명", "시작 가격", "종료 가격", "상승 비율"])
+#   results_top = pd.DataFrame(results_top, columns=["작물명", "시작 가격", "종료 가격", "상승 비율"])
+#   results_bottom = pd.DataFrame(results_bottom, columns=["작물명", "시작 가격", "종료 가격", "상승 비율"])
 
-#   results_df = pd.concat([results_top, results_bottom], axis=0)
-#   results_df.to_csv('result_total.csv', index=False, encoding='UTF-8')
-#   results_df[["작물명", "상승 비율"]].to_csv('result.csv', index=False, encoding='UTF-8')
+# #   results_df = pd.concat([results_top, results_bottom], axis=0)
+# #   results_df.to_csv('result_total.csv', index=False, encoding='UTF-8')
+# #   results_df[["작물명", "상승 비율"]].to_csv('result.csv', index=False, encoding='UTF-8')
  
  
-#   results_top = pd.DataFrame(results_top)
-#   results_bottom = pd.DataFrame(results_bottom)
+# #   results_top = pd.DataFrame(results_top)
+# #   results_bottom = pd.DataFrame(results_bottom)
  
-  results_df = pd.concat([results_top,results_bottom], axis = 0)
-  print(results_df.tail()) 
-  results_df.to_csv('result_total.csv',index = False, encoding = 'UTF-8')
-#   results_df[[0,3]].to_csv('result.csv',index = False, encoding = 'UTF-8')
-  results_df.iloc[:, [0, 3]].to_csv('result.csv', index=False, encoding='UTF-8')
+#   results_df = pd.concat([results_top,results_bottom], axis = 0)
+#   print(results_df.tail()) 
+#   results_df.to_csv('result_total.csv',index = False, encoding = 'UTF-8')
+# #   results_df[[0,3]].to_csv('result.csv',index = False, encoding = 'UTF-8')
+#   results_df.iloc[:, [0, 3]].to_csv('result.csv', index=False, encoding='UTF-8')
 #   ans = pd.read_csv('total.csv')
 #   print(ans.head())
 

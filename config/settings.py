@@ -64,6 +64,7 @@ INSTALLED_APPS = [
     'allauth.socialaccount',
     
     'allauth.socialaccount.providers.google',
+    'django.contrib.humanize', # 금액 1,000 처럼 보이게 하려고 설정
 ]
 
 MIDDLEWARE = [

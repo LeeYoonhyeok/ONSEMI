@@ -19,9 +19,9 @@ def product_list(request, category_slug=None):
     price_predict.sort_values(by='상승 비율', ascending=True)
     
     # 예측 결과 데이터 전처리
-    price_predict['상승 비율'] = round(price_predict['상승 비율'] * 100, 2) # 가격 변동률 100분위로 변경
-    price_predict['종료 가격'] = price_predict['종료 가격'].astype(int)     # 변동된 가격 int로 변경
-    price_predict['시작 가격'] = price_predict['시작 가격'].astype(int)     # 변동된 가격 int로 변경
+    price_predict['상승 비율'] = round(price_predict['상승 비율'] * 100, 2)  # 가격 변동률 100분위로 변경
+    price_predict['종료 가격'] = price_predict['종료 가격'].apply(lambda x: round(x, -1)).astype(int)  # 10의 자리에서 반올림
+    price_predict['시작 가격'] = price_predict['시작 가격'].apply(lambda x: round(x, -1)).astype(int)  # 10의 자리에서 반올림
     
     # 제품 가격 업데이트
     for _, row in price_predict.iterrows():
@@ -34,11 +34,19 @@ def product_list(request, category_slug=None):
         except Exception as e:
             print(f'Error updating product {row["작물명"]}: {e}')
 
-    # 가격 상승 상품 3개 저장
-    increases = price_predict.iloc[: 3].values.tolist()
+    # # 가격 상승 상품 3개 저장
+    # increases = price_predict.iloc[: 3].values.tolist()
     
+    # # 가격 하락 상품 3개 저장
+    # decreases = price_predict.iloc[-1: -4: -1].values.tolist()
+
+    # 가격 상승 상품 3개 저장
+    increases = price_predict[price_predict['상승 비율'] > 0].nlargest(3, '상승 비율')
+    increases = increases.apply(lambda x: [x['작물명'], f"{x['시작 가격']:,}", f"{x['종료 가격']:,}"], axis=1).values.tolist()
+
     # 가격 하락 상품 3개 저장
-    decreases = price_predict.iloc[-1: -4: -1].values.tolist()
+    decreases = price_predict[price_predict['상승 비율'] < 0].nsmallest(3, '상승 비율')
+    decreases = decreases.apply(lambda x: [x['작물명'], f"{x['시작 가격']:,}", f"{x['종료 가격']:,}"], axis=1).values.tolist()
     
     category = None
     categories = Category.objects.all()
