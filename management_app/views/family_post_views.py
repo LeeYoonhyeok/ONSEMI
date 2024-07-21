@@ -138,8 +138,10 @@ def update_care(request, care_id):
 @family_required
 def delete_care(request, care_id):
     care = get_object_or_404(Care, id=care_id)
-    care.delete()
-    return redirect('/monitoring/family_monitor/') 
+    senior_id = request.POST.get("senior")
+    senior_id = senior_id or care.seniors.first().id
+    care.delete()    
+    return redirect(f"/monitoring/family_monitor/?selected_senior_id={senior_id}")
 
 
 @login_required

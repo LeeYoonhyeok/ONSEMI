@@ -105,7 +105,7 @@ def preprocess_audio(audio_file):
 
     # 운영체제에 따른 ffmpeg, ffprobe 경로 설정
     # 우분투는 sudo apt install ffmpeg 명령어를 통해 ffmpeg 설치하면 ffprobe도 함께 설치
-    
+
     if platform.system() == 'Windows':
         ''' ffmpeg과 ffprobe를 담은 audio_preprocess 폴더는 management_app에 위치'''
         report_post_views_dir = os.path.dirname(os.path.abspath(__file__))
@@ -114,15 +114,15 @@ def preprocess_audio(audio_file):
         ffmpeg_path = os.path.join(management_app_dir, 'audio_preprocess', 'bin', 'ffmpeg.exe')
         ffprobe_path = os.path.join(management_app_dir, 'audio_preprocess', 'bin', 'ffprobe.exe')
         os.environ["PATH"] += os.pathsep + os.path.join(management_app_dir, 'audio_preprocess', 'bin')
-        
-        AudioSegment.converter = ffmpeg_path
-        AudioSegment.ffprobe = ffprobe_path
-    
-    # else:
-    #     '''우분투에서 sudo apt ffmpeg하면 된다고 함'''
-    #     ffmpeg_path = 'ffmpeg'
-    #     ffprobe_path = 'ffprobe'
+            
+    else:
+        '''우분투에서 sudo apt ffmpeg하면 된다고 함'''
+        ffmpeg_path = 'ffmpeg'
+        ffprobe_path = 'ffprobe'
 
+    AudioSegment.converter = ffmpeg_path
+    AudioSegment.ffprobe = ffprobe_path
+    
     # 오디오 파일을 wav로 변환
     audio = AudioSegment.from_file(audio_file)
     wav_io = BytesIO()
