@@ -14,17 +14,35 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard</title>
     <style>
-        /* 기존 CSS 코드 */
+
+        body {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            width: 100%;
+            
+            overflow: hidden;
+            overflow-y:auto;
+           
+        }
+
+        #shop{
+            display:none;
+        }
+
+        #home{
+            display:none;
+        }
         body {
             background-color: #f8f9fa;
             color: #333;
             margin: 0;
             padding: 0;
-        }
+        } 
 
         .content-container {
             display: flex;
-            height: calc(100vh - 60px);
+            height: 100vh;
             overflow: hidden;
         }
         .sidebar {
@@ -37,8 +55,11 @@
             flex-direction: column;
             align-items: center;
             transition: width 0.3s;
-            overflow: hidden;
+            min-height: 100vh;
             position: relative;
+            
+           
+            overflow-y: auto; /* Allow vertical scrolling when content exceeds height */
         }
         .sidebar.expanded {
             width: 250px;
@@ -146,6 +167,8 @@
             flex-direction: column;
             overflow: auto;
             background-color: #f8f9fa;
+            height:100vh;
+
         }
         .card {
             background: white;
@@ -326,6 +349,8 @@
             margin-top: 20px;
             text-align: center;
             width: 100%;
+            
+           
         }
         .dropbtn {
             background-color: #156741;
@@ -348,6 +373,7 @@
             transform: translateX(0);
             border: 1px solid #ccc;
             box-sizing: border-box;
+            overflow: scroll;
         }
         .dropdown-content a {
             color: black;
