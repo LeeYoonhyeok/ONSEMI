@@ -52,6 +52,7 @@ def family_monitor(request):
    
     reports = Report.objects.filter(care__in=cares)
     sorted_reports = reports.order_by('-created_at')  # created_at 등 원하는 필드로 정렬
+    last_report = sorted_reports.first()  # 가장 마지막 report 가져오기
     sorted_cares = cares.order_by('-datetime')
     
     latest_date = sorted_cares.aggregate(latest_date=Max('datetime__date'))['latest_date']
@@ -71,7 +72,7 @@ def family_monitor(request):
         "selected_senior": selected_senior,
         "reports" : sorted_reports,
         "recent_not_approved_care" : recent_not_approved_care,
-        
+        "last_report" : last_report,
     }
     
     return render(request, "monitoring_app/family_monitor.html", context)
