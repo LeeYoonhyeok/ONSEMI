@@ -1,9 +1,7 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from auth_app.utils import volunteer_required
-from management_app.models import Senior, Care, Report, ReportImage
-from django.http import JsonResponse
-from django.urls import reverse
+from management_app.models import Care, Report, ReportImage
 import numpy as np
 import librosa
 import matplotlib
@@ -11,13 +9,14 @@ matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 from PIL import Image
 from io import BytesIO
-from tensorflow.keras.models import Model
-from tensorflow.keras.models import load_model
-from django.core.files.storage import default_storage
 from pydub import AudioSegment
 from io import BytesIO
-import os
 from monitoring_app.signals import my_signal
+import onnxruntime as ort
+import os
+import platform
+import logging
+logger = logging.getLogger('django')
 
 # report 생성 기능
 @login_required
@@ -101,23 +100,35 @@ def update_report(request, report_id):
 
     return render(request, 'management_app/update_report.html', {'report': report, 'senior': senior})
 
-
-# 무슨 기능?
-@login_required
-def refresh_pending_reports(request):
-    pending_cares = Care.objects.filter(care_state='APPROVED').exclude(id__in=Report.objects.values('care_id'))
-    for care in pending_cares:
-        Report.objects.create(care=care, user=request.user, status='미등록')
-
-    return JsonResponse({'message': '미등록 보고서가 생성되었습니다.'})
-
 # 음성 파일 전처리 함수
-def preprocess_audio(audio_path):
+def preprocess_audio(audio_file):
+
+    # 운영체제에 따른 ffmpeg, ffprobe 경로 설정
+    # 우분투는 sudo apt install ffmpeg 명령어를 통해 ffmpeg 설치하면 ffprobe도 함께 설치
+
+    if platform.system() == 'Windows':
+        ''' ffmpeg과 ffprobe를 담은 audio_preprocess 폴더는 management_app에 위치'''
+        report_post_views_dir = os.path.dirname(os.path.abspath(__file__))
+        management_app_dir = os.path.dirname(report_post_views_dir)
+        
+        ffmpeg_path = os.path.join(management_app_dir, 'audio_preprocess', 'bin', 'ffmpeg.exe')
+        ffprobe_path = os.path.join(management_app_dir, 'audio_preprocess', 'bin', 'ffprobe.exe')
+        os.environ["PATH"] += os.pathsep + os.path.join(management_app_dir, 'audio_preprocess', 'bin')
+            
+    else:
+        '''우분투에서 sudo apt ffmpeg하면 된다고 함'''
+        ffmpeg_path = 'ffmpeg'
+        ffprobe_path = 'ffprobe'
+
+    AudioSegment.converter = ffmpeg_path
+    AudioSegment.ffprobe = ffprobe_path
+    
     # 오디오 파일을 wav로 변환
-    audio = AudioSegment.from_file(audio_path)
-    wav_path = os.path.splitext(audio_path)[0] + '.wav'
-    audio.export(wav_path, format='wav')
-    return wav_path
+    audio = AudioSegment.from_file(audio_file)
+    wav_io = BytesIO()
+    audio.export(wav_io, format='wav')
+    wav_io.seek(0)
+    return wav_io
 
 # 오디오 세그먼트를 전처리하여 이미지로 변환하는 함수
 def preprocess_segment(audio_segment, sample_rate):
@@ -131,28 +142,38 @@ def preprocess_segment(audio_segment, sample_rate):
     librosa.display.specshow(S_DB, sr=sample_rate, x_axis='time', y_axis='mel', ax=ax)
     plt.axis('off')
     plt.margins(0)
-    file_name = 'temp_image.png'
-    plt.savefig(file_name, bbox_inches='tight', pad_inches=0)
+
+    # 이미지를 메모리에 저장
+    img_buffer = BytesIO()
+    plt.savefig(img_buffer, format='png', bbox_inches='tight', pad_inches=0)
     plt.clf()
     plt.close()
+    img_buffer.seek(0)
 
     # 이미지를 로드하고 전처리
-    image = Image.open(file_name).convert('RGB')
+    image = Image.open(img_buffer).convert('RGB')
     image = image.resize((224, 224))
     image_array = np.array(image).astype(np.float32) / 255.0  # 정규화
     image_array = np.expand_dims(image_array, axis=0)  # 배치 차원 추가
 
+    # 이미지 버퍼 닫기
+    img_buffer.close()
+
     return image_array
 
 # 오디오 세그먼트를 예측하는 함수
-def predict_audio_segments(audio_path, model_path):
+def predict_audio_segments(audio_file, model_path):
     # 오디오 파일을 로드 및 변환
-    wav_path = preprocess_audio(audio_path)
-    audio_data, sample_rate = librosa.load(wav_path, sr=48000)
+    wav_io = preprocess_audio(audio_file)
+    audio_data, sample_rate = librosa.load(wav_io, sr=48000)
     
-    # 모델 로드
-    model = load_model(model_path)
-    
+    # 음성 파일 버퍼 닫기
+    wav_io.close()
+
+   # ONNX 모델 로드
+    session = ort.InferenceSession(model_path)
+    input_name = session.get_inputs()[0].name
+
     segment_duration = sample_rate  # 1초에 해당하는 샘플 수
     results = []
 
@@ -163,8 +184,8 @@ def predict_audio_segments(audio_path, model_path):
         
         # 오디오 세그먼트 전처리 및 예측
         image_array = preprocess_segment(audio_segment, sample_rate)
-        prediction = model.predict(image_array)
-        results.append(prediction[0][0])
+        prediction = session.run(None, {input_name: image_array})
+        results.append(prediction[0][0][0])
 
     return results
 
@@ -179,17 +200,16 @@ def analyze_results(predictions):
 def handle_audio_file_upload(request, report):
     if 'audio_file' in request.FILES:
         audio_file = request.FILES['audio_file']
-        audio_path = default_storage.save('tmp/' + audio_file.name, audio_file)
-        audio_path = default_storage.path(audio_path)
 
         # 오디오 파일을 처리하고 예측 수행
-        model_path = "management_app/savemodel_101_all_Dense_32.h5" # 가중치 파일 경로
-        predictions = predict_audio_segments(audio_path, model_path)
+        ''' 가중치 파일은 management_app에 위치'''
+        report_post_views_dir = os.path.dirname(os.path.abspath(__file__))
+        management_app_dir = os.path.dirname(report_post_views_dir)
+
+        model_path = os.path.join(management_app_dir, 'weight_model.onnx') # 가중치 파일 경로
+        predictions = predict_audio_segments(audio_file, model_path)
         result = analyze_results(predictions)
 
         # 예측 결과 저장
         report.audio_test_result = result
         report.save()
-
-        # 임시 파일 삭제
-        os.remove(audio_path)
