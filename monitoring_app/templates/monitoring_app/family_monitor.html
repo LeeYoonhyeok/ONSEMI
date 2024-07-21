@@ -468,6 +468,7 @@
             position: relative;
             height: auto; /* 높이를 자동으로 조정 */
             max-height: 80vh; /* 최대 높이를 설정 */
+            overflow-y: auto; /* 내용이 넘치지 않도록 설정 */
         }
 
         .modal-content2 {
@@ -509,9 +510,20 @@
             overflow-y: auto; /* 컨텐츠가 많으면 스크롤바 생성 */
         }
         .text {
-            margin-bottom: 15px;
-            display: flex;
-            align-items: center;
+            margin-bottom: 10px;
+            word-wrap: break-word; /* 긴 단어를 자동으로 줄바꿈 */
+            white-space: pre-wrap; /* 공백과 줄바꿈을 그대로 유지 */
+        }
+        .text strong {
+            margin-right: 10px; /* 간격 조정 */
+            vertical-align: top; /* 상단에 맞춤 */
+        }
+        #modal-title, #modal-care-content {
+            word-wrap: break-word; /* 긴 단어가 박스를 넘치지 않도록 */
+            white-space: pre-wrap; /* 공백과 줄바꿈을 그대로 유지 */
+            width: 90%; /* 전체 너비 사용 */
+            overflow-wrap: break-word; /* 긴 단어를 줄바꿈 */
+            white-space: normal; /* 기본 줄바꿈 동작 */
         }
         .circle {
             width: 5px;
@@ -832,7 +844,7 @@
                 <div class="text"><span class="circle"></span><strong>케어 종류 :</strong> <span id="modal-care-type"></span></div>
                 <div class="text"><span class="circle"></span><strong>등록 시간 :</strong> <span id="modal-request-date"></span></div>
                 <div class="text"><span class="circle"></span><strong>제목 :</strong> <span id="modal-title"></span></div>
-                <div class="text"><span class="circle"></span><strong>내용 :</strong> <span id="modal-content"></span></div>
+                <div class="text"><span class="circle"></span><strong>내용 :</strong> <span id="modal-care-content"></span></div>
                 <div class="text"><span class="circle"></span><strong>등록인 :</strong> <span id="modal-username"></span></div>
                 <div class="text"><span class="circle"></span><strong>해당 노인 :</strong> <span id="modal-seniors"></span></div>
                 <div class="text"><span class="circle"></span><strong>상태 :</strong> <span id="modal-care-state"></span></div>
@@ -889,7 +901,7 @@
             document.getElementById('modal-care-type').textContent = careType;
             document.getElementById('modal-request-date').textContent = requestDate;
             document.getElementById('modal-title').textContent = title;
-            document.getElementById('modal-content').textContent = content;
+            document.getElementById('modal-care-content').textContent = content;
             document.getElementById('modal-username').textContent = username;
             document.getElementById('modal-seniors').textContent = seniors;
             document.getElementById('modal-care-state').textContent = careState;
@@ -908,6 +920,7 @@
                 document.getElementById('modal-content').style.height = 'auto'; // 모달 크기 조정
             } else {
                 document.getElementById('edit-button').style.display = 'none';
+                document.getElementById('delete-button').style.display = 'none';
                 document.getElementById('modal-content').style.height = '80%'; // 기본 모달 크기
             }
         }

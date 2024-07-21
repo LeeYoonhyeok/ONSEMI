@@ -103,8 +103,8 @@ def update_care(request, care_id):
     care = get_object_or_404(Care, pk=care_id)
 
     if request.method == "GET":
-        seniors = Senior.objects.filter(user_id=care.user_id)
-        context = {"care": care, "seniors": seniors}
+        senior = care.seniors.first()
+        context = {"care": care, "senior": senior}
         return render(request, "management_app/update_one_care.html", context)
 
     elif request.method == "POST":
