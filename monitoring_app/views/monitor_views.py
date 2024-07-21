@@ -56,6 +56,8 @@ def family_monitor(request):
     
     latest_date = sorted_cares.aggregate(latest_date=Max('datetime__date'))['latest_date']
     sorted_cares_latest = sorted_cares.filter(datetime__date=latest_date)
+    recent_not_approved_care = Care.objects.filter(seniors=selected_senior, care_state='NOT_APPROVED').order_by('-datetime').first()
+
     
     context = {
         "cares" : cares,
@@ -68,6 +70,8 @@ def family_monitor(request):
         "seniors": seniors,
         "selected_senior": selected_senior,
         "reports" : sorted_reports,
+        "recent_not_approved_care" : recent_not_approved_care,
+        
     }
     
     return render(request, "monitoring_app/family_monitor.html", context)

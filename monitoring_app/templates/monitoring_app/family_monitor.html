@@ -14,6 +14,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard</title>
     <style>
+        /* 기존 CSS 코드 */
         body {
             background-color: #f8f9fa;
             color: #333;
@@ -440,6 +441,8 @@
             max-width: 800px;
             border-radius: 10px;
             position: relative;
+            height: auto; /* 높이를 자동으로 조정 */
+            max-height: 80vh; /* 최대 높이를 설정 */
         }
 
         .modal-content2 {
@@ -477,6 +480,8 @@
             border-radius: 8px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
             display: block;
+            flex-grow: 1; /* 컨텐츠가 모달의 대부분을 차지하게 함 */
+            overflow-y: auto; /* 컨텐츠가 많으면 스크롤바 생성 */
         }
         .text {
             margin-bottom: 15px;
@@ -530,8 +535,32 @@
     
 
     .button-container {
-        margin-top: auto; /* 위쪽 여백을 자동으로 최대로 설정 */
-        align-self: flex-end; /* 오른쪽 아래 정렬 */
+        display: flex;
+        justify-content: flex-end; /* 오른쪽 끝에 배치 */
+        margin-top: 20px; /* 위쪽에 여백 추가 */
+    }
+
+    .modal button {        
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        cursor: pointer;
+        border-radius: 5px;
+        font-size: 16px;
+        float:left;
+        margin-left: 10px; /* 버튼 간격 추가 */
+    }
+    .edit-button {
+        background-color: #156741;
+    }
+    .edit-button:hover{
+        background-color: #104e31;
+    }
+    .delete-button {
+        background-color: #d94a3a;
+    }
+    .delete-button:hover {
+        background-color: #a2312b;
     }
     </style>
 </head>
@@ -607,10 +636,6 @@
                                 {% if forloop.first %}
                                 <div>
                                     {% if report.images.all %}
-                                        {% comment %} <div>{% for senior in report.care.seniors.all %}
-                                            {{ senior.name }}{% if not forloop.last %}, {% endif %}님
-                                        {% endfor %}</div> {% endcomment %}
-                                        
                                         <div>
                                         {% for image in report.images.all %}
                                             <img src="{{ image.image.url }}" alt="Report Image" class="img-thumbnail" style="max-width: 200px; max-height: 200px;" onclick="openPhotoModal('{{ image.image.url }}')">
@@ -633,10 +658,6 @@
                             {% for report in reports %}
                                 {% if forloop.first %}
                                 <div>
-                                    {% comment %} <div>{% for senior in report.care.seniors.all %}
-                                        {{ senior.name }}{% if not forloop.last %}, {% endif %}님
-                                    {% endfor %}</div> {% endcomment %}
-                                    
                                     <div>
                                         {% if report.no_issue %}
                                             특이사항 없음
@@ -681,8 +702,7 @@
                     <div class="card-header">
                         <h3>주문 및 돌봄 내역</h3>
                         <div style="margin-top: 10px;">                            
-                            <a href='/management/add/care/?selected_senior_id={{ selected_senior.id }}' class="add-button">케어 요청하기</a>
-                            {% comment %} <button class="plus-button" onclick="location.href='/monitoring/family_monitor/report/list/?selected_senior_id={{ selected_senior_id }}';">+<span class="tooltip">보고서 목록</span></button> {% endcomment %}
+                            <button class="add-button" onclick="checkRecentCareStatus()">케어 등록 +</button>                        
                             <button class="plus-button" onclick="location.href='{% url 'monitoring_app:generate' %}';">+<span class="tooltip">케어 요청 목록</span></button>
                         </div>
                     </div>
@@ -702,7 +722,7 @@
                             <tbody>
                                 {% if selected_senior_id %}
                                     {% for care in sorted_cares_latest %}
-                                        <tr class="clickable-row" onclick="openModal('{{ care.title }}', '{{ care.care_type }}', '{{ care.datetime|date:"Y년 n월 j일 A g:i" }}', '{{ care.visit_date }}', '{{ care.visit_time }}', '{{ care.get_care_state_display }}', '{{ care.content }}', '{{ care.seniors.all|join:", " }}', '{{ care.user_id.username }}')">
+                                        <tr class="clickable-row" onclick="openModal('{{ care.title }}', '{{ care.care_type }}', '{{ care.datetime|date:"Y년 n월 j일 A g:i" }}', '{{ care.visit_date }}', '{{ care.visit_time }}', '{{ care.get_care_state_display }}', '{{ care.content }}', '{{ care.seniors.all|join:', ' }}', '{{ care.user_id.username }}', '{{ care.id }}')">
                                             <td class="title">{{ care.title }}</td>
                                             <td>{{ care.care_type }}</td>
                                             <td>{{ care.datetime|date:"Y년 n월 j일 A g:i" }}</td>
@@ -744,6 +764,11 @@
                 <div class="text"><span class="circle"></span><strong>등록인 :</strong> <span id="modal-username"></span></div>
                 <div class="text"><span class="circle"></span><strong>해당 노인 :</strong> <span id="modal-seniors"></span></div>
                 <div class="text"><span class="circle"></span><strong>상태 :</strong> <span id="modal-care-state"></span></div>
+                <button id="edit-button" class="edit-button" style="display: none;">수정하기</button>
+                <form id="delete-form" method="post" onsubmit="return confirm('정말로 삭제하시겠습니까?');">
+                    {% csrf_token %}
+                    <button id="delete-button" class="delete-button" style="display: none;">삭제하기</button>
+                </form>           
             </div>
         </div>
     </div>
@@ -760,7 +785,34 @@
     </div>
 
     <script>
-        function openModal(title, careType, requestDate, visitDate, visitTime, careState, content, seniors, username) {
+        // 케어 요청 클릭했을 때
+        function checkRecentCareStatus() {
+            var recentCareState = "{{ recent_not_approved_care.care_state|default:'' }}";
+            var recentCareId = "{{ recent_not_approved_care.id|default:'' }}";
+            var seniorName = "{{ selected_senior.name }}";
+            
+            if (recentCareState === 'NOT_APPROVED') {                
+                if (confirm(seniorName + '님은 승인 되지 않은 요청 건이 존재합니다. \n해당 정보를 수정 및 확인해보시겠습니까? \n※ 승인 되기 전까지 케어 요청을 무한히 보내는 것을 방지')) {
+                    openModal(
+                        "{{ recent_not_approved_care.title }}",
+                        "{{ recent_not_approved_care.care_type }}",
+                        "{{ recent_not_approved_care.datetime|date:'Y년 n월 j일 A g:i' }}",
+                        "{{ recent_not_approved_care.visit_date }}",
+                        "{{ recent_not_approved_care.visit_time }}",
+                        "{{ recent_not_approved_care.get_care_state_display }}",
+                        "{{ recent_not_approved_care.content }}",
+                        "{{ recent_not_approved_care.seniors.all|join:', ' }}",
+                        "{{ recent_not_approved_care.user_id.username }}",
+                        recentCareId
+                    );
+                }
+            } else {
+                window.location.href = '/management/add/care/?selected_senior_id={{ selected_senior.id }}';
+            }
+        }
+
+        // 모달 정보
+        function openModal(title, careType, requestDate, visitDate, visitTime, careState, content, seniors, username, careId) {
             document.getElementById('modal').style.display = 'block';
             document.getElementById('modal-care-type').textContent = careType;
             document.getElementById('modal-request-date').textContent = requestDate;
@@ -769,8 +821,25 @@
             document.getElementById('modal-username').textContent = username;
             document.getElementById('modal-seniors').textContent = seniors;
             document.getElementById('modal-care-state').textContent = careState;
-        }
+    
+            const deleteForm = document.getElementById('delete-form');
+            deleteForm.action = `/management/care/delete/${careId}/`;
 
+            if (careState === '요청 승인 대기') {
+                var editButton = document.getElementById('edit-button');
+                var deleteButton = document.getElementById('delete-button');
+                editButton.style.display = 'block';
+                deleteButton.style.display = 'block';
+                editButton.onclick = function() {
+                    window.location.href = '/management/care/update/' + careId + '/';
+                };
+                document.getElementById('modal-content').style.height = 'auto'; // 모달 크기 조정
+            } else {
+                document.getElementById('edit-button').style.display = 'none';
+                document.getElementById('modal-content').style.height = '80%'; // 기본 모달 크기
+            }
+        }
+    
         function closeModal() {
             document.getElementById('modal').style.display = 'none';
         }

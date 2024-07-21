@@ -130,8 +130,9 @@ def update_care(request, care_id):
         else:
             care.parkinson_diagnosis = False
 
+        senior_id = senior_id or care.seniors.first().id
         care.save()
-        return redirect(f"/management/care/detail/{care_id}/")
+        return redirect(f"/monitoring/family_monitor/?selected_senior_id={senior_id}")
 
 @login_required
 @family_required
