@@ -127,7 +127,7 @@
         padding: 20px;
         border: 1px solid #888;
         width: 80%;
-        max-width: 600px;
+        max-width: 800px;
         box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
         animation-name: animatetop;
         animation-duration: 1s;
@@ -139,6 +139,22 @@
         transform: translateY(-50%);
     }
 
+    .modal-container {
+        background-color: #fff;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        display: block;
+        flex-grow: 1;
+        overflow-y: auto;
+    }
+    .modal-container img {
+        width: 50%;
+        height: 50%;
+        border-radius: 5px;
+        border: 1px solid #ccc;
+        left: 0;
+    }
     @keyframes animatetop {
         from {opacity: 0}
         to {opacity: 1}
@@ -214,6 +230,7 @@
         margin: 10px auto;
         max-width: 100%;
         height: auto;
+        margin-left: 0;
     }
 </style>
 {% endblock %}
@@ -336,17 +353,18 @@
     <div id="reportModal" class="modal">
         <div class="modal-content">
             <span class="close">&times;</span>
-            <h1>리포트 상세</h1>            
-            <div class="text"><span class="circle"></span><strong>리포트 종류: </strong> <span id="reportType"></span></div>
-            <div class="text"><span class="circle"></span><strong>등록 시간: </strong> <span id="reportTime"></span></div>
-            <div class="text"><span class="circle"></span><strong>제목: </strong> <span id="reportTitle"></span></div>
-            <div class="text"><span class="circle"></span><strong>내용: </strong> <span id="reportContent"></span></div>
-            <div class="text"><span class="circle"></span><strong>특이사항: </strong> <span id="reportIssues"></span></div>
-            <div class="text"><span class="circle"></span><strong>업로드 이미지: </strong><br> <div id="reportImages"></div></div>
-            <div class="text" id="doctorOpinionDiv"><span class="circle"></span><strong>의사소견: </strong> <span id="reportDoctorOpinion"></span></div>
-            <div class="text" id="parkinsonDiv"><span class="circle"></span><strong>파킨슨병 진단 결과: </strong> <span id="reportParkinson"></span></div>
-            <div class="text"><span class="circle"></span><strong>전달사항: </strong> <span id="reportUserRequest"></span></div>
-            
+            <h1>리포트 상세</h1>
+            <div class="modal-container">
+                <div class="text"><span class="circle"></span><strong>리포트 종류: </strong> <span id="reportType"></span></div>
+                <div class="text"><span class="circle"></span><strong>등록 시간: </strong> <span id="reportTime"></span></div>
+                <div class="text"><span class="circle"></span><strong>제목: </strong> <span id="reportTitle"></span></div>
+                <div class="text"><span class="circle"></span><strong>내용: </strong> <span id="reportContent"></span></div>
+                <div class="text"><span class="circle"></span><strong>특이사항: </strong> <span id="reportIssues"></span></div>
+                <div class="text"><span class="circle"></span><strong>업로드 이미지: </strong><br> <div id="reportImages"></div></div>
+                <div class="text" id="doctorOpinionDiv"><span class="circle"></span><strong>의사소견: </strong> <span id="reportDoctorOpinion"></span></div>
+                <div class="text" id="parkinsonDiv"><span class="circle"></span><strong>파킨슨병 진단 결과: </strong> <span id="reportParkinson"></span></div>
+                <div class="text"><span class="circle"></span><strong>전달사항: </strong> <span id="reportUserRequest"></span></div>
+            </div>
         </div>
     </div>
 
