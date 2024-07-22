@@ -187,25 +187,30 @@
         margin-right: 10px;
     }
 
-    .text {
+    .modal-container p {
         margin-bottom : 10px;
     }
     /* Table styles */
     .table-report {
         width: 100%;
         border-collapse: collapse;
+        border-style: hidden; 
         box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         border-radius: 5px;
     }
 
     .table-report th, .table-report td {
+        padding: 8px 12px;
         border: 1px solid #ddd;
-        padding: 8px;
-        text-align: left;
+        text-align: center;
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
-        max-width: 150px; 
+        border-color: #b4b3b0;
+    }
+
+    .title-cell, .content-cell {
+        max-width: 150px;
     }
 
     .table-report th {        
@@ -231,6 +236,9 @@
         max-width: 100%;
         height: auto;
         margin-left: 0;
+    }
+    .modal-content h1 {
+        text-align: center;
     }
 </style>
 {% endblock %}
@@ -286,16 +294,18 @@
                         <th>내용</th>
                         <th>파킨슨 요청</th>
                         <th>주소</th>
-                        <th>신청날짜</th>
+                        <th>방문날짜</th>
                     </tr>
                 </thead>
                 <tbody>
                     {% for report_detail in reports_details %}
                     <tr class="clickable-row" 
                         data-care-type="{{ report_detail.report.care.care_type }}"
-                        data-datetime="{{ report_detail.report.created_at|date:"Y년 n월 j일 A g:i" }}"
+                        data-datetime="{{ report_detail.report.care.datetime|date:'Y년 n월 j일 A g:i' }}"
+                        data-visit_date="{{ report_detail.report.care.visit_date|date:'Y년 n월 j일' }} {{ report_detail.report.care.visit_time|date:'A g:i' }}"
                         data-title="{{ report_detail.report.care.title }}"
                         data-content="{{ report_detail.report.care.content }}"
+                        data-address= "{% for senior in report_detail.seniors.all %}{{ senior.address }} {{senior.detail_address}}{% if not forloop.last %}, {% endif %}{% endfor %}"
                         data-no-issue="{{ report_detail.report.no_issue }}"
                         data-eye="{{ report_detail.report.eye }}"
                         data-teeth="{{ report_detail.report.teeth }}"
@@ -314,15 +324,15 @@
                             {% endfor %}
                         </td>
                         <td>{{ report_detail.report.care.care_type }}</td>
-                        <td>{{ report_detail.report.care.title }}</td>
-                        <td>{{ report_detail.report.care.content }}</td>
+                        <td class="title-cell">{{ report_detail.report.care.title }}</td>
+                        <td class="content-cell">{{ report_detail.report.care.content }}</td>
                         <td>{% if report_detail.report.care.parkinson_diagnosis %} O {% else %}X {% endif %}</td>
                         <td>
                             {% for senior in report_detail.seniors %}
                                 {{ senior.address }} {{ senior.detail_address }}<br>
                             {% endfor %}
                         </td>
-                        <td>{{ report_detail.report.created_at|date:"Y년 n월 j일" }}</td>
+                        <td>{{ report_detail.report.care.visit_date|date:"Y년 n월 j일" }} {{ report_detail.report.care.visit_time|date:" A g:i" }}</td>
                     </tr>
                     {% endfor %}
                 </tbody>
@@ -355,15 +365,17 @@
             <span class="close">&times;</span>
             <h1>리포트 상세</h1>
             <div class="modal-container">
-                <div class="text"><span class="circle"></span><strong>리포트 종류: </strong> <span id="reportType"></span></div>
-                <div class="text"><span class="circle"></span><strong>등록 시간: </strong> <span id="reportTime"></span></div>
-                <div class="text"><span class="circle"></span><strong>제목: </strong> <span id="reportTitle"></span></div>
-                <div class="text"><span class="circle"></span><strong>내용: </strong> <span id="reportContent"></span></div>
-                <div class="text"><span class="circle"></span><strong>특이사항: </strong> <span id="reportIssues"></span></div>
-                <div class="text"><span class="circle"></span><strong>업로드 이미지: </strong><br> <div id="reportImages"></div></div>
-                <div class="text" id="doctorOpinionDiv"><span class="circle"></span><strong>의사소견: </strong> <span id="reportDoctorOpinion"></span></div>
-                <div class="text" id="parkinsonDiv"><span class="circle"></span><strong>파킨슨병 진단 결과: </strong> <span id="reportParkinson"></span></div>
-                <div class="text"><span class="circle"></span><strong>전달사항: </strong> <span id="reportUserRequest"></span></div>
+                <p><strong>ㆍ리포트 종류 : </strong> <span id="reportType"></span></p>
+                <p><strong>ㆍ케어 신청 날짜 : </strong> <span id="reportTime"></span></p>
+                <p><strong>ㆍ방문 날짜 : </strong> <span id="visitTime"></span></p>
+                <p><strong>ㆍ제목 : </strong> <span id="reportTitle"></span></p>
+                <p><strong>ㆍ내용 : </strong> <span id="reportContent"></span></p>
+                <p><strong>ㆍ주소 : </strong> <span id="reportAddress"></span></p>
+                <p><strong>ㆍ특이사항 : </strong> <span id="reportIssues"></span></p>
+                <p><strong>ㆍ업로드 이미지 : </strong> <span id="reportImages"></span></p>
+                <p><strong id = "doctorOpinionDiv">ㆍ의사소견 : </strong> <span id="reportDoctorOpinion"></span></p>
+                <p id = "parkinsonDiv"><strong>ㆍ파킨슨병 진단 결과 : </strong> <span id="reportParkinson"></span></p>
+                <p><strong>ㆍ전달사항 : </strong> <span id="reportUserRequest"></span></p>
             </div>
         </div>
     </div>
@@ -379,7 +391,7 @@
                     }
                 }
             });
-
+        
             var endDatePicker = flatpickr("#end_date", {
                 locale: "ko",
                 dateFormat: "Y-m-d",
@@ -400,8 +412,10 @@
                     var careType = this.dataset.careType;
                     document.getElementById('reportType').textContent = careType;
                     document.getElementById('reportTime').textContent = this.dataset.datetime;
+                    document.getElementById('visitTime').textContent = this.dataset.visit_date;
                     document.getElementById('reportTitle').textContent = this.dataset.title;
                     document.getElementById('reportContent').textContent = this.dataset.content;
+                    document.getElementById('reportAddress').textContent = this.dataset.address;
 
                     var issues = '';
                     if (this.dataset.noIssue === 'True') {
@@ -437,16 +451,26 @@
                     } else {
                         document.getElementById('parkinsonDiv').style.display = 'none';
                     }
-
+                                        
                     if (careType === '방문') {
                         document.getElementById('doctorOpinionDiv').style.display = 'none';
-                    } else {
-                        document.getElementById('doctorOpinionDiv').style.display = 'block';
-                        document.getElementById('reportDoctorOpinion').textContent = this.dataset.doctorOpinion;
+                        document.getElementById('reportDoctorOpinion').style.display = 'none';
+                    } else {  
+                        var doctorOpinion = this.dataset.doctorOpinion;     
+                        document.getElementById('doctorOpinionDiv').style.display = 'inline';                 
+                        if (doctorOpinion === 'None' || doctorOpinion == '') {
+                            document.getElementById('reportDoctorOpinion').textContent = '의사소견 없음';
+                        } else {
+                            document.getElementById('reportDoctorOpinion').textContent = doctorOpinion;
+                        }
                     }
 
                     var userRequest = this.dataset.userRequest;
-                    document.getElementById('reportUserRequest').textContent = userRequest ? userRequest : '없음';
+                    if (userRequest === 'None' || userRequest == '') {
+                        document.getElementById('reportUserRequest').textContent = '전달사항 없음';
+                    } else {
+                        document.getElementById('reportUserRequest').textContent = userRequest;
+                    }
 
                     // Show modal
                     modal.style.display = "block";
