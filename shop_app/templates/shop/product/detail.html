@@ -394,6 +394,7 @@
       width: 100%;
       height: 100px;
     }
+    
   }
 </style>
 
@@ -479,43 +480,43 @@
       <tbody>
         <!-- 여기서 comments 대신 page_obj를 사용합니다 -->
         {% for comment in page_obj %}
-        <tr class="comment-row" data-content="{{ comment.content }}" data-username="{{ comment.user.username }}" data-date="{{ comment.created_at|date:"Y-m-d" }}" data-rating="{{ comment.rating }}" data-comment-id="{{ comment.id }}">
-          <td>
-            <div class="left">
-              {% if comment.image %}
-              <img src="{{ comment.image.url }}" alt="Comment Image" style="width: 80px; height: 80px;">
-              {% endif %}
+        <div class="comment-row" data-content="{{ comment.content }}" data-username="{{ comment.user.username }}" data-date="{{ comment.created_at|date:"Y-m-d" }}" data-rating="{{ comment.rating }}" data-comment-id="{{ comment.id }}">
+          <div class="left">
+            {% if comment.image %}
+            <img src="{{ comment.image.url }}" alt="Comment Image" style="width: 80px; height: 80px;">
+            {% endif %}
+          </div>
+          <div class="right">
+            <div class="comment-content">
+              <p>{{ comment.content }}</p>
             </div>
-            <br>
-            <div class="right">
-              <span class="comment-content">{{ comment.content|truncatechars:20 }}</span>
-              <br>
-              <span class="name-star">
+            <div class="name-star">
+              <span>
                 {{ comment.user.username|slice:":1" }}{% with username_length=comment.user.username|length %}{{ '*'|multiply:username_length }}{% endwith %}
-                {% for i in "12345" %}
-                  {% if i <= comment.rating|stringformat:"i" %}
-                  <svg class="custom-star" fill="gold" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16px" height="16px">
-                    <path d="M0 0h24v24H0z" fill="none"/>
-                    <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/>
-                  </svg>
-                  {% else %}
-                  <svg class="custom-star" fill="gray" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16px" height="16px">
-                    <path d="M0 0h24v24H0z" fill="none"/>
-                    <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/>
-                  </svg>
-                  {% endif %}
-                {% endfor %}
               </span>
+              {% for i in "12345" %}
+                {% if i <= comment.rating|stringformat:"i" %}
+                <svg class="custom-star" fill="gold" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16px" height="16px">
+                  <path d="M0 0h24v24H0z" fill="none"/>
+                  <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/>
+                </svg>
+                {% else %}
+                <svg class="custom-star" fill="gray" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16px" height="16px">
+                  <path d="M0 0h24v24H0z" fill="none"/>
+                  <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/>
+                </svg>
+                {% endif %}
+              {% endfor %}
             </div>
-            <br>
             <div class="date">
-              {{ comment.created_at|date:"Y-m-d" }}
+              <span>{{ comment.created_at|date:"Y-m-d" }}</span>
             </div>
-          </td>
-        </tr>
+          </div>
+        </div>
         {% endfor %}
       </tbody>
-    </table>
+    </div>
+    
     
     <div class="pagination">
       <span class="step-links">
