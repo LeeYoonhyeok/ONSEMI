@@ -254,7 +254,7 @@
                 let newForm = document.createElement('div');
                 newForm.classList.add('image-upload');
                 newForm.innerHTML = `
-                    <input type="file" name="images" style="display: none;">
+                    <input type="file" name="images" accept="image/*" style="display: none;">
                     <img src="" alt="이미지 미리보기" class="image-preview" style="display: none;">
                 `;
                 imageUploadContainer.insertBefore(newForm, addImageButton);
@@ -292,7 +292,8 @@
             });
 
             document.querySelector('form').addEventListener('submit', function(event) {
-                const imageInputs = document.querySelectorAll('input[type="file"]');
+                const imageInputs = document.querySelectorAll('input[type="file"][name="images"]');
+                const audioInput = document.querySelector('input[type="file"][name="audio_file"]');
                 let hasImage = false;
 
                 imageInputs.forEach(input => {
@@ -304,7 +305,16 @@
                 if (!hasImage) {
                     event.preventDefault();
                     alert('사진은 필수입니다');
+                    return;
                 }
+
+                {% if care.parkinson_diagnosis %}
+                    if (!audioInput || audioInput.files.length === 0) {
+                        event.preventDefault();
+                        alert('파킨슨 진단 요청 건입니다. 파킨슨 진단 요청을 위해 음성 파일을 업로드 해주세요.');
+                        return;
+                    }
+                {% endif %}
             });
         });
     </script>
@@ -350,7 +360,7 @@
 
             {%if care.parkinson_diagnosis %}
                 <br><label>음성 파일 업로드 :</label>
-                <input type="file" name="audio_file">
+                <input type="file" name="audio_file" accept="audio/*">
             {% endif %}
 
             {%if care.care_type == '병원'%}

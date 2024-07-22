@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Manage Report</title>
+    <title>보고서 수정</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -203,33 +203,37 @@
             resize: none;
         }
 
+        .dimmed {
+            color: #ccc;
+        }
+
         .disabled {
             color: #ccc;
         }
-        
+
     </style>
     <script>
         document.addEventListener('DOMContentLoaded', function () {
             const noIssueCheckbox = document.querySelector('input[name="no_issue"]');
             const otherCheckboxes = document.querySelectorAll('input[name="eye"], input[name="teeth"], input[name="skin"], input[name="back"], input[name="other"]');
-            const otherCheckboxLabels = document.querySelectorAll('input[name="eye"] + label, input[name="teeth"] + label, input[name="skin"] + label, input[name="back"] + label, input[name="other"] + label');
-            const noIssueLabel = document.querySelector('input[name="no_issue"] + label');
+            const noIssueLabel = document.querySelector('label[for="no_issue"]');
+            const otherLabels = document.querySelectorAll('label[for="eye"], label[for="teeth"], label[for="skin"], label[for="back"], label[for="other-checkbox"]');
 
             function toggleCheckboxes() {
                 if (noIssueCheckbox.checked) {
                     otherCheckboxes.forEach(checkbox => checkbox.disabled = true);
-                    otherCheckboxLabels.forEach(label => label.classList.add('disabled'));
+                    otherLabels.forEach(label => label.classList.add('dimmed'));
                 } else {
                     otherCheckboxes.forEach(checkbox => checkbox.disabled = false);
-                    otherCheckboxLabels.forEach(label => label.classList.remove('disabled'));
+                    otherLabels.forEach(label => label.classList.remove('dimmed'));
                 }
 
                 if (Array.from(otherCheckboxes).some(checkbox => checkbox.checked)) {
                     noIssueCheckbox.disabled = true;
-                    noIssueLabel.classList.add('disabled');
+                    noIssueLabel.classList.add('dimmed');
                 } else {
                     noIssueCheckbox.disabled = false;
-                    noIssueLabel.classList.remove('disabled');
+                    noIssueLabel.classList.remove('dimmed');
                 }
             }
 
@@ -255,7 +259,7 @@
                 let newForm = document.createElement('div');
                 newForm.classList.add('image-upload');
                 newForm.innerHTML = `
-                    <input type="file" name="images" style="display: none;">
+                    <input type="file" name="images" accept="image/*" style="display: none;">
                     <img src="${existingImageUrl || ''}" alt="이미지 미리보기" class="image-preview" style="display: ${existingImageUrl ? 'block' : 'none'};">
                     <button type="button" class="remove-image" style="display: ${existingImageUrl ? 'flex' : 'none'};" data-image-id="${imageId || ''}">&times;</button>
                 `;
@@ -319,6 +323,14 @@
                     event.preventDefault();
                     alert('이미지는 필수입니다');
                 }
+
+                {% if report.care.parkinson_diagnosis %}
+                    const audioInput = document.querySelector('input[name="audio_file"]');
+                    if (!audioInput || audioInput.files.length === 0) {
+                        event.preventDefault();
+                        alert('파킨슨 진단 요청 건입니다. 파킨슨 진단 요청을 위해 음성 파일을 업로드 해주세요.');
+                    }
+                {% endif %}
             });
         });
     </script>
@@ -329,42 +341,42 @@
         <hr style="margin: 30px 0px;">
         <form method="post" enctype="multipart/form-data">
             {% csrf_token %}
-
-            <h3>Status</h3>
-            <div>
-                <label>{{ report.status }}</label>
-            </div>
-            <br>
             <label>이상 부위 :</label>
+
             <div class="checkbox-group">
-                <input type="checkbox" name="no_issue" id="no_issue" {% if report.no_issue %}checked{% endif %}>
-                <label for="no_issue">특이사항 없음</label> 
+                <input type="checkbox" id="no_issue" name="no_issue" {% if report.no_issue %}checked{% endif %}>
+                <label for="no_issue">특이사항 없음</label>
                 <span class="bbar">|</span>
-                <input type="checkbox" name="eye" id="eye" {% if report.eye %}checked{% endif %}>
+
+                <input type="checkbox" id="eye" name="eye" {% if report.eye %}checked{% endif %}>
                 <label for="eye">눈</label>
                 <span class="bbar">|</span>
-                <input type="checkbox" name="teeth" id="teeth" {% if report.teeth %}checked{% endif %}>
+
+                <input type="checkbox" id="teeth" name="teeth" {% if report.teeth %}checked{% endif %}>
                 <label for="teeth">치아</label>
                 <span class="bbar">|</span>
-                <input type="checkbox" name="skin" id="skin" {% if report.skin %}checked{% endif %}>
+
+                <input type="checkbox" id="skin" name="skin" {% if report.skin %}checked{% endif %}>
                 <label for="skin">피부</label>
                 <span class="bbar">|</span>
-                <input type="checkbox" name="back" id="back" {% if report.back %}checked{% endif %}>
+
+                <input type="checkbox" id="back" name="back" {% if report.back %}checked{% endif %}>
                 <label for="back">허리</label>
                 <span class="bbar">|</span>
-                <input type="checkbox" name="other" id="other-checkbox" {% if report.other %}checked{% endif %}>
+
+                <input type="checkbox" id="other-checkbox" name="other" {% if report.other %}checked{% endif %}>
                 <label for="other-checkbox">기타</label>
             </div>
-            <input type="text" name="other_text" id="other-text" value="{{ report.other_text }}" {% if not report.other %}style="display:none;"{% endif %}><br>
+            <input type="text" name="other_text" id="other-text" value="{{ report.other_text }}" {% if not report.other %}style="display:none;"{% endif %}>
 
             <label>이미지 파일 업로드 :</label>
             <div id="image-upload-container" class="image-upload-container">
                 <div class="add-image-button" id="add-image">+</div>
             </div>
 
-            {%if report.care.parkinson_diagnosis %}
-                <label>음성 파일 업로드 :</label>
-                <input type="file" name="audio_file">
+            {% if report.care.parkinson_diagnosis %}
+                <br><label>음성 파일 업로드 :</label>
+                <input type="file" name="audio_file" accept="audio/*">
                 {% if report.audio_test_result %}
                     <div>
                         <label>음성 파일 분석 결과 :</label>
@@ -373,16 +385,15 @@
                 {% endif %}
             {% endif %}
 
-            {%if report.care.care_type == '병원'%}
-                <label>의사 소견 :</label>
-                <textarea name="doctor_opinion">{{ report.doctor_opinion }}</textarea>
+            {% if report.care.care_type == '병원' %}
+                <br><label>의사 소견 :</label>
+                <textarea name="doctor_opinion">{{ report.doctor_opinion }}</textarea><br>
             {% endif %}
 
-            <label>보호자님께 전달할 사항 :</label>
-            <textarea name="user_request">{{ report.user_request }}</textarea>
+            <br><label>보호자님께 전달할 사항 :</label>
+            <textarea class="user_request" name="user_request">{{ report.user_request }}</textarea><br>
 
-            <br>
-            <button type="submit">수정하기</button>
+            <button type="submit">보고서 수정하기</button>
             <button type="button" onclick="window.location.href = '/management/report/list/'" class="cancle">취소</button>
         </form>
     </div>
