@@ -20,7 +20,7 @@
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
             width: 600px;
         }
-        h1 {
+        h2 {
             text-align: center;
             margin-bottom: 20px;
         }
@@ -31,18 +31,27 @@
             display: block;
             margin-bottom: 5px;
         }
-        
+        .form-group.inline {
+            display: flex;
+            align-items: center;
+        }
+        .form-group.inline label {
+            margin-right: 10px;
+        }
         input[type="text"],
         input[type="file"],
-        select {
+        select,
+        textarea {
             width: 100%;
             padding: 8px;
             box-sizing: border-box;
             border: 1px solid #ccc;
             border-radius: 4px;
         }
-        
-        /* input[type="submit"]와 button의 공통 스타일 */
+        input[type="radio"],
+        input[type="checkbox"] {
+            margin-right: 10px;
+        }
         input[type="submit"],
         button {
             width: 100%;
@@ -53,31 +62,50 @@
             font-size: 16px;
             cursor: pointer;
         }
-       
         .cancle {
             background-color: #dc3545;
             margin-top: 10px;
         }
-        
         .submit {
             background-color: blue;
         }
-
         input[type="submit"]:hover,
         button:hover {
             opacity: 0.9;
         }
-
-        #content {
-            height: 150px;
-            width: 100%;
-            /* 다른 스타일 속성들도 추가할 수 있습니다 */
+        textarea {
+            resize: none;
         }
     </style>
+    <script>
+        function submitForm(event) {
+            event.preventDefault();
+            const form = event.target;
+            const formData = new FormData(form);
+
+            fetch(form.action, {
+                method: form.method,
+                body: formData,
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest',
+                },
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.error) {
+                    alert(data.error);
+                } else if (data.success) {
+                    alert('케어 요청이 수정되었습니다.');
+                    window.location.href = data.redirect_url;
+                }
+            })
+            .catch(error => console.error('Error:', error));
+        }
+    </script>
 </head>
 <body>
     <div class="container">
-    <h1>케어 수정</h1>
+    <h2>{{ senior.name }}님의 케어 요청 수정</h2>
     <form method="post">
         {% csrf_token %}
         
@@ -101,19 +129,9 @@
         <textarea id="content" name="content" rows="4">{{ care.content }}</textarea>
         <br><br>
 
-        <label for="seniors">시니어:</label>
-        {% for senior in seniors %}
-            <label>
-                <input type="radio" name="senior" value="{{ senior.id }}" 
-                    {% if senior in care.seniors.all %}checked{% endif %} required> 
-                {{ senior.name }}
-            </label>
-        {% endfor %}
-        <br>
-
         <button type="submit" class="submit">수정</button>
 
-        <button type="button" onclick="window.location.href = '/monitoring/family_monitor/'" class="cancle">취소</button>
+        <button type="button" onclick="window.location.href = '/monitoring/family_monitor/?selected_senior_id={{ senior.id }}'" class="cancle">취소</button>
     </form>
 </div>
 </body>
