@@ -142,6 +142,14 @@
         }
         .bottom-table thead tr th {
             background-color : #b8efed;
+        }
+        .top-table tbody tr:hover,
+        .bottom-table tbody tr:hover
+        {
+            background-color: #bebebe;
+        }
+        .table-wrapper {
+            background-color : #d5d4ce;
         }    
     </style>
     {% endblock %}
@@ -186,7 +194,7 @@
                         <th>내용</th>
                         <th>파킨슨병 진단 요청</th>
                         <th>주소</th>
-                        <th>케어 신청 날짜</th>
+                        <th>케어 신청 날짜 / 방문 예정 날짜</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -205,7 +213,7 @@
                             <td>{% for senior in care.seniors.all %}
                                 {{ senior.address }} {{senior.detail_address}}{% if not forloop.last %}, {% endif %}
                             {% endfor %}</td>
-                            <td>{{ care.datetime|date:"Y년 n월 j일 A g:i" }}</td>
+                            <td>{{ care.datetime|date:"Y년 n월 j일 A g:i" }}{% if care.visit_date and care.visit_time %} / <br>{{ care.visit_date|date:"Y년 n월 j일" }} {{ care.visit_time|date:"A g:i" }}{% endif %}</td>
                         </tr>
                     {% endfor %}
                 </tbody>
@@ -267,7 +275,7 @@
                         <th>내용</th>
                         <th>파킨슨병 진단 요청</th>
                         <th>주소</th>
-                        <th>케어 신청 날짜</th>
+                        <th>방문 날짜 / 보고서 작성 날짜</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -286,7 +294,7 @@
                             <td>{% for senior in report.care.seniors.all %}
                                 {{ senior.address }} {{senior.detail_address}}{% if not forloop.last %}, {% endif %}
                             {% endfor %}</td>
-                            <td>{{ report.care.datetime|date:"Y년 n월 j일 A g:i" }}</td>
+                            <td>{% if report.care.visit_date and report.care.visit_time %}{{ report.care.visit_date|date:"Y년 n월 j일" }} {{ report.care.visit_time|date:"A g:i" }} / <br>{% endif %}{{ report.updated_at|date:"Y년 n월 j일 A g:i" }}</td>
                         </tr>
                     {% endfor %}
                 </tbody>

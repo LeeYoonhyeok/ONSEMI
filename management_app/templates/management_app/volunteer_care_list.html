@@ -144,7 +144,82 @@
         }
         .bottom-table thead tr th {
             background-color : #b8efed;
-        }        
+        }
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.5);
+        }
+
+        .modal-content {
+            background-color: #fff;
+            margin: 10% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+            max-width: 800px;
+            border-radius: 10px;
+            position: relative;
+            height: auto; /* 높이를 자동으로 조정 */
+            max-height: 80vh; /* 최대 높이를 설정 */
+            overflow-y: auto; /* 내용이 넘치지 않도록 설정 */
+        }
+        .modal-content h1 {
+            text-align : center;
+        }
+
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            position: absolute;
+            top: 10px;
+            right: 25px;
+        }
+
+        .close:hover,
+        .close:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+        .modal-container {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            display: block;
+            flex-grow: 1; /* 컨텐츠가 모달의 대부분을 차지하게 함 */
+            overflow-y: auto; /* 컨텐츠가 많으면 스크롤바 생성 */
+        }
+
+        .modal-container p {
+            margin-bottom: 10px;
+            word-wrap: break-word; /* 긴 단어를 자동으로 줄바꿈 */
+            white-space: pre-wrap; /* 공백과 줄바꿈을 그대로 유지 */
+        }
+        .update-button {
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            cursor: pointer;
+            border-radius: 5px;
+            font-size: 16px;
+            float:left;
+            margin-left: 10px;
+            background-color: #156741;
+        }
+        .update-button:hover {
+            background-color: #104e31;
+        }
     </style>
     {% endblock %}
 </head>
@@ -190,7 +265,8 @@
             </thead>
             <tbody>
                 {% for care in page_obj1.object_list %}
-                    <tr class="clickable-row" onclick="location.href='/management/care/list/status/update/{{care.id}}/'">
+                <tr class="clickable-row" data-id="{{ care.id }}" data-title="{{ care.title }}" data-content="{{ care.content }}" data-caretype="{{ care.care_type }}" data-parkinson="{% if care.parkinson_diagnosis %}O{% else %}X{% endif %}" data-seniors="{% for senior in care.seniors.all %}{{ senior.name }}{% if not forloop.last %}, {% endif %}{% endfor %}" data-address="{% for senior in care.seniors.all %}{{ senior.address }} {{senior.detail_address}}{% if not forloop.last %}, {% endif %}{% endfor %}" data-datetime="{{ care.datetime|date:'Y년 n월 j일 A g:i' }}" data-visit_date="{{ care.visit_date|date:'Y년 n월 j일' }}" data-visit_time="{{ care.visit_time|time:'A g:i' }}">
+
                         <td>{% for senior in care.seniors.all %}
                             {{ senior.name }}{% if not forloop.last %}, {% endif %}
                         {% endfor %}</td>
@@ -263,12 +339,13 @@
                     <th class="content">내용</th>
                     <th>파킨슨병 진단 요청</th>
                     <th>주소</th>
-                    <th>케어 신청 날짜</th> 
+                    <th>케어 신청 날짜 / 방문 예정 날짜</th> 
                 </tr>
             </thead>
             <tbody>
                 {% for care in page_obj2.object_list %}
-                    <tr class="clickable-row" onclick="location.href='/management/care/list/status/update/{{care.id}}/'">
+                <tr class="clickable-row" data-id="{{ care.id }}" data-title="{{ care.title }}" data-content="{{ care.content }}" data-caretype="{{ care.care_type }}" data-parkinson="{% if care.parkinson_diagnosis %}O{% else %}X{% endif %}" data-seniors="{% for senior in care.seniors.all %}{{ senior.name }}{% if not forloop.last %}, {% endif %}{% endfor %}" data-address="{% for senior in care.seniors.all %}{{ senior.address }} {{senior.detail_address}}{% if not forloop.last %}, {% endif %}{% endfor %}" data-datetime="{{ care.datetime|date:'Y년 n월 j일 A g:i' }}" data-visit_date="{{ care.visit_date|date:'Y년 n월 j일' }}" data-visit_time="{{ care.visit_time|time:'A g:i' }}">
+
                         <td>{% for senior in care.seniors.all %}
                             {{ senior.name }}{% if not forloop.last %}, {% endif %}
                         {% endfor %}</td>
@@ -282,7 +359,7 @@
                         <td>{% for senior in care.seniors.all %}
                             {{ senior.address }} {{senior.detail_address}}{% if not forloop.last %}, {% endif %}
                         {% endfor %}</td>
-                        <td>{{ care.datetime|date:"Y년 n월 j일 A g:i" }}</td>
+                        <td>{{ care.datetime|date:"Y년 n월 j일 A g:i" }}{% if care.visit_date and care.visit_time %} / <br>{{ care.visit_date|date:"Y년 n월 j일" }} {{ care.visit_time|date:"A g:i" }}{% endif %}</td>
                     </tr>
                 {% endfor %}
             </tbody>
@@ -311,6 +388,84 @@
             </span>
         </div>
     </div>
+
+    <!-- Modal Structure -->
+    <div id="careModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h1>케어 상세 정보</h1>
+            <div class="modal-container">
+                <p><strong>ㆍ대상 어르신 : </strong> <span id="modalSeniors"></span></p>
+                <p><strong>ㆍ케어 타입 : </strong> <span id="modalCareType"></span></p>
+                <p><strong>ㆍ제목 : </strong> <span id="modalTitle"></span></p>
+                <p><strong>ㆍ내용 : </strong> <span id="modalContent"></span></p>
+                <p><strong>ㆍ파킨슨병 진단 요청 : </strong> <span id="modalParkinson"></span></p>
+                <p><strong>ㆍ주소 : </strong> <span id="modalAddress"></span></p>
+                <p><strong>ㆍ케어 신청 날짜 : </strong> <span id="modalDatetime"></span></p>
+                <p id="visitTime-text" style="display: none;"><strong>ㆍ방문 예정 날짜 : </strong> <span id="visitTime"></span></p>
+                <button id="updateCareButton" class="update-button" style="display: none;">케어 작성하기</button>
+                <button id="updateCareButton2" class="update-button" style="display: none;">케어 수정하기</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const rows = document.querySelectorAll('.clickable-row');
+            const modal = document.getElementById('careModal');
+            const span = document.getElementsByClassName('close')[0];
+
+            rows.forEach(row => {
+                row.addEventListener('click', function() {
+                    const careId = this.dataset.id;
+                    document.getElementById('modalSeniors').textContent = this.dataset.seniors;
+                    document.getElementById('modalCareType').textContent = this.dataset.caretype;
+                    document.getElementById('modalTitle').textContent = this.dataset.title;
+                    document.getElementById('modalContent').textContent = this.dataset.content;
+                    document.getElementById('modalParkinson').textContent = this.dataset.parkinson;
+                    document.getElementById('modalAddress').textContent = this.dataset.address;
+                    document.getElementById('modalDatetime').textContent = this.dataset.datetime;
+                    const visitTimeElement = document.getElementById('visitTime');
+                    const visitTimeText = document.getElementById('visitTime-text');
+                    const updateButton = document.getElementById('updateCareButton');
+                    const updateButton2 = document.getElementById('updateCareButton2');
+
+                    visitTimeElement.style.display = 'none';
+                    visitTimeText.style.display = 'none';
+                    updateButton.style.display = 'none';
+                    updateButton2.style.display = 'none';
+
+                    if (this.dataset.visit_date) { // 방문 예정 날짜 정해지면
+                        visitTimeElement.textContent = this.dataset.visit_date + " " + this.dataset.visit_time;
+                        visitTimeText.style.display = 'block';
+                        visitTimeElement.style.display = 'inline';
+                        updateButton2.style.display = 'block';
+                        updateButton2.onclick = function() {
+                            window.location.href = `/management/care/list/status/update/${careId}/`;
+                        };
+                    } else {
+                        updateButton.style.display = 'block';
+                        updateButton.onclick = function() {
+                            window.location.href = `/management/care/list/status/update/${careId}/`;
+                        };
+                    }
+
+                    modal.style.display = 'block';
+
+                });
+            });
+
+            span.onclick = function() {
+                modal.style.display = 'none';
+            };
+
+            window.onclick = function(event) {
+                if (event.target == modal) {
+                    modal.style.display = 'none';
+                }
+            };
+        });
+    </script>
     {% endblock %}
 </body>
 </html>

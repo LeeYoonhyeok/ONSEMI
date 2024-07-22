@@ -16,19 +16,38 @@ import pandas as pd
 def product_list(request, category_slug=None):
     
     # 예측 결과 불러오기 및 정렬
-    price_predict = pd.read_csv('./result.csv')
-    price_predict.sort_values(by='3', ascending=True)
+    price_predict = pd.read_csv('./result_shop.csv')
+    price_predict.sort_values(by='상승 비율', ascending=True)
     
     # 예측 결과 데이터 전처리
-    price_predict['3'] = round(price_predict['3'] * 100, 2) # 가격 변동률 100분위로 변경
-    price_predict['2'] = price_predict['2'].astype(int)     # 변동된 가격 int로 변경
-    price_predict['1'] = price_predict['1'].astype(int)     # 변동된 가격 int로 변경
+    price_predict['상승 비율'] = round(price_predict['상승 비율'] * 100, 2)  # 가격 변동률 100분위로 변경
+    price_predict['종료 가격'] = price_predict['종료 가격'].apply(lambda x: round(x, -1)).astype(int)  # 10의 자리에서 반올림
+    price_predict['시작 가격'] = price_predict['시작 가격'].apply(lambda x: round(x, -1)).astype(int)  # 10의 자리에서 반올림
     
+    # 제품 가격 업데이트
+    for _, row in price_predict.iterrows():
+        try:
+            product = Product.objects.get(name=row['작물명'])
+            product.price = row['시작 가격']  # 예측된 새로운 가격으로 업데이트
+            product.save()
+        except Product.DoesNotExist:
+            print(f'{row["작물명"]}이 없습니다.')
+        except Exception as e:
+            print(f'Error updating product {row["작물명"]}: {e}')
+
+    # # 가격 상승 상품 3개 저장
+    # increases = price_predict.iloc[: 3].values.tolist()
+    
+    # # 가격 하락 상품 3개 저장
+    # decreases = price_predict.iloc[-1: -4: -1].values.tolist()
+
     # 가격 상승 상품 3개 저장
-    increases = price_predict.iloc[: 3].values.tolist()
-    
+    increases = price_predict[price_predict['상승 비율'] > 0].nlargest(3, '상승 비율')
+    increases = increases.apply(lambda x: [x['작물명'], f"{x['시작 가격']:,}", f"{x['종료 가격']:,}"], axis=1).values.tolist()
+
     # 가격 하락 상품 3개 저장
-    decreases = price_predict.iloc[-1: -4: -1].values.tolist()
+    decreases = price_predict[price_predict['상승 비율'] < 0].nsmallest(3, '상승 비율')
+    decreases = decreases.apply(lambda x: [x['작물명'], f"{x['시작 가격']:,}", f"{x['종료 가격']:,}"], axis=1).values.tolist()
     
     category = None
     categories = Category.objects.all()
@@ -57,11 +76,8 @@ def product_list(request, category_slug=None):
 
 
 @login_required
-def product_detail(request, id, slug):
-    product = get_object_or_404(Product,
-                                id=id,
-                                slug=slug,
-                                available=True)
+def product_detail(request, id, slug, category_slug=None):
+    product = get_object_or_404(Product, id=id, slug=slug, available=True)
     cart_product_form = CartAddProductForm()
     stock_alert = product.stock <= 10
 
@@ -86,7 +102,13 @@ def product_detail(request, id, slug):
     paginator = Paginator(comments, 5)  
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
-    
+
+    # Category related context
+    categories = Category.objects.all()
+    category = None
+    if category_slug:
+        category = get_object_or_404(Category, slug=category_slug)
+
     context = {
         'product': product,
         'cart_product_form': cart_product_form,
@@ -97,8 +119,10 @@ def product_detail(request, id, slug):
         'has_purchased': has_purchased,
         'average_rating': average_rating,
         'page_obj': page_obj,
+        'categories': categories,
+        'category': category,
     }
-    return render(request,'shop/product/detail.html',context)
+    return render(request, 'shop/product/detail.html', context)
 
 
 @login_required

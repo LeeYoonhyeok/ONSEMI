@@ -148,7 +148,7 @@ def csv_view(request):
 
 
         if category_order and category_order != 'all':
-            data = [order for order in data if order['Category'] == category_order]
+            data = [order for order in data if order['category'] == category_order]
 
         return render(request, 'monitoring_app/csv_view.html', {
             'filtered_orders': data, 
