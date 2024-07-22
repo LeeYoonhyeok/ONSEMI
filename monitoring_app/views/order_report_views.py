@@ -19,13 +19,13 @@ import matplotlib.font_manager as fm
 
 # 한글 폰트 설정
 
-font_path = '/usr/share/fonts/truetype/nanum/NanumGothic.ttf'
-font_name = fm.FontProperties(fname=font_path, size=10).get_name()
-plt.rcParams['font.family'] = font_name
-
-# font_path = 'C:\\Windows\\Fonts\\Arial.ttf'
+# font_path = '/usr/share/fonts/truetype/nanum/NanumGothic.ttf'
 # font_name = fm.FontProperties(fname=font_path, size=10).get_name()
 # plt.rcParams['font.family'] = font_name
+
+font_path = 'C:\\Windows\\Fonts\\Arial.ttf'
+font_name = fm.FontProperties(fname=font_path, size=10).get_name()
+plt.rcParams['font.family'] = font_name
 
 
 # 주문 데이터 DataFrame으로 변환
@@ -44,7 +44,8 @@ def order_to_dataframe(orders):
             })
     df = pd.DataFrame(data)
     if 'created' in df.columns: #임의로 만든 데이터들은 created고 서비스 상에서 데이터를 쌓으면 Created임
-        df['Created'] = pd.to_datetime(df['created'], format='ISO8601', errors='coerce')
+
+        df['Created'] = pd.to_datetime(df['created'], format='ISO8601', errors='coerce') # 21일 새벽 오류 발견하여 최종 수정
 
     if 'Created' in df.columns: #임의로 만든 데이터들은 created고 서비스 상에서 데이터를 쌓으면 Created임
         df['Created'] = pd.to_datetime(df['Created'], format='ISO8601', errors='coerce')
@@ -53,7 +54,9 @@ def order_to_dataframe(orders):
         df['Date'] = pd.to_datetime(df['Date'], format='ISO8601', errors='coerce')
 
     if 'quantity' in df.columns: #임의로 만든 데이터들은 created고 서비스 상에서 데이터를 쌓으면 Created임
-        df['Quantity'] = df['quantity'].astype(float)
+
+        df['Quantity'] = df['quantity'].astype(float) # 21일 새벽 오류 발견하여 최종 수정
+
 
     if 'Quantity' in df.columns: #임의로 만든 데이터들은 created고 서비스 상에서 데이터를 쌓으면 Created임
         df['Quantity'] = df['Quantity'].astype(float)
@@ -208,7 +211,9 @@ def generate(request):
         all_df = pd.DataFrame(all_data)
 
         if not all_df.empty:
-            all_df['Quantity'] = all_df['Quantity'].astype(float)
+
+            all_df['Quantity'] = all_df['Quantity'].astype(float) # 21일 새벽 오류 발견하여 최종 수정
+
             plt.figure(figsize=(10, 6))
             category_counts = all_df.groupby('Category')['Quantity'].sum()
             plt.pie(category_counts, labels=category_counts.index, colors=colors[:len(category_counts)], autopct='%1.1f%%', startangle=140,

@@ -83,7 +83,7 @@ ROOT_URLCONF = "config.urls"
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-        # "DIRS": [BASE_DIR / "templates"],
+        # "DIRS": [BASE_DIR / "templates"], 
         'DIRS': [os.path.join(BASE_DIR, 'templates')],
         "APP_DIRS": True,
         "OPTIONS": {
@@ -111,6 +111,9 @@ WSGI_APPLICATION = "config.wsgi.application"
 #}
 
 DATABASES = db_settings.DATABASES
+
+
+# DATABASES = db_settings.DATABASES
 
 
 # Password validation
@@ -210,6 +213,7 @@ app.autodiscover_tasks()
 def debug_task(self):
     print(f'Request: {self.request!r}')
 
+
 from dotenv import load_dotenv
 ###############################################################################
 load_dotenv(os.path.join(BASE_DIR, '.env'))
@@ -233,3 +237,8 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')  # 로컬에서 collectstati
 # 미디어 파일 설정
 MEDIA_URL = f'https://{AWS_S3_CUSTOM_DOMAIN}/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
+
+# STATIC_URL = '/static/'
+# MEDIA_URL = '/media/'
+

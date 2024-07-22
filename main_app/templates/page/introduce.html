@@ -6,44 +6,24 @@
 {% block extra_css %}
 <link rel="stylesheet" href="{% static 'introduce.css' %}">
 <style>
-    .header {
-        color:black;
-        padding: 20px;
-        text-align: center;
-        font-size: 24px;
-        font-weight: bold;
-        
+    html, body {
+        height: 100%;
+        margin: 0;
+        padding: 0;
+        font-family: 'GmarketSansMedium';
+        min-width:100%;
+        width: 100%;
     }
-    
+
     nav ul li a {
         color: black;
     }
-    h1{
-        text-align:center;
-        color:black;
-    }
-    h2{
-        color:black;
-    }
-    h3{
-        color:black;
-    }
-    .main {
-        padding: 20px;
-        background-color: #fff;
-        
-    }
 
     .vision-section {
+        margin-top: ;
         position: relative;
         text-align: center;
         color: black;
-    }
-
-    .vision-section img {
-       width:1080px;
-        height: 370px;
-        opacity:0.75;
     }
 
     .vision-text {
@@ -60,6 +40,27 @@
 
     .vision-text p {
         font-size: 18px;
+    }
+
+    .story-section {
+        position: relative;
+        text-align: center;
+    }
+
+    .story-subject {
+        margin-bottom: 70px;
+    }
+
+    .story-text {
+        position: absolute;
+        top: 180%;
+        left: 85%;
+        transform: translate(-50%, -50%);
+        color: white;
+        width: 500px;
+        word-break: keep-all;
+        text-align: right;
+        line-height: 175%;
     }
 
     .values-section {
@@ -111,6 +112,17 @@
         text-align: center;
         font-size: 14px;
     }
+
+    .page-container {
+        display: flex;
+        flex-direction: column;
+        min-height: 100vh;
+    }
+
+    .wrapper {
+        flex: 1;
+    }
+
   
 </style>
 {% endblock %}
@@ -119,19 +131,53 @@
 
 <div class="main">
     <div class="vision-section">
-        <h1>온새미(ONSEMI)</h1>
-        <img src="{% static 'main/subimage.png' %}" alt="Vision Image">
+        <video autoplay muted loop>
+            <source src="{% static 'main/intro.mp4' %}" type="video/mp4" />
+        </video>
         <div class="vision-text">
-            <h3>식료품을 구하는 것도 녹록지 않은 동네</h2>
-            <h3>그 안에서 지긋한 연세가 되어버린 우리 부모님</h2>
-            <h3>서로에게 보내지 못한 마음과 소식들</h2>
+            <h1>온새미(ONSEMI)</h1>
+            <h3>식료품을 구하는 것도 녹록지 않은 동네</h3>
+            <h3>그 안에서 지긋한 연세가 되어버린 우리 부모님</h3>
+            <h3>서로에게 보내지 못한 마음과 소식들</h3>
             <h2>그 모든 갈증,
                 이 땅에서 솟아나는 샘물 되어
                 온새미가 채우겠습니다</h2>
         </div>
     </div>
+
+    <div class="story-section">
+        <video autoplay muted loop>
+            <source src="{% static 'main/story.mp4' %}" type="video/mp4" />
+        </video>
+        </div>
+        <div class="story-text">
+            <h1 class="story-subject">Story</h1>
+            <h3>"사막에서 필요한 식품을 구하기 어려운 것처럼 몸에 좋은 식품을 판매하는 상점이 없어 멀리 가서야만 필요한 식품을 구할 수 있는 지역"</h3>
+            <h3>바로 '식품사막'입니다.</h3>
+            <h3>인구절벽의 현실화와 함께 2020년 전후로 더 심각한 사회문제로 대두 중인 '식품사막'</h3>
+            <h3>그리고 이러한 지역에 거주하는 분들은 '쇼핑 난민', '장보기 약자' 등으로 불립니다.</h3>
+            <h3>그 중에서도 보다 큰 어려움을 겪는 분들은 누구일까요?</h3>
+            <h3>바로 노쇠하고 거동이 불편한 어르신. 우리의 부모님입니다.</h3>
+            <h3>저희 [온새미]는 이런 부모님을 돌봐드리고 싶은 마음에도 상황이 여의치 않아 고민인 자녀 분들을 위해 태어났습니다.</h3>
+            <h3>단순한 방문이나 식료품 전달로 그치지 않고
+                건강상태 확인, 파킨슨병 간이체크, 병원 진료, 상호 메시지 전달 등
+                자녀가 직접 찾아뵈었을 때가 아니면 일어나기 어렵던 일들이
+                필요한 매 순간 가능해집니다.</h3>
+            <h3>부모님과 나 사이 전하고픈 모든 마음.
+                [온새미]가 더 가득히 채워드리겠습니다.</h3>
+            <h3>- [온새미]는 '전부의, 모두의'를 뜻하는 순우리말 '온'과
+                '샘물이 솟아나는 곳, 또는 그 물'을 뜻하는 순우리말 '샘'의 합성어입니다. -</h3>
+        </div>
+
+
+    </div>
+
+
     <div class="values-section">
-        <h2>온새미의서비스</h2>
+        <video autoplay muted loop>
+            <source src="{% static 'main/services.mp4' %}" type="video/mp4" />
+        </video>
+        <h2>온새미의 서비스</h2>
         <div class="values-container">
             <div class="value-box">
                 <div class="icon"><img src="{% static 'images/customer.png' %}" alt="Customer Icon"></div>

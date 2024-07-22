@@ -14,17 +14,35 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard</title>
     <style>
+
         body {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            width: 100%;
             
+            overflow: hidden;
+            overflow-y:auto;
+           
+        }
+
+        #shop{
+            display:none;
+        }
+
+        #home{
+            display:none;
+        }
+        body {
             background-color: #f8f9fa;
             color: #333;
             margin: 0;
             padding: 0;
-        }
+        } 
 
         .content-container {
             display: flex;
-            height: calc(100vh - 60px);
+            height: 100vh;
             overflow: hidden;
         }
         .sidebar {
@@ -37,8 +55,11 @@
             flex-direction: column;
             align-items: center;
             transition: width 0.3s;
-            overflow: hidden;
+            min-height: 100vh;
             position: relative;
+            
+           
+            overflow-y: auto; /* Allow vertical scrolling when content exceeds height */
         }
         .sidebar.expanded {
             width: 250px;
@@ -141,11 +162,13 @@
         }
         .main-content {
             flex: 1;
-            padding: 2.8rem 4rem 6.4rem;
+            padding: 1.5rem 4rem 6.4rem;
             display: flex;
             flex-direction: column;
             overflow: auto;
             background-color: #f8f9fa;
+            height:100vh;
+
         }
         .card {
             background: white;
@@ -160,13 +183,12 @@
         .card-header {
             display: flex;
             flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            margin-bottom: 20px;
-            text-align: center;
+            border-bottom: 1px solid #ccc;
+            margin-bottom: 5px;
         }
         .card-header h3 {
             margin: 0;
+            text-align: left;
         }
         .card-body {
             overflow-y: auto;
@@ -187,8 +209,16 @@
             background-color: #104e31;
         }
         .plus-button {
+            background-color: #156741;
+            color: white;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+            text-align: center;
+            text-decoration: none;
             margin-left: 10px;
             padding: 0px;
+
         }
         .image-box {
             text-decoration: none;
@@ -203,10 +233,17 @@
         table td {
             border: 1px solid #ddd;
             padding: 8px;
-            text-align: left;
+            text-align: center;
         }
         table th {
             background-color: #f2f2f2;
+        }
+        table td.title,
+        table td.content {
+            max-width: 150px; /* You can adjust the width as needed */
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
         .clickable-row:hover {
             background-color: #f1f1f1;
@@ -222,7 +259,7 @@
         .health-box {
             margin-left: 10px;
             text-align: center;
-            height: 200px;
+            height: 250px;
         }
         .hamburger-menu {
             cursor: pointer;
@@ -311,6 +348,8 @@
             margin-top: 20px;
             text-align: center;
             width: 100%;
+            
+           
         }
         .dropbtn {
             background-color: #156741;
@@ -333,6 +372,7 @@
             transform: translateX(0);
             border: 1px solid #ccc;
             box-sizing: border-box;
+            overflow: scroll;
         }
         .dropdown-content a {
             color: black;
@@ -369,33 +409,235 @@
             font-size: 16px;
             font-weight: bold;
         }
+
+        .plus-button .tooltip {
+            visibility: hidden;
+            background-color: #555;
+            color: #fff;
+            text-align: center;
+            border-radius: 5px;
+            padding: 5px 10px;
+            position: absolute;
+            z-index: 10;
+            top: 125%;
+            left: -10%;
+            transform: translateX(-50%);
+            opacity: 0;
+            transition: opacity 0.3s;
+            white-space: nowrap;
+            font-size:10px;
+        }
+        .plus-button .tooltip::after {
+            content: '';
+            position: absolute;
+            bottom: 100%;
+            left: 50%;
+            margin-left: -5px;
+            border-width: 5px;
+            border-style: solid;
+            border-color: transparent transparent #555 transparent;
+            font-size:10px;
+        }
+        .plus-button:hover .tooltip {
+            visibility: visible;
+            opacity: 1;
+            font-size:10px;
+        }
+
+        /* Modal styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.5);
+        }
+
+        .modal-content {
+            background-color: #fff;
+            margin: 10% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+            max-width: 800px;
+            border-radius: 10px;
+            position: relative;
+            height: auto; /* 높이를 자동으로 조정 */
+            max-height: 80vh; /* 최대 높이를 설정 */
+            overflow-y: auto; /* 내용이 넘치지 않도록 설정 */
+        }
+
+        .modal-content2 {
+            background-color: #fff;
+            margin: 5% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 40%;
+            {% comment %} height: 40%; {% endcomment %}
+            max-height: 80vh;
+            border-radius: 10px;
+            position: relative;
+        }
+
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            position: absolute;
+            top: 10px;
+            right: 25px;
+        }
+
+        .close:hover,
+        .close:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .container {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            display: block;
+            flex-grow: 1; /* 컨텐츠가 모달의 대부분을 차지하게 함 */
+            overflow-y: auto; /* 컨텐츠가 많으면 스크롤바 생성 */
+        }
+        .text {
+            margin-bottom: 10px;
+            word-wrap: break-word; /* 긴 단어를 자동으로 줄바꿈 */
+            white-space: pre-wrap; /* 공백과 줄바꿈을 그대로 유지 */
+        }
+        .text strong {
+            margin-right: 10px; /* 간격 조정 */
+            vertical-align: top; /* 상단에 맞춤 */
+        }
+        #modal-title, #modal-care-content {
+            word-wrap: break-word; /* 긴 단어가 박스를 넘치지 않도록 */
+            white-space: pre-wrap; /* 공백과 줄바꿈을 그대로 유지 */
+            width: 90%; /* 전체 너비 사용 */
+            overflow-wrap: break-word; /* 긴 단어를 줄바꿈 */
+            white-space: normal; /* 기본 줄바꿈 동작 */
+        }
+        .circle {
+            width: 5px;
+            height: 5px;
+            background-color: #333;
+            border-radius: 50%;
+            display: inline-block;
+            margin-right: 10px;
+        }
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+       strong{
+        margin-right:10px;
+       }
+
+       .photo-box2 {
+        {% comment %} background-color: #fff;
+        border: 1px solid #ccc;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        display: flex;
+        flex-direction: column; /* 아래부터 위로 정렬 */
+        height: 100%; {% endcomment %}
+        }
+        
+        .photo-box {
+            margin-right: 10px;
+            text-align: center;
+            height: 250px;
+            width: 100%;
+        }
+        .photo-grid {
+            display: flex;
+            flex-direction: column; /* 세로로 한 줄로 */
+            align-items: center;
+            width: 100%;
+        }
+        .photo-item {
+            width: 100%; /* 해당 박스에 맞게 조절 */
+            box-sizing: border-box; /* 패딩 포함한 박스 크기 계산 */
+        }
+        .photo-item img {
+            width: 60%; /* 박스에 맞게 width 조절 */
+            height: auto;
+            object-fit: contain;
+            display: block;
+            margin: 0 auto;
+            border-radius: 10px; /* 사진에 테두리 둥글게 추가 */ 
+            margin-bottom : 20px;      
+        }
+        
+
+        .button-container {
+            display: flex;
+            justify-content: flex-end; /* 오른쪽 끝에 배치 */
+            margin-top: 20px; /* 위쪽에 여백 추가 */
+        }
+
+        .modal button {        
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            cursor: pointer;
+            border-radius: 5px;
+            font-size: 16px;
+            float:left;
+            margin-left: 10px; /* 버튼 간격 추가 */
+        }
+        .edit-button {
+            background-color: #156741;
+        }
+        .edit-button:hover{
+            background-color: #104e31;
+        }
+        .delete-button {
+            background-color: #d94a3a;
+        }
+        .delete-button:hover {
+            background-color: #a2312b;
+        }
+        .small-text {
+            font-size: 0.7em;
+            color: gray;
+            text-align: right;     
+        }
+        .report-box {
+            text-align: left;
+            border-bottom: 2px solid #ccc;
+            border-bottom-style:dashed;
+            margin-bottom: 10px;
+            padding-bottom: 10px;
+        }
+        .report-box h3 {
+            text-align: left;
+            margin: 10px 0px;
+        }
+        .order-box .card-header {
+            display: flex;
+            flex-direction: row; /* 세로 정렬을 가로 정렬로 변경 */            
+            align-items: center; /* 수직 정렬 */
+            border-bottom: 1px solid #ccc;
+            padding-bottom: 15px;
+        }
+        
+        .add-button {
+            margin-left: 10px; /* 버튼 간격 추가 */
+            padding: 5px 10px; /* 적절한 크기로 조정 */
+
+        }
     </style>
 </head>
 <body>
-    {% comment %} <div class="header">
-        <div class="left-controls">
-            <span class="material-symbols-outlined hamburger-menu" onclick="toggleSidebar()">menu</span>
-            <img src="{% static 'main/onsemi_logos.png' %}" alt="Main Image">
-        </div>
-        <div class="user-controls">
-            <div class="user-profile" onclick="toggleInfoBox()">
-                <span class="material-symbols-outlined icon">notifications</span>
-                <div id="infoBox" class="info-box">
-                    <p id="signal-message1">알림이 없습니다.</p>
-                    <p id="signal-message2"></p>
-                    <div class="button-container">
-                        <a href="{% url 'monitoring_app:family_monitor' %}">
-                            <button id="navigateButton">모니터링</button>
-                        </a>
-                        <button id="clearButton" class="close-button">알림 지우기</button>
-                    </div>
-                </div>
-            </div>
-            <a href="/user/logout/" class="logout">
-                <span class="material-symbols-outlined icon">logout</span>
-            </a>
-        </div>
-    </div> {% endcomment %}
+  
     <div class="content-container">
         <div class="sidebar">
             {% if selected_senior %}
@@ -425,8 +667,8 @@
                 <div class="nav-item">
                     <a href="/blog/notice_list/">
                         <span class="material-symbols-outlined nav-icon">info</span>
-                        <span class="nav-text">공지사항</span>
-                        <span class="tooltip">공지사항</span>
+                        <span class="nav-text">커뮤니티</span>
+                        <span class="tooltip">커뮤니티</span>
                     </a>
                 </div>
                 <div class="nav-item">
@@ -458,79 +700,80 @@
             <div class="top-section">
                 <div class="photo-box card">
                     <div class="card-header">
-                        <h3>사진</h3>
-                    </div>
-                    <div class="card-body">
-                        {% if selected_senior_id %}
-                            {% for report in reports %}
-                                {% if forloop.first %}
-                                <a href="{% url 'monitoring_app:family_monitor_image' report.id %}" class="image-box">
-                                <div>
-                                    {% if report.images.all %}
-                                        <div>{% for senior in report.care.seniors.all %}
-                                            {{ senior.name }}{% if not forloop.last %}, {% endif %}님
-                                        {% endfor %}</div>
-                                        <div>{{ report.created_at }}</div><br>
-                                        <div>
-                                        {% for image in report.images.all %}
-                                            <img src="{{ image.image.url }}" alt="Report Image" class="img-thumbnail" style="max-width: 200px; max-height: 200px;">
-                                        {% endfor %}
+                        <h3>사진</h3> 
+                        <span class="small-text">
+                            {% if last_report %}
+                                {{ last_report.created_at|date:"Y년 n월 j일" }}
+                            {% endif %}
+                        </span>
+                        </div>
+                        <div class="card-body photo-grid">
+                            {% if last_report %}
+                                <div class="photo-row">
+                                    {% for image in last_report.images.all %}
+                                        <div class="photo-item">
+                                            <img src="{{ image.image.url }}" alt="Report Image" class="img-thumbnail" onclick="openPhotoModal('{{ image.image.url }}')">
                                         </div>
-                                    {% endif %}
-                                </div></a><br>
-                                {% endif %}
-                            {% endfor %}
-                        {% endif %}
-                    </div>
+                                    {% endfor %}
+                                </div><br>
+                            {% endif %}
+                        </div>
                 </div>
                 <div class="health-box card">
                     <div class="card-header">
-                        <h3>건강 상태</h3>
-                        <button class="plus-button" onclick="location.href='/monitoring/family_monitor/report/list/?selected_senior_id={{ selected_senior_id }}';">+</button>
+                        <h3>마지막 진단 기록</h3>
+                        <span class="small-text">
+                            {% if last_report %}
+                                {{ last_report.created_at|date:"Y년 n월 j일" }}
+                            {% endif %}
+                        </span>
+                        <button class="plus-button" onclick="location.href='/monitoring/family_monitor/report/list/?selected_senior_id={{ selected_senior_id }}';">+<span class="tooltip">보고서 목록</span></button>
                     </div>
                     <div class="card-body">
-                        {% if selected_senior_id %}
-                            {% for report in reports %}
-                                {% if forloop.first %}
-                                <div>
-                                    <div>{% for senior in report.care.seniors.all %}
-                                        {{ senior.name }}{% if not forloop.last %}, {% endif %}님
-                                    {% endfor %}</div>
-                                    <div>{{ report.created_at|date:"Y년 n월 j일 A g:i" }}</div><br>
-                                    <div>
-                                        {% if report.no_issue %}
-                                            특이사항 없음
-                                        {% else %}
-                                            {% if report.eye %}
-                                                눈 진찰 필요
-                                            {% endif %}
-                                            {% if report.teeth %}
-                                                치아 진찰 필요
-                                            {% endif %}
-                                            {% if report.skin %}
-                                                피부 진찰 필요
-                                            {% endif %}
-                                            {% if report.back %}
-                                                허리 진찰 필요
-                                            {% endif %}
-                                            {% if report.other %}
-                                                {{report.other_text}} 진찰 필요
-                                            {% endif %}
+                        {% if last_report %}
+                            <div>
+                                <div class="report-box">
+                                    <h3>ㆍ건강 상태</h3>
+                                    {% if last_report.no_issue %}
+                                        특이사항 없음
+                                    {% else %}
+                                        {% if last_report.eye %}
+                                            눈
                                         {% endif %}
-                                    </div><br><br>
-                                    {% if report.doctor_opinion %}
-                                    <h3>의사 소견</h3>
-                                    <div>{{report.doctor_opinion}}</div><br><br>
+                                        {% if last_report.teeth %}
+                                            치아
+                                        {% endif %}
+                                        {% if last_report.skin %}
+                                            피부
+                                        {% endif %}
+                                        {% if last_report.back %}
+                                            허리
+                                        {% endif %}
+                                        {% if last_report.eye or last_report.teeth or last_report.skin or last_report.back %}
+                                            진찰 필요
+                                        {% endif %}
+                                        {% if last_report.other %}                                        
+                                        <br>(기타 사항 : {{ last_report.other_text }})
+                                        {% endif %}
                                     {% endif %}
-                                    <h3>전달 사항</h3>
+                                </div>
+                                <div class="report-box">
+                                    <h3>ㆍ전달 사항</h3>
                                     <div>
-                                        {% if report.user_request %}
-                                            {{report.user_request}}
+                                        {% if last_report.user_request %}
+                                            {{ last_report.user_request }}
+                                        {% else %}
+                                            전달 사항 없음
                                         {% endif %}
                                     </div>
-                                </div><br><br>
+                                </div>
+                                {% if last_report.doctor_opinion %}
+                                    <div class="report-box">
+                                        <h3>ㆍ의사 소견</h3>
+                                        <div>{{ last_report.doctor_opinion }}</div><br>
+                                    </div>
                                 {% endif %}
-                            {% endfor %}
+                            </div>
                         {% endif %}
                     </div>
                 </div>
@@ -539,45 +782,48 @@
                 <div class="order-box card">
                     <div class="card-header">
                         <h3>주문 및 돌봄 내역</h3>
-                        <div style="margin-top: 10px;">
-                            <a href='/management/add/care/' class="add-button">케어 요청하기</a>
-                            <button class="plus-button" onclick="location.href='{% url 'monitoring_app:generate' %}';">+</button>
+                        <button class="add-button" onclick="checkRecentCareStatus()">케어 등록 +</button>
+                        <div class="button-container">                            
+                            <button class="plus-button" onclick="location.href='{% url 'monitoring_app:generate' %}';">+<span class="tooltip">케어 요청 목록</span></button>
                         </div>
                     </div>
                     <div class="card-body">
                         <table class="table">
                             <thead>
                                 <tr>
+                                    <th>이름</th>
+                                    <th>케어</th>
                                     <th>제목</th>
-                                    <th>케어 종류</th>
-                                    <th>요청 날짜</th>
-                                    <th>방문 예정 날짜</th>
+                                    <th>내용</th>
+                                    <th>파킨슨 요청</th>
+                                    <th>신청 날짜 / 방문 예정 날짜 </th>
                                     <th>처리 상태</th>
-                                    <th>요청 내용</th>
-                                    <th>대상 노인</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 {% if selected_senior_id %}
                                     {% for care in sorted_cares_latest %}
-                                        <tr class="clickable-row" onclick="location.href='/management/care/detail/{{ care.id }}/'">
-                                            <td>{{ care.title }}</td>
-                                            <td>{{ care.care_type }}</td>
-                                            <td>{{ care.datetime|date:"Y년 n월 j일 A g:i" }}</td>
-                                            <td>
-                                                {% if care.care_state == 'APPROVED' %}
-                                                    {{ care.visit_date }} {{ care.visit_time }}
-                                                {% else %}
-                                                    방문 날짜가 정해지지 않았습니다.
-                                                {% endif %}
-                                            </td>
-                                            <td>{{ care.get_care_state_display }}</td>
-                                            <td>{{ care.content }}</td>
+                                        <tr class="clickable-row" onclick="openModal('{{ care.title }}', '{{ care.care_type }}', '{{ care.datetime|date:"Y년 n월 j일 A g:i" }}', '{{ care.visit_date }}', '{{ care.visit_time }}', '{{ care.get_care_state_display }}', '{{ care.content }}', '{{ care.seniors.all|join:', ' }}', '{{ care.user_id.username }}', '{{ care.id }}')">
                                             <td>
                                                 {% for senior in care.seniors.all %}
                                                     {{ senior.name }}{% if not forloop.last %}, {% endif %}
                                                 {% endfor %}
                                             </td>
+                                            <td>{{ care.care_type }}</td>
+                                            <td class="title">{{ care.title }}</td>
+                                            <td class="content">{{ care.content }}</td>
+                                            <td>{% if care.parkinson_diagnosis %} O
+                                                {% else %} X 
+                                                {% endif %}
+                                            </td>
+                                            <td>{{ care.datetime|date:"Y년 n월 j일 A g:i" }} / <br>
+                                                {% if care.care_state == 'APPROVED' %}
+                                                    {{ care.visit_date }} {{ care.visit_time }}
+                                                {% else %}
+                                                    방문이 아직 예정되어 있지 않습니다.
+                                                {% endif %}
+                                            </td>                                            
+                                            <td>{{ care.get_care_state_display }}</td>
                                         </tr>
                                     {% endfor %}
                                 {% endif %}
@@ -589,6 +835,109 @@
         </div>
     </div>
     
+    <!-- Modal Structure -->
+    <div id="modal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal()">&times;</span>
+            <h1>케어 상세</h1>
+            <div class="container">
+                <div class="text"><span class="circle"></span><strong>케어 종류 :</strong> <span id="modal-care-type"></span></div>
+                <div class="text"><span class="circle"></span><strong>등록 시간 :</strong> <span id="modal-request-date"></span></div>
+                <div class="text"><span class="circle"></span><strong>제목 :</strong> <span id="modal-title"></span></div>
+                <div class="text"><span class="circle"></span><strong>내용 :</strong> <span id="modal-care-content"></span></div>
+                <div class="text"><span class="circle"></span><strong>등록인 :</strong> <span id="modal-username"></span></div>
+                <div class="text"><span class="circle"></span><strong>해당 노인 :</strong> <span id="modal-seniors"></span></div>
+                <div class="text"><span class="circle"></span><strong>상태 :</strong> <span id="modal-care-state"></span></div>
+                <button id="edit-button" class="edit-button" style="display: none;">수정하기</button>
+                <form id="delete-form" method="post" onsubmit="return confirm('정말로 삭제하시겠습니까?');">
+                    {% csrf_token %}
+                    <button id="delete-button" class="delete-button" style="display: none;">삭제하기</button>
+                </form>           
+            </div>
+        </div>
+    </div>
+
+    <!-- Photo Modal Structure -->
+    <div id="photoModal" class="modal">
+        <div class="modal-content2">
+            <span class="close" onclick="closePhotoModal()">&times;</span>
+            <div class="photo-box2">
+                <div id="photo-modal-content" class="photo-item"></div>
+
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 케어 요청 클릭했을 때
+        function checkRecentCareStatus() {
+            var recentCareState = "{{ recent_not_approved_care.care_state|default:'' }}";
+            var recentCareId = "{{ recent_not_approved_care.id|default:'' }}";
+            var seniorName = "{{ selected_senior.name }}";
+            
+            if (recentCareState === 'NOT_APPROVED') {                
+                if (confirm(seniorName + '님은 승인 되지 않은 요청 건이 존재합니다. \n해당 정보를 수정 및 확인해보시겠습니까? \n※ 승인 되기 전까지 케어 요청을 무한히 보내는 것을 방지')) {
+                    openModal(
+                        "{{ recent_not_approved_care.title }}",
+                        "{{ recent_not_approved_care.care_type }}",
+                        "{{ recent_not_approved_care.datetime|date:'Y년 n월 j일 A g:i' }}",
+                        "{{ recent_not_approved_care.visit_date }}",
+                        "{{ recent_not_approved_care.visit_time }}",
+                        "{{ recent_not_approved_care.get_care_state_display }}",
+                        "{{ recent_not_approved_care.content }}",
+                        "{{ recent_not_approved_care.seniors.all|join:', ' }}",
+                        "{{ recent_not_approved_care.user_id.username }}",
+                        recentCareId
+                    );
+                }
+            } else {
+                window.location.href = '/management/add/care/?selected_senior_id={{ selected_senior.id }}';
+            }
+        }
+
+        // 모달 정보
+        function openModal(title, careType, requestDate, visitDate, visitTime, careState, content, seniors, username, careId) {
+            document.getElementById('modal').style.display = 'block';
+            document.getElementById('modal-care-type').textContent = careType;
+            document.getElementById('modal-request-date').textContent = requestDate;
+            document.getElementById('modal-title').textContent = title;
+            document.getElementById('modal-care-content').textContent = content;
+            document.getElementById('modal-username').textContent = username;
+            document.getElementById('modal-seniors').textContent = seniors;
+            document.getElementById('modal-care-state').textContent = careState;
+    
+            const deleteForm = document.getElementById('delete-form');
+            deleteForm.action = `/management/care/delete/${careId}/`;
+
+            if (careState === '요청 승인 대기') {
+                var editButton = document.getElementById('edit-button');
+                var deleteButton = document.getElementById('delete-button');
+                editButton.style.display = 'block';
+                deleteButton.style.display = 'block';
+                editButton.onclick = function() {
+                    window.location.href = '/management/care/update/' + careId + '/';
+                };
+                document.getElementById('modal-content').style.height = 'auto'; // 모달 크기 조정
+            } else {
+                document.getElementById('edit-button').style.display = 'none';
+                document.getElementById('delete-button').style.display = 'none';
+                document.getElementById('modal-content').style.height = '80%'; // 기본 모달 크기
+            }
+        }
+    
+        function closeModal() {
+            document.getElementById('modal').style.display = 'none';
+        }
+
+        function openPhotoModal(imageUrl) {
+            document.getElementById('photo-modal-content').innerHTML = `<img src="${imageUrl}" alt="Report Image">`;
+            document.getElementById('photoModal').style.display = 'block';
+        }
+
+        function closePhotoModal() {
+            document.getElementById('photoModal').style.display = 'none';
+        }
+    </script>
 </body>
 {% endblock %}
 </html>

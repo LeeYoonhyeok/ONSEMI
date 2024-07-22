@@ -4,8 +4,14 @@
     <title>Order Details</title>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
     <style>
+
+        @font-face {
+            font-family: 'MaruBuriBold';
+            src: url(https://hangeul.pstatic.net/hangeul_static/webfont/MaruBuri/MaruBuri-Bold.eot);
+            src: url(https://hangeul.pstatic.net/hangeul_static/webfont/MaruBuri/MaruBuri-Bold.eot?#iefix) format("embedded-opentype"), url(https://hangeul.pstatic.net/hangeul_static/webfont/MaruBuri/MaruBuri-Bold.woff2) format("woff2"), url(https://hangeul.pstatic.net/hangeul_static/webfont/MaruBuri/MaruBuri-Bold.woff) format("woff"), url(https://hangeul.pstatic.net/hangeul_static/webfont/MaruBuri/MaruBuri-Bold.ttf) format("truetype");
+        }
         body {
-            font-family: 'Roboto', sans-serif;
+            font-family: 'MaruBuriBold';
             background-color: #f7fafc;
             color: #2d3748;
         }
@@ -120,14 +126,14 @@
                 <img src="{{ item.product.image.url }}" alt="{{ item.product.name }}">
                 <div>
                     <div class="font-bold">{{ item.product.name }}</div>
-                    <div>가격: {{ item.price }}원</div>
+                    <div>가격: {{ item.price|floatformat:0 }}원</div>
                     <div>주문수량: {{ item.quantity }}</div>
                 </div>
             </div>
             {% endfor %}
         </div>
         <div class="order-total">
-            총 결제액: {{ order.get_total_cost }} 원
+            총 결제액: {{ order.get_total_cost|floatformat:0 }} 원
         </div>
         <div class="view-detail">
             <a href="{% url 'orders_app:order_detail' order.id %}">상세보기</a>

@@ -1,5 +1,6 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
+from django.contrib import messages
 from auth_app.models import User
 
 #Create your views here.
@@ -27,7 +28,7 @@ def user_page(request):
     user_type = request.user.user_type
     
     if user_type == 'FAMILY':
-        return redirect('/monitoring/family_monitor')
+        return redirect('/management/senior/list')
     elif user_type == 'VOLUNTEER':
         return redirect('/management/care/list')
     elif user_type == 'ADMIN':

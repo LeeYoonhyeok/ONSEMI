@@ -5,19 +5,15 @@
 
 {% block extra_css %}
 <style>
-    html, body {
-        height: 100%;
-        margin: 0;
-        overflow: hidden; /* 기본적으로 스크롤 막기 */
-        min-width:100%;
+    body {
+        overflow: hidden;
     }
 
     .header-wrapper {
         position: relative;
         width: 100%;
         height: 100vh; /* 전체 뷰포트 높이 */
-        overflow: hidden; /* 내부 컨텐츠가 넘치지 않게 숨김 */
-        min-width:100%;
+        min-width: 100%;
     }
 
     .main-image {
@@ -25,8 +21,8 @@
         height: 100%;
         object-fit: cover;
         display: block;
-        min-width:100%;        
-        filter: brightness(60%)
+        min-width: 100%;
+        filter: brightness(60%);
     }
 
     header {
@@ -40,7 +36,6 @@
 
     .logo img {
         filter: brightness(0) invert(1);
-       
     }
 
     nav ul li a {
@@ -56,7 +51,7 @@
         text-align: center;
         color: white;
         animation: enlargeText 2s ease-out forwards;
-        min-width:100%;
+        min-width: 100%;
     }
 
     @keyframes enlargeText {
@@ -108,16 +103,16 @@
     .vision-section {
         position: relative;
         text-align: center;
-        margin: 0; 
-        padding: 0; 
-        height:100vh;
+        margin: 0;
+        padding: 0;
+        height: 100vh;
     }
 
     .vision-section img {
         width: 100%;
         height: 100%;
-        opacity: 0.75;
-        margin: 0; 
+        brightness(40%);
+        margin: 0;
         padding: 0;
     }
 
@@ -143,7 +138,7 @@
     .values-section {
         text-align: center;
         padding: 40px 20px;
-        margin: 0; 
+        margin: 0;
     }
 
     .values-section h2 {
@@ -183,11 +178,13 @@
         font-size: 18px;
         font-weight: bold;
     }
+
     .animated-text {
         font-size: 50px;
     }
+
     .animated-small-text {
-        font-size : 20px;
+        font-size: 20px;
     }
 </style>
 {% endblock %}
@@ -195,47 +192,26 @@
 {% block content %}
 <div class="header-wrapper">
     <img src="{% static 'main/onsemi_main.png' %}" alt="Main Image" class="main-image">
-    <header>
-        <div class="container">
-            <div class="logo">
-                <img src="{% static 'main/onsemi_logo3.png' %}" alt="ONSEMI" class="logo">
-            </div>
-            <nav>
-                <ul>
-                    <li> <a href="/">홈</a></li>
-                    <li> <a href="/introduce/">소개</a></li>
-                    {% if request.user.is_authenticated %}
-                    {% comment %} <li> <a href="{% url 'account_logout' %}" class="logout">로그아웃</a></li> {% endcomment %}
-                    <li> <a href="/user/logout" class="logout">로그아웃</a></li>
-                    <li><a href="/user/profile">프로필</a></li>
-                    <li><a href="/blog/notice_list">공지사항</a></li>
-                    {% else %}
-                    <li><a href="/user/login/">로그인</a></li>
-                    <li><a href="/user/register/">회원가입</a></li>
-                    {% endif %}
-                    <li><a href="/user_page/">사용자페이지</a></li>
-                </ul>
-            </nav>
-        </div>
-    </header>
     <div class="main-content">
-        <P class="animated-text">부모님께 효도를 대신해 드리겠습니다.</p>
+        <p class="animated-text">부모님께 효도를 대신해 드리겠습니다.</p>
         <p class="animated-small-text">방문 케어와 신선한 음식 배달을 통해<br>
             노부모와 보호자의 행복과 마음의 평화를 보장합니다.<br>
             Caring for Your Loved Ones, Wherever You Are
-            </p>
+        </p>
     </div>
     <button class="scroll-button" onclick="showContent()">더보기</button>
 </div>
 <div class="content-wrapper" id="extra-content">
     <div class="main">
         <div class="vision-section">
-            <img src="{% static 'main/subimage.png' %}" alt="Vision Image">
+            <img src="{% static 'main/submainimg.png' %}" alt="Sub Image">
             <div class="vision-text">
-                <h3>A neighborhood where it is not easy to find groceries</h3>
-                <h3>My parents have become very old in that world</h3>
-                <h3>Hearts and news that could not be sent to each other</h3>
-                <h2>Onsaemi will fill all your thirst by becoming the spring water gushing from this land</h2>
+                <h3>식료품을 구하는 것도 녹록지 않은 동네</h3>
+                <h3>그 안에서 지긋한 연세가 되어버린 우리 부모님</h3>
+                <h3>서로에게 보내지 못한 마음과 소식들</h3>
+                <h2>그 모든 갈증,
+                    이 땅에서 솟아나는 샘물 되어
+                    온새미가 채우겠습니다</h2>
             </div>
         </div>
     </div>
@@ -245,6 +221,15 @@
 
 {% block script %}
 <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // 페이지가 로드된 후 항상 맨 위로 스크롤
+        window.scrollTo(0, 0);
+        // 페이지가 로드된 후 실행
+        document.body.style.overflow = 'hidden'; // 처음에 숨김
+        document.querySelector('.scroll-button').style.display = 'block'; // 버튼 표시
+        document.getElementById('extra-content').style.display = 'none'; // 추가 콘텐츠 숨김
+    });
+
     function showContent() {
         document.body.style.overflowY = 'auto'; /* 세로 스크롤만 활성화 */
         document.body.style.overflowX = 'hidden'; /* 가로 스크롤 비활성화 */
@@ -258,12 +243,13 @@
     window.addEventListener('wheel', function(event) {
         if (event.deltaY > 0 && !scrolled) {
             scrolled = true;
-            document.body.style.overflowY = 'auto'; /* 세로 스크롤만 활성화 */
-            document.body.style.overflowX = 'hidden'; /* 가로 스크롤 비활성화 */
-            document.querySelector('.scroll-button').style.display = 'none'; /* 버튼 숨기기 */
-            document.getElementById('extra-content').style.display = 'block'; /* 추가 콘텐츠 표시 */
-            document.getElementById('extra-content').scrollIntoView({ behavior: 'smooth' }); /* 부드럽게 스크롤 */
+            showContent();
         }
+    });
+
+    // Prevent default behavior of refreshing to top of the page
+    window.addEventListener('beforeunload', function () {
+        window.scrollTo(0, 0);
     });
 </script>
 {% endblock %}

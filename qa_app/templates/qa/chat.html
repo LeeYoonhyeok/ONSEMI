@@ -6,16 +6,16 @@
     {% load static %}
     <link rel="stylesheet" href="{% static 'chat_style.css' %}">
     <script src="https://kit.fontawesome.com/61592b64c9.js" crossorigin="anonymous"></script>
-    <title>온세미 챗봇</title>
+    <title>온새미 챗봇</title>
 </head>
 <body>
     <div class="chat-container">
         <div class="header">
-            <div class="header-title">온세미 챗봇</div>
+            온새미 챗봇
         </div>
         <div class="wrap" id="chat-wrap">
             <div id="placeholder-message" class="placeholder-message">
-                온세미 챗봇한테 물어보세요
+                온새미 챗봇한테 물어보세요
             </div>
             {% for message in conversation %}
                 {% if forloop.counter|divisibleby:2 %}

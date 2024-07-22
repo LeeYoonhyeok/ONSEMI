@@ -39,7 +39,9 @@ def add_care(request):
     if request.method == "GET":
         user = request.user
         user_senior_list = user.senior_set.all()
-        context = {"seniors": user_senior_list}
+        selected_senior_id = request.GET.get("selected_senior_id")
+        selected_senior = Senior.objects.get(id=selected_senior_id) if selected_senior_id else None
+        context = {"seniors": user_senior_list, "selected_senior": selected_senior}
         return render(request, "management_app/add_care.html", context)
 
     if request.method == "POST":
@@ -49,10 +51,7 @@ def add_care(request):
         senior_id = request.POST.get("senior")
         parkinson_diagnosis = request.POST.get("parkinson_diagnosis")
         
-        if parkinson_diagnosis == "on":
-            parkinson_diagnosis = True
-        else:
-            parkinson_diagnosis = False
+        parkinson_diagnosis = parkinson_diagnosis == "on"
                 
         user = request.user
         senior = Senior.objects.get(pk=senior_id)
@@ -63,7 +62,7 @@ def add_care(request):
         ).first()
 
         if existing_care:
-            message = f"{senior.name}님은 승인 되지 않은 요청 건이 존재합니다. 요청은 1개만 보낼 수 있습니다. 마이 페이지에서 수정 및 확인이 가능합니다."
+            message = f"{senior.name}님은 승인 되지 않은 요청 건이 존재합니다. \n마이 페이지에서 확인 및 수정하시기 바랍니다. \n※승인 되기 전까지 케어 요청을 무한히 보내는 것을 방지"
             return JsonResponse({'error': message})
 
         care = Care(
@@ -76,8 +75,8 @@ def add_care(request):
         care.save()
         care.seniors.add(senior)
 
-        return JsonResponse({'success': True, 'redirect_url': "/monitoring/family_monitor/"})
-    
+        return JsonResponse({'success': True, 'redirect_url': f'/monitoring/family_monitor/?selected_senior_id={senior_id}'})
+    return JsonResponse({'error': '유효하지 않은 요청입니다.'}, status=400)
         
 
 @login_required
@@ -104,8 +103,8 @@ def update_care(request, care_id):
     care = get_object_or_404(Care, pk=care_id)
 
     if request.method == "GET":
-        seniors = Senior.objects.filter(user_id=care.user_id)
-        context = {"care": care, "seniors": seniors}
+        senior = care.seniors.first()
+        context = {"care": care, "senior": senior}
         return render(request, "management_app/update_one_care.html", context)
 
     elif request.method == "POST":
@@ -131,15 +130,18 @@ def update_care(request, care_id):
         else:
             care.parkinson_diagnosis = False
 
+        senior_id = senior_id or care.seniors.first().id
         care.save()
-        return redirect(f"/management/care/detail/{care_id}/")
+        return redirect(f"/monitoring/family_monitor/?selected_senior_id={senior_id}")
 
 @login_required
 @family_required
 def delete_care(request, care_id):
     care = get_object_or_404(Care, id=care_id)
-    care.delete()
-    return redirect('/monitoring/family_monitor/') 
+    senior_id = request.POST.get("senior")
+    senior_id = senior_id or care.seniors.first().id
+    care.delete()    
+    return redirect(f"/monitoring/family_monitor/?selected_senior_id={senior_id}")
 
 
 @login_required

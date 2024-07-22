@@ -34,3 +34,5 @@
 *.env
 
 *.jar
+
+db_settings.py

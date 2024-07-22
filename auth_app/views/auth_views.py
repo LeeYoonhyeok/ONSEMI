@@ -36,7 +36,7 @@ def login_user(request):
             login(request, user)
             # print(user.user_type)
             if user.user_type == 'FAMILY':  # 사용자의 유형이 'FAMILY'인 경우
-                return redirect("/monitoring/family_monitor")
+                return redirect("/management/senior/list")
             
             elif user.user_type == 'VOLUNTEER':  # 사용자의 유형이 'VOLUNTEER'인 경우
                 return redirect("/management/care/list")

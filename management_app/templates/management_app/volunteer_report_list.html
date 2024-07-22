@@ -5,13 +5,12 @@
 <head>
     <meta charset="UTF-8">
     <title>Report List</title>
-    {% block title %}Care List{% endblock %}
+    {% block title %}Report List{% endblock %}
     {% block extra_css %}
     <link rel="stylesheet" href="{% static 'base.css' %}">
     <style>
         header {
             background-color: #f9f9f9;
-            margin-bottom: 20px;
         }
         table {
             width: 100%;
@@ -21,55 +20,32 @@
             padding: 8px 12px;
             border: 1px solid #ddd;
             text-align: center;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            border-color: #b4b3b0;
         }
         th {
             background-color: #f4f4f4;
             cursor: pointer;
         }
-
         .clickable-row {
             cursor: pointer;
         }
         .clickable-row:hover {
             background-color: #f0f0f0;
         }
-
-        .table-care {
-            background-color: #FFE4E1;
+        .pending-approval {
+            color: #F05650 !important;
         }
-
-        .table-report {
-            background-color: #E0FFFF; 
-        }
-        .button-cell {
-            text-align: center;
-            padding: 0; /* Padding 제거 */
-        }
-
-        .button-cell button {
-            width: 100%;
-            height: 100%;
-            padding: 10px;
-            box-sizing: border-box;
-            border: none;
-            background-color: #e0a797;
-            color: black;
-            cursor: pointer;
-            font-size: 14px;
-            margin: 0;
-        }
-
-        .button-cell button:hover {
-            background-color: #d5869d;
-        }
-        .select_list { 
+        .select-list { 
             text-align: left;
             display: flex;
             border-bottom: 2px solid #ddd;
             background-color: white;
+            padding-top: 20px;
         }
-        
-        .select_list a {
+        .select-list a {
             padding: 10px 20px;
             margin-right: 10px;
             text-decoration: none;
@@ -80,45 +56,28 @@
             border-bottom: none;
             border-radius: 5px 5px 0 0;
         }
-        
-        .select_list a#selected {
+        .select-list a#selected {
             background-color: #f5f5f5;
             color: black;
             border-color: #ddd;
         }
-        
-        .select_list a#not_selected {
+        .select-list a#not_selected {
             background-color: #fff;
             color: #aaa;
             border-color: #ddd;
         }
-        
-        .select_list a:hover {
+        .select-list a:hover {
             color: black;
             background-color: #e9e9e9;
         }
-
-        .body-container {
-            padding: 20px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-
-        .pending-approval-text {
-            color: red;
-        }
-
         .pagination {
             display: flex;
             justify-content: center;
             margin-top: 20px;
         }
-
         .pagination span {
             display: flex;
         }
-
         .pagination a, .pagination span.current {
             margin: 0 5px;
             padding: 8px 12px;
@@ -127,37 +86,35 @@
             border: 1px solid #ddd;
             border-radius: 4px;
         }
-
         .pagination a:hover {
             background-color: #f0f0f0;
         }
-
         .pagination span.current {
             background-color: #007bff;
             color: white;
             border: 1px solid #007bff;
         }
-
+        .body-container {
+            padding: 20px 50px;
+        }
+        .pending-approval-text {
+            color: red;
+        }
         .filter-form {
             display: flex;
             align-items: center;
             margin-bottom: 20px;
-            flex-wrap: wrap;
-            justify-content: center;
         }
-
         .filter-form label {
             margin-right: 10px;
             font-weight: bold;
         }
-
         .filter-form select {
             padding: 5px 10px;
             border: 1px solid #ccc;
             border-radius: 4px;
             margin-right: 10px;
         }
-
         .filter-form button {
             padding: 8px 16px;
             border: none;
@@ -166,61 +123,97 @@
             border-radius: 4px;
             cursor: pointer;
         }
-
         .filter-form button:hover {
             background-color: #0056b3;
         }
-
         .table-wrapper {
             width: 100%;
             overflow-x: auto;
         }
+        .report-count {
+            font-size : 17px;
+            color : #727875;
+        }
+        .title-cell, .content-cell {
+            max-width: 150px;
+        }
+        .top-table thead tr th{
+            background-color : #f1b477;
+        }
+        .bottom-table thead tr th {
+            background-color : #b8efed;
+        }
+        .top-table tbody tr:hover,
+        .bottom-table tbody tr:hover
+        {
+            background-color: #bebebe;
+        }
+        .table-wrapper {
+            background-color : #d5d4ce;
+        }    
     </style>
     {% endblock %}
 </head>
 <body>
     {% block content %}
-    <div class="select_list">
+    <div class="select-list">
         <a id='not_selected' href="{% url 'management_app:care_list' %}">케어 목록</a>
         <a id='selected' href="{% url 'management_app:report_list' %}">보고서 목록</a>
     </div>
     <div class="body-container">
-
         <div>
-            <h2>작성 <span class="pending-approval-text">예정</span> 보고서 목록 ({{ pending_reports_count }}개)</h2>
+            <h2>[작성 <span class="pending-approval-text">예정</span> 보고서] 목록 <span class="report-count">({{ pending_reports_count }}개)</span></h2>
+            <form method="get" class="filter-form">
+                <label for="sort_by_pending">정렬:</label>
+                <select name="sort_by_pending" id="sort_by_pending">
+                    <option value="care_type" {% if current_sort_by_pending == 'care_type' %}selected{% endif %}>케어 타입</option>
+                    <option value="datetime" {% if current_sort_by_pending == 'datetime' %}selected{% endif %}>시간</option>
+                    <option value="care_state" {% if current_sort_by_pending == 'care_state' %}selected{% endif %}>케어 상태</option>
+                </select>
+                <select name="order_pending" id="order_pending">
+                    <option value="asc" {% if current_order_pending == 'asc' %}selected{% endif %}>오름차순</option>
+                    <option value="desc" {% if current_order_pending == 'desc' %}selected{% endif %}>내림차순</option>
+                </select>
+                <label for="user_pending">신청자:</label>
+                <select name="user_pending" id="user_pending">
+                    <option value="">전체</option>
+                    {% for user in users %}
+                        <option value="{{ user.id }}" {% if user.id == selected_user_pending %}selected{% endif %}>{{ user.username }}</option>
+                    {% endfor %}
+                </select>
+                <button type="submit">적용하기</button>
+            </form>
         </div>
         <div class="table-wrapper">
-            <table class="table-care">
+            <table class="top-table">
                 <thead>
                     <tr>
+                        <th>대상 어르신</th>
                         <th>케어 타입</th>
-                        <th>케어 신청 날짜</th>
                         <th>제목</th>
                         <th>내용</th>
-                        <th>대상 어르신</th>
-                        <th>주소</th>
                         <th>파킨슨병 진단 요청</th>
-                        <th></th>
+                        <th>주소</th>
+                        <th>케어 신청 날짜 / 방문 예정 날짜</th>
                     </tr>
                 </thead>
                 <tbody>
                     {% for care in pending_page_obj %}
-                        <tr>
-                            <td>{{ care.care_type }}</td>
-                            <td>{{ care.datetime }}</td>
-                            <td>{{ care.title }}</td>
-                            <td>{{ care.content }}</td>
+                        <tr class="clickable-row" onclick="redirectToCreateReport('{{ care.id }}')">
                             <td>{% for senior in care.seniors.all %}
                                 {{ senior.name }}{% if not forloop.last %}, {% endif %}
                             {% endfor %}</td>
-                            <td>서울특별시 서대문구 OO로 12</td>
+                            <td>{{ care.care_type }}</td>
+                            <td class="title-cell">{{ care.title }}</td>
+                            <td class="content-cell">{{ care.content }}</td>
                             <td>{% if care.parkinson_diagnosis %} O
                                 {%else%}X
                                 {%endif%}
                             </td>
-                            <td class="button-cell">
-                                <button type="button" onclick="redirectToCreateReport('{{ care.id }}')">보고서 작성 버튼</button>
-                            </td>
+                            <td>{% for senior in care.seniors.all %}
+                                {{ senior.address }} {{senior.detail_address}}{% if not forloop.last %}, {% endif %}
+                            {% endfor %}</td>
+                            <td>{{ care.datetime|date:"Y년 n월 j일 A g:i" }}{% if care.visit_date and care.visit_time %} / <br>{{ care.visit_date|date:"Y년 n월 j일" }} {{ care.visit_time|date:"A g:i" }}{% endif %}</td>
                         </tr>
                     {% endfor %}
                 </tbody>
@@ -230,80 +223,78 @@
         <div class="pagination">
             <span class="step-links">
                 {% if pending_page_obj.has_previous %}
-                    <a href="?pending_page=1&sort_by={{ sort_by }}&status_filter={{ status_filter }}&user={{ user_id }}&senior_ids={{ senior_ids|join:"," }}">&laquo; 처음</a>
-                    <a href="?pending_page={{ pending_page_obj.previous_page_number }}&sort_by={{ sort_by }}&status_filter={{ status_filter }}&user={{ user_id }}&senior_ids={{ senior_ids|join:"," }}">이전</a>
+                    <a href="?pending_page=1&sort_by_pending={{ current_sort_by_pending }}&order_pending={{ current_order_pending }}&user_pending={{ selected_user_pending }}">&laquo; 처음</a>
+                    <a href="?pending_page={{ pending_page_obj.previous_page_number }}&sort_by_pending={{ current_sort_by_pending }}&order_pending={{ current_order_pending }}&user_pending={{ selected_user_pending }}">이전</a>
                 {% endif %}
 
                 {% for num in pending_page_obj.paginator.page_range %}
                     {% if pending_page_obj.number == num %}
                         <span class="current">{{ num }}</span>
                     {% elif num > pending_page_obj.number|add:'-3' and num < pending_page_obj.number|add:'3' %}
-                        <a href="?pending_page={{ num }}&sort_by={{ sort_by }}&status_filter={{ status_filter }}&user={{ user_id }}&senior_ids={{ senior_ids|join:"," }}">{{ num }}</a>
+                        <a href="?pending_page={{ num }}&sort_by_pending={{ current_sort_by_pending }}&order_pending={{ current_order_pending }}&user_pending={{ selected_user_pending }}">{{ num }}</a>
                     {% endif %}
                 {% endfor %}
 
                 {% if pending_page_obj.has_next %}
-                    <a href="?pending_page={{ pending_page_obj.next_page_number }}&sort_by={{ sort_by }}&status_filter={{ status_filter }}&user={{ user_id }}&senior_ids={{ senior_ids|join:"," }}">다음</a>
-                    <a href="?pending_page={{ pending_page_obj.paginator.num_pages }}&sort_by={{ sort_by }}&status_filter={{ status_filter }}&user={{ user_id }}&senior_ids={{ senior_ids|join:"," }}">마지막 &raquo;</a>
+                    <a href="?pending_page={{ pending_page_obj.next_page_number }}&sort_by_pending={{ current_sort_by_pending }}&order_pending={{ current_order_pending }}&user_pending={{ selected_user_pending }}">다음</a>
+                    <a href="?pending_page={{ pending_page_obj.paginator.num_pages }}&sort_by_pending={{ current_sort_by_pending }}&order_pending={{ current_order_pending }}&user_pending={{ selected_user_pending }}">마지막 &raquo;</a>
                 {% endif %}
             </span>
         </div>
 
         <hr style="margin:50px 0px;">
         
-        <h2>작성 <span class="pending-approval-text">완료</span> 보고서 목록</h2>
+        <h2>[작성 <span class="pending-approval-text">완료</span> 보고서] 목록</h2>
         <form method="get" class="filter-form">
-            <label for="sort_by">정렬:</label>
-            <select name="sort_by" id="sort_by">
-                <option value="-created_at">최신순</option>
-                <option value="created_at">오래된 순</option>
+            <label for="sort_by_approved">정렬:</label>
+            <select name="sort_by_approved" id="sort_by_approved">
+                <option value="care_type" {% if current_sort_by_approved == 'care_type' %}selected{% endif %}>케어 타입</option>
+                <option value="datetime" {% if current_sort_by_approved == 'datetime' %}selected{% endif %}>시간</option>
+                <option value="care_state" {% if current_sort_by_approved == 'care_state' %}selected{% endif %}>케어 상태</option>
             </select>
-            <label for="status_filter">상태:</label>
-            <select name="status_filter" id="status_filter">
-                <option value="all">전체</option>
-                <option value="completed">등록완료</option>
-                <option value="not_completed">미등록</option>
+            <select name="order_approved" id="order_approved">
+                <option value="asc" {% if current_order_approved == 'asc' %}selected{% endif %}>오름차순</option>
+                <option value="desc" {% if current_order_approved == 'desc' %}selected{% endif %}>내림차순</option>
             </select>
-            <label for="volunteer_id">승인한 봉사자:</label>
-            <select name="volunteer_id" id="volunteer_id">
-                {% for volunteer in volunteers %}
-                    <option value="{{ volunteer.id }}" {% if volunteer.id|stringformat:"s" == selected_volunteer_id %}selected{% endif %}>
-                        {{ volunteer.username }}{% if volunteer.id == request.user.id %} (현재 로그인){% endif %}
-                    </option>
+            <label for="user_approved">신청자:</label>
+            <select name="user_approved" id="user_approved">
+                <option value="">전체</option>
+                {% for user in users %}
+                    <option value="{{ user.id }}" {% if user.id == selected_user_approved %}selected{% endif %}>{{ user.username }}</option>
                 {% endfor %}
             </select>
-            <label for="senior">대상 어르신:</label>
-            <select name="senior_ids" id="senior">
-                <option value="all">전체</option>
-                {% for senior in seniors %}
-                    <option value="{{ senior.id }}_{{ senior.user_id }}" {% if senior.id|stringformat:"s" == selected_senior_id %}selected{% endif %}>
-                        {{ senior.name }} (보호자: {{ senior.user_id__username }})
-                    </option>
-                {% endfor %}
-            </select>
-            <button type="submit">적용</button>
+            <button type="submit">적용하기</button>
         </form>
         <div class="table-wrapper">
-            <table class="table-report">
+            <table class="bottom-table">
                 <thead>
                     <tr>
-                        <th>보고서 상태</th>
-                        <th>등록 시간</th>
-                        <th>제목</th>
                         <th>대상 어르신</th>
+                        <th>케어 타입</th>
+                        <th>제목</th>
+                        <th>내용</th>
+                        <th>파킨슨병 진단 요청</th>
                         <th>주소</th>
+                        <th>방문 날짜 / 보고서 작성 날짜</th>
                     </tr>
                 </thead>
                 <tbody>
                     {% for report in report_page_obj %}
                         <tr class="clickable-row" onclick="redirectToManageReport('{{ report.id }}')">
-                            <td>{{ report.status }}</td>
-                            <td>{{ report.created_at }}</td>
-                            <td>{{ report.care.title }}</td>
                             <td>{% for senior in report.care.seniors.all %}
                                 {{ senior.name }}{% if not forloop.last %}, {% endif %}
                             {% endfor %}</td>
-                            <td>서울특별시 서대문구 OO로 1</td>
+                            <td>{{ report.care.care_type }}</td>
+                            <td class="title-cell">{{ report.care.title }}</td>
+                            <td class="content-cell">{{ report.care.content }}</td>
+                            <td>{% if report.care.parkinson_diagnosis %} O
+                                {%else%}X
+                                {%endif%}
+                            </td>
+                            <td>{% for senior in report.care.seniors.all %}
+                                {{ senior.address }} {{senior.detail_address}}{% if not forloop.last %}, {% endif %}
+                            {% endfor %}</td>
+                            <td>{% if report.care.visit_date and report.care.visit_time %}{{ report.care.visit_date|date:"Y년 n월 j일" }} {{ report.care.visit_time|date:"A g:i" }} / <br>{% endif %}{{ report.updated_at|date:"Y년 n월 j일 A g:i" }}</td>
                         </tr>
                     {% endfor %}
                 </tbody>
@@ -313,21 +304,21 @@
         <div class="pagination">
             <span class="step-links">
                 {% if report_page_obj.has_previous %}
-                    <a href="?report_page=1&sort_by={{ sort_by }}&status_filter={{ status_filter }}&user={{ user_id }}&senior_ids={{ senior_ids|join:"," }}">&laquo; 처음</a>
-                    <a href="?report_page={{ report_page_obj.previous_page_number }}&sort_by={{ sort_by }}&status_filter={{ status_filter }}&user={{ user_id }}&senior_ids={{ senior_ids|join:"," }}">이전</a>
+                    <a href="?report_page=1&sort_by_approved={{ current_sort_by_approved }}&order_approved={{ current_order_approved }}&user_approved={{ selected_user_approved }}">&laquo; 처음</a>
+                    <a href="?report_page={{ report_page_obj.previous_page_number }}&sort_by_approved={{ current_sort_by_approved }}&order_approved={{ current_order_approved }}&user_approved={{ selected_user_approved }}">이전</a>
                 {% endif %}
 
                 {% for num in report_page_obj.paginator.page_range %}
                     {% if report_page_obj.number == num %}
                         <span class="current">{{ num }}</span>
                     {% elif num > report_page_obj.number|add:'-3' and num < report_page_obj.number|add:'3' %}
-                        <a href="?report_page={{ num }}&sort_by={{ sort_by }}&status_filter={{ status_filter }}&user={{ user_id }}&senior_ids={{ senior_ids|join:"," }}">{{ num }}</a>
+                        <a href="?report_page={{ num }}&sort_by_approved={{ current_sort_by_approved }}&order_approved={{ current_order_approved }}&user_approved={{ selected_user_approved }}">{{ num }}</a>
                     {% endif %}
                 {% endfor %}
 
                 {% if report_page_obj.has_next %}
-                    <a href="?report_page={{ report_page_obj.next_page_number }}&sort_by={{ sort_by }}&status_filter={{ status_filter }}&user={{ user_id }}&senior_ids={{ senior_ids|join:"," }}">다음</a>
-                    <a href="?report_page={{ report_page_obj.paginator.num_pages }}&sort_by={{ sort_by }}&status_filter={{ status_filter }}&user={{ user_id }}&senior_ids={{ senior_ids|join:"," }}">마지막 &raquo;</a>
+                    <a href="?report_page={{ report_page_obj.next_page_number }}&sort_by_approved={{ current_sort_by_approved }}&order_approved={{ current_order_approved }}&user_approved={{ selected_user_approved }}">다음</a>
+                    <a href="?report_page={{ report_page_obj.paginator.num_pages }}&sort_by_approved={{ current_sort_by_approved }}&order_approved={{ current_order_approved }}&user_approved={{ selected_user_approved }}">마지막 &raquo;</a>
                 {% endif %}
             </span>
         </div>
@@ -342,36 +333,6 @@
             const url = "{% url 'management_app:update_report' 0 %}".replace('0', reportId);
             location.href = url;
         }
-        
-        document.addEventListener("DOMContentLoaded", function() {
-            var volunteerSelect = document.getElementById("volunteer_id");
-            var seniorSelect = document.getElementById("senior");
-
-            function loadSeniorsForVolunteer(volunteerId) {
-                fetch(`api/seniors_for_volunteer/${volunteerId}/`)
-                    .then(response => response.json())
-                    .then(data => {
-                        seniorSelect.innerHTML = '<option value="all">전체</option>';
-                        data.seniors.forEach(function(senior) {
-                            var option = document.createElement("option");
-                            option.value = senior.id + '_' + senior.user_id;
-                            option.textContent = senior.name + " (보호자: " + senior.user_id__username + ")";
-                            seniorSelect.appendChild(option);
-                        });
-                    });
-            }
-
-            loadSeniorsForVolunteer(volunteerSelect.value);
-
-            volunteerSelect.addEventListener("change", function() {
-                var selectedVolunteer = volunteerSelect.value;
-                if (selectedVolunteer === "all") {
-                    seniorSelect.innerHTML = '<option value="all">전체</option>';
-                } else {
-                    loadSeniorsForVolunteer(selectedVolunteer);
-                }
-            });
-        });
     </script>
     {% endblock %}
 </body>

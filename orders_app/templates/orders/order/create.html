@@ -1,4 +1,4 @@
-{% extends "base.html" %}
+{% extends "shop/product/base_shop.html" %}
 
 {% block title %}
   Checkout
@@ -8,11 +8,23 @@
 {{ block.super }}
 <style>
 
-.order-info, form {
+.order-info {
     width: 80%;
     max-width: 600px;
     margin: 20px auto;
     padding: 20px;
+    background: #fff;
+    border-radius: 10px;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+    overflow:scroll;
+}
+
+form {
+    width: 80%;
+    max-width: 600px;
+    margin: 20px auto;
+    padding: 20px;
+    height:430px;
     background: #fff;
     border-radius: 10px;
     box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);

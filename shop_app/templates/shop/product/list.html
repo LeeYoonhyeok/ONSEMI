@@ -10,54 +10,213 @@
 {% block content %}
 {{ block.super }}
 <style>
-  .cate {
-    text-align: center;
+
+  body {
+    margin: 0;
+    padding: 0;
+    overflow-x: hidden; /* Prevent horizontal scrolling */
   }
+
+  .banner {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #026738; /* Green background color */
+    padding-right:80px;
+    padding-left:80px;
+    color: white;
+    margin-bottom: 20px; /* Add some space below the banner */
+  }
+  .banner-text {
+    max-width: 50%;
+  }
+
+  .banner-text h1 {
+    font-size: 2em;
+    margin: 0 0 10px;
+  }
+
+  .banner-text p {
+    font-size: 1.2em;
+    margin: 0;
+  }
+
+  .banner img {
+    max-width: 45%;
+    height: auto;
+  }
+
   #content {
     display: flex;
-    flex-wrap: wrap;
+    flex-direction: row;
+    align-items: flex-start;
+    width: 100%;
+    max-width: 100%;
   }
 
-  #sidebar {
-    order: 1;
-    width: 100%; /* 사이드바를 전체 너비로 설정 */
-  }
-
-  #main {
-    order: 3;
-    flex: 3; /* 나머지 공간을 차지하도록 설정 */
-    margin-right: 20px;
-  }
-
-  .recent-products {
-    order: 4;
-    margin-top: 30px;
-    margin-left: 20px;
-    padding: 20px;
-    background-color: #f9f9f9;
-    border-radius: 8px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    max-width: 150px; /* Adjusted width */
-    margin-bottom: 30px;
-    position: sticky;
-  }
-
-  .recent-products h2 {
-    text-align: center;
+  .header {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    border-bottom: 1px solid #ddd;
+    align-items: center;
     margin-bottom: 20px;
+  }
+
+  .categories {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    width: 20%;
+    padding: 20px;
+    border-right: 1px solid #ddd;
+    box-sizing: border-box;
+  }
+
+  .cate {
     font-size: 1.5em;
-    color: #333;
+    margin-bottom: 10px;
+  }
+
+  .categories ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .categories li {
+    margin-bottom: 10px;
+  }
+
+  .categories li a {
+    text-decoration: none;
+    padding: 10px 20px;
+    border-radius: 4px;
+    transition: background-color 0.3s, color 0.3s;
+    display: block;
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  .categories li.selected a,
+  .categories li a:hover {
+    background-color: #156741;
+    color: #fff;
+  }
+
+  .order-history {
+    display: flex;
+    justify-content: flex-end;
+    width: 100%;
+    margin-bottom: 10px;
+  }
+
+  .order-history a {
+    text-decoration: none;
+    color: #fff;
+    background-color: #156741;
+    padding: 10px 20px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    transition: background-color 0.3s, color 0.3s;
+    margin-left: 10px;
+  }
+
+  .order-history a:hover {
+    background-color: #218838; /* Darker green for hover */
+    color: #fff;
+  }
+
+  .main-content {
+    flex-direction: column;
+    width: 60%;
+    margin-left: 20px;
+  }
+
+  .price-list {
+    width: 100%;
+    margin: 0 auto; /* Center the table */
+    border-collapse: collapse;
+    border: 1px solid #ddd;
+  }
+
+  .price-list tr {
+    border-bottom: 1px solid #ddd;
+  }
+
+  .price-list th, .price-list td {
+    padding: 10px;
+    text-align: left;
+  }
+
+  .number {
+    background-color: #156741;
+    color: white;
+    border-radius: 50%;
+    width: 30px;
+    height: 30px;
+    line-height: 30px;
+    display: inline-block;
+    text-align: center;
+    margin-right: 10px;
+  }
+
+  .item-name {
+    font-weight: bold;
+    display: inline-block;
+    width: 15%;
+  }
+
+  .price {
+    display: inline-block;
+  }
+
+  .change-increase {
+    color: red;
+    display: inline-block;
+  }
+
+  .change-decrease {
+    color: blue;
+    display: inline-block;
+  }
+
+  .recent-products-container {
+    position: fixed;
+    bottom: 10px;
+    right: 10px;
+    width: 100px;
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    z-index: 1000;
+    overflow-y: auto;
+  }
+
+  .recent-products-header {
+    background-color: #f8f9fa;
+    padding: 10px;
+    text-align: center;
+    font-weight: bold;
+    border-bottom: 1px solid #ddd;
+    font-size: 12px;
+  }
+
+  .recent-products-content {
+    max-height: 300px;
+    overflow-y: auto;
   }
 
   .recent-products .product-item {
     display: flex;
     flex-direction: column;
     align-items: center;
-    margin-bottom: 20px;
-    padding: 20px;
-    background-color: #fff;
-    border: 1px solid #ddd;
-    border-radius: 8px;
+    padding: 5px;
+    border-bottom: 1px solid #ddd;
     transition: transform 0.2s, box-shadow 0.2s;
   }
 
@@ -67,194 +226,196 @@
   }
 
   .recent-products img {
-    width: 100px;
-    height: 100px;
-    margin-bottom: 10px;
-    border: 2px solid #eee;
-    border-radius: 8px;
+    width: 80px;
+    height: 80px;
+    margin-bottom: 5px;
+    border-radius: 4px;
   }
 
   .recent-products h3 {
+    font-size: 0.8em;
+    margin-bottom: 5px;
     text-align: center;
-    margin: 10px 0;
-    font-size: 1.2em;
-    color: #333;
-  }
-
-  .recent-products form {
-    display: flex;
-    justify-content: center;
-    margin-top: 10px;
   }
 
   .recent-products button {
     background-color: #ff4d4d;
     color: white;
     border: none;
-    padding: 5px 10px;
+    padding: 3px 5px;
     border-radius: 4px;
     cursor: pointer;
     transition: background-color 0.2s;
+    font-size: 0.8em;
   }
 
   .recent-products button:hover {
     background-color: #e60000;
   }
-
-  #sidebar ul {
-    display: flex; /* ul 내부 요소를 가로로 배치 */
-    flex-direction: row; /* 방향을 가로로 설정 */
-    list-style: none; /* 기본 목록 스타일 제거 */
-    padding: 0; /* 기본 패딩 제거 */
-    margin: 0; /* 기본 마진 제거 */
-    justify-content: space-between; /* 가로 방향으로 중앙 정렬 */
-    align-items: center; /* 세로 방향으로 중앙 정렬 */
-    margin-bottom: 15px;
-  }
-
-  #sidebar li {
-    margin: 0 50px; /* 각 항목 간의 간격을 50px로 설정 */
-  }
-
-  #sidebar li a {
-    display: inline-block; /* a 요소를 인라인 블록으로 설정하여 가로로 나열 */
-    padding: 5px 10px; /* 적절한 패딩 추가 */
-    text-decoration: none; /* 텍스트 밑줄 제거 */
-    color: #000; /* 텍스트 색상 설정 */
-  }
-
-  #sidebar li.selected a {
-    color: white; /* 선택된 항목 글자색 */
-    border-radius: 4px; /* 선택된 항목 모서리 둥글게 */
-  }
-
   .product-list {
     display: flex;
-    justify-content: center;
-    flex-wrap: wrap;  /*줄바꿈 설정 */
-    gap: 20px; /* 요소 간의 간격 설정 */
+    flex-wrap: wrap;
+    justify-content: space-around;
+    width: 100%;
   }
 
-  .product-list h1 {
-    flex-basis: 100%; /* h1이 전체 너비를 차지하도록 설정 */
-    /*margin-bottom: 10px; /* h1과 나머지 요소 간의 간격 설정 */
-  }
-
-  .ordered-list-container {
+  .product-list .item {
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    text-align: center;
+    margin-bottom: 20px;
+    padding: 10px;
+    transition: transform 0.3s, box-shadow 0.3s;
+    width: calc(33% - 20px); /* Adjust as needed */
+    box-sizing: border-box;
+    height: 300px; /* Fixed height */
     display: flex;
-    justify-content: flex-end;
-    padding-right: 20px;
-  }
-  .ordered-list {
-      text-decoration: none; /* 밑줄 제거 */
-      color: black; /* 원하는 색상으로 변경하세요 */
-      padding: 0; /* 패딩을 0으로 설정하여 텍스트 부분만 클릭 가능하게 함 */
+    flex-direction: column;
+    justify-content: space-between;
   }
 
-  #predict-price-increase {
-    order: 2; /* 사이드바와 메인 콘텐츠 사이에 위치하도록 설정 */
-    width: 100%; /* 너비를 전체 너비로 설정 */
-    text-align: center; /* 텍스트를 중앙 정렬 */
-    margin: 20px 0; /* 위아래 마진 설정 */
-    font-size: 1.5em; /* 글자 크기 설정 */
-    color: #333; /* 글자 색상 설정 */
+  .product-list .item:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   }
 
-  #predict-price-decrease {
-    order: 2; /* 사이드바와 메인 콘텐츠 사이에 위치하도록 설정 */
-    width: 100%; /* 너비를 전체 너비로 설정 */
-    text-align: center; /* 텍스트를 중앙 정렬 */
-    margin: 20px 0; /* 위아래 마진 설정 */
-    font-size: 1.5em; /* 글자 크기 설정 */
-    color: #333; /* 글자 색상 설정 */
+  .product-list img {
+    max-width: 100%;
+    max-height: 150px; /* Adjust height */
+    margin-bottom: 10px;
+    object-fit: contain; /* Ensure the image fits within the container */
+  }
+
+  .product-list a {
+    text-decoration: none;
+    color: #333;
+    font-size: 1.1em;
+    margin-bottom: 10px;
+    flex-grow: 1;
+  }
+
+  .product-list .item .price {
+    font-size: 1em;
+    color: #000;
+    margin-top: auto; /* Push the price to the bottom */
+  }
+
+  /* 반응형 스타일 */
+  @media (max-width: 768px) {
+    #content {
+      flex-direction: column;
+      align-items: center;
+      padding: 0;
+    }
+
+    .categories {
+      width: 100%;
+      align-items: center;
+      border-right: none;
+      border-bottom: 1px solid #ddd;
+    }
+
+    .categories ul {
+      flex-direction: row;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .categories li {
+      margin: 5px;
+    }
+
+    .main-content {
+      width: 100%;
+      margin-left: 0;
+    }
+
+    .price-list {
+      width: 100%;
+    }
+
+    .product-list .item {
+      width: calc(50% - 20px); /* Two items per row on medium screens */
+    }
+
+    .recent-products-container {
+      bottom: 20px;
+      right: 20px;
+      width: 120px;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .product-list .item {
+      width: calc(100% - 20px); /* One item per row on small screens */
+    }
+
+    .recent-products-container {
+      bottom: 30px;
+      right: 30px;
+      width: 140px;
+    }
+  }
+
+  .price-prediction {
+    width: 100%;
+    margin-top: 20px;
+  }
+
+  .price-prediction-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+    padding: 10px;
+    background-color: #f8f9fa;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+  }
+
+  .price-prediction-content {
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-top: none;
   }
 
   .predict-price {
-    order: 2; /* 사이드바와 메인 콘텐츠 사이에 위치하도록 설정 */
-    width: 100%; /* 너비를 전체 너비로 설정 */
-    text-align: center; /* 텍스트를 중앙 정렬 */
-    margin: 20px 0; /* 위아래 마진 설정 */
-    font-size: 1.5em; /* 글자 크기 설정 */
-    color: #333; /* 글자 색상 설정 */
+    display: flex;
+    justify-content: space-around;
+    margin-top: 10px;
   }
 
-  .highlight-increase {
-    color: red;
-  }
-
-  .highlight-decrease {
-    color: blue;
-  }
-
-  .price-list {
-    width: 40%;
-    border-collapse: collapse;
-    margin: 0 auto;
-  }
-  .price-list tr {
-    border-bottom: 1px dotted #ccc;
-  }
-  .number {
-    display: inline-block;
-    background-color: #156741;
+  .predict-price button {
+    background-color: #f44336;
     color: white;
-    border-radius: 50%;
-    width: 50px;
-    height: 50px;
-    line-height: 50px;
-    margin-right: 10px;
-    font-size: 20px;
-  }
-  .item-name {
-    font-size: 25px;
-    font-weight: bold;
-    margin-right: 100px;
-  }
-  .price {
-    font-size: 20px;
-  }
-  .change-decrease {
-    font-size: 20px;
-    color: blue;
-  }
-  .change-increase{
-    font-size: 20px;
-    color: red;
-  }
-  button {
-    border: none; /* Remove borders */
-    color: white; /* White text */
-    padding: 15px 32px; /* Some padding */
-    text-align: center; /* Centered text */
-    display: inline-block; /* Make the buttons appear inline */
-    font-size: 16px; /* Increase font size */
-    font-weight: bold;
-    margin: 4px 2px; /* Some margin */
-    cursor: pointer; /* Pointer/hand icon */
-    border-radius: 20px; /* Rounded corners */
+    border: none;
+    padding: 10px 20px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s;
   }
 
-  button:hover {
-      color: black; /* Black text on hover */
+
+  .predict-price button:nth-child(2) {
+    background-color: blue;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s;
   }
 
-  #show-decrease {
-      background-color: #008CBA; /* Blue background for increase button */
+  .price-prediction button:nth-child(1):hover {
+    background-color: darkred; /* 상승 예측 버튼 호버 효과 */
   }
 
-  #show-decrease:hover {
-      border: 2px solid #f44336; /* Red border on hover */
+  .price-prediction button:nth-child(2):hover {
+    background-color: darkblue; /* 하락 예측 버튼 호버 효과 */
   }
-
-  #show-increase {
-      background-color: #f44336; /* Red background for decrease button */
-  }
-
-  #show-increase:hover {
-      border: 2px solid #008CBA; /* Blue border on hover */
-  }
-
 </style>
+
 <body>
 <div id="content">
   <div id="sidebar">
@@ -354,14 +515,27 @@
           {% csrf_token %}
           <button type="submit">X</button>
         </form>
+
       </div>
-    {% endfor %}
+    </div>
   </div>
 </div>
 {% endblock %}
 
 {% block script %}
 <script>
+
+  function togglePricePrediction() {
+    var content = document.getElementById('price-prediction-content');
+    var icon = document.getElementById('price-toggle-icon');
+    if (content.style.display === 'none' || content.style.display === '') {
+      content.style.display = 'block';
+      icon.textContent = '-';
+    } else {
+      content.style.display = 'none';
+      icon.textContent = '+';
+    }
+  }
   document.getElementById('show-decrease').addEventListener('click', function() {
     document.getElementById('predict-price-decrease').style.display = 'block';
     document.getElementById('predict-price-increase').style.display = 'none';

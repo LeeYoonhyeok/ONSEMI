@@ -10,19 +10,28 @@
     <style>
         header {
             background-color: #f9f9f9;
-            margin-bottom: 20px;
         }
         table {
             width: 100%;
-            border-collapse: collapse;
+            border-collapse: collapse;            
         }
         th, td {
             padding: 8px 12px;
             border: 1px solid #ddd;
+            text-align: center;
+            white-space: nowrap;
+            border-color: #b4b3b0;
         }
         th {
             background-color: #f4f4f4;
             cursor: pointer;
+        }
+
+        td.title, td.content {
+            max-width: 150px; /* Adjust the width as needed */
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
         }
 
         .clickable-row {
@@ -38,7 +47,8 @@
             text-align: left;
             display: flex;
             border-bottom: 2px solid #ddd;
-            background-color : white;
+            background-color: white;
+            padding-top: 20px;
         }
         
         .select-list a {
@@ -94,7 +104,7 @@
             border: 1px solid #007bff;
         }
         .body-container {
-            padding: 20px;
+            padding: 20px 50px;
         }
         .pending-approval-text {
             color: red;
@@ -125,65 +135,152 @@
         .filter-form button:hover {
             background-color: #0056b3;
         }
+        .care-count {
+            font-size : 17px;
+            color : #727875;
+        }
+        .top-table thead tr th{
+            background-color : #f1b477;
+        }
+        .bottom-table thead tr th {
+            background-color : #b8efed;
+        }
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.5);
+        }
+
+        .modal-content {
+            background-color: #fff;
+            margin: 10% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+            max-width: 800px;
+            border-radius: 10px;
+            position: relative;
+            height: auto; /* 높이를 자동으로 조정 */
+            max-height: 80vh; /* 최대 높이를 설정 */
+            overflow-y: auto; /* 내용이 넘치지 않도록 설정 */
+        }
+        .modal-content h1 {
+            text-align : center;
+        }
+
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            position: absolute;
+            top: 10px;
+            right: 25px;
+        }
+
+        .close:hover,
+        .close:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+        .modal-container {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            display: block;
+            flex-grow: 1; /* 컨텐츠가 모달의 대부분을 차지하게 함 */
+            overflow-y: auto; /* 컨텐츠가 많으면 스크롤바 생성 */
+        }
+
+        .modal-container p {
+            margin-bottom: 10px;
+            word-wrap: break-word; /* 긴 단어를 자동으로 줄바꿈 */
+            white-space: pre-wrap; /* 공백과 줄바꿈을 그대로 유지 */
+        }
+        .update-button {
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            cursor: pointer;
+            border-radius: 5px;
+            font-size: 16px;
+            float:left;
+            margin-left: 10px;
+            background-color: #156741;
+        }
+        .update-button:hover {
+            background-color: #104e31;
+        }
     </style>
     {% endblock %}
 </head>
 <body>
     {% block content %}
-    <div class = "select-list">
+    <div class="select-list">
         <a id='selected' href="{% url 'management_app:care_list' %}">케어 목록</a>
         <a id='not_selected' href="{% url 'management_app:report_list' %}">보고서 목록</a>
     </div>
-    <div class = "body-container">
+    <div class="body-container">
+        <h2>[요청 승인 <span class="pending-approval-text">대기</span>] 목록 <span class="care-count"> ({{ page_obj1.paginator.count }}개)</span></h2>
         <form method="get" class="filter-form">
-            <label for="sort_by">정렬:</label>
-            <select name="sort_by" id="sort_by">
-                <option value="care_type" {% if current_sort_by == 'care_type' %}selected{% endif %}>케어 타입</option>
-                <option value="datetime" {% if current_sort_by == 'datetime' %}selected{% endif %}>시간</option>
-                <option value="care_state" {% if current_sort_by == 'care_state' %}selected{% endif %}>케어 상태</option>
+            <label for="sort_by_pending">정렬:</label>
+            <select name="sort_by_pending" id="sort_by_pending">
+                <option value="care_type" {% if current_sort_by_pending == 'care_type' %}selected{% endif %}>케어 타입</option>
+                <option value="datetime" {% if current_sort_by_pending == 'datetime' %}selected{% endif %}>시간</option>
+                <option value="care_state" {% if current_sort_by_pending == 'care_state' %}selected{% endif %}>케어 상태</option>
             </select>
-            <select name="order" id="order">
-                <option value="asc" {% if current_order == 'asc' %}selected{% endif %}>오름차순</option>
-                <option value="desc" {% if current_order == 'desc' %}selected{% endif %}>내림차순</option>
+            <select name="order_pending" id="order_pending">
+                <option value="asc" {% if current_order_pending == 'asc' %}selected{% endif %}>오름차순</option>
+                <option value="desc" {% if current_order_pending == 'desc' %}selected{% endif %}>내림차순</option>
             </select>
-            <label for="user">신청자:</label>
-            <select name="user" id="user">
+            <label for="user_pending">신청자:</label>
+            <select name="user_pending" id="user_pending">
                 <option value="">전체</option>
                 {% for user in users %}
-                    <option value="{{ user.id }}" {% if user.id == selected_user %}selected{% endif %}>{{ user.username }}</option>
+                    <option value="{{ user.id }}" {% if user.id == selected_user_pending %}selected{% endif %}>{{ user.username }}</option>
                 {% endfor %}
             </select>
             <button type="submit">적용하기</button>
         </form>
-
-        <h2>[요청 승인 <span class="pending-approval-text">대기</span>] 목록</h2>
-        <table>
+        <table class="top-table">
             <thead>
                 <tr>
-                    <th>케어타입</th>
-                    <th>시간</th>
-                    <th>제목</th>
-                    <th>상태</th>
-                    <th>신청자</th>
                     <th>대상 어르신</th>
+                    <th>케어 타입</th>
+                    <th class="title">제목</th>
+                    <th class="content">내용</th>
                     <th>파킨슨병 진단 요청</th>
+                    <th>주소</th>
+                    <th>케어 신청 날짜</th> 
                 </tr>
             </thead>
             <tbody>
                 {% for care in page_obj1.object_list %}
-                    <tr class="clickable-row" onclick="location.href='/management/care/list/status/update/{{care.id}}/'">
-                        <td>{{ care.care_type }}</td>
-                        <td>{{ care.datetime|date:"Y년 n월 j일 A g:i" }}</td>
-                        <td>{{ care.title }}</td>
-                        <td class="{% if care.care_state == 'NOT_APPROVED' %}pending-approval{% endif %}">{{ care.get_care_state_display }}</td>
-                        <td>{{ care.user_id.username }}</td>
+                <tr class="clickable-row" data-id="{{ care.id }}" data-title="{{ care.title }}" data-content="{{ care.content }}" data-caretype="{{ care.care_type }}" data-parkinson="{% if care.parkinson_diagnosis %}O{% else %}X{% endif %}" data-seniors="{% for senior in care.seniors.all %}{{ senior.name }}{% if not forloop.last %}, {% endif %}{% endfor %}" data-address="{% for senior in care.seniors.all %}{{ senior.address }} {{senior.detail_address}}{% if not forloop.last %}, {% endif %}{% endfor %}" data-datetime="{{ care.datetime|date:'Y년 n월 j일 A g:i' }}" data-visit_date="{{ care.visit_date|date:'Y년 n월 j일' }}" data-visit_time="{{ care.visit_time|time:'A g:i' }}">
+
                         <td>{% for senior in care.seniors.all %}
                             {{ senior.name }}{% if not forloop.last %}, {% endif %}
                         {% endfor %}</td>
+                        <td>{{ care.care_type }}</td>                            
+                        <td class="title">{{ care.title }}</td>
+                        <td class="content">{{ care.content }}</td>
                         <td>{% if care.parkinson_diagnosis %} O
                             {%else%}X
                             {%endif%}
                         </td>
+                        <td>{% for senior in care.seniors.all %}
+                            {{ senior.address }} {{senior.detail_address}}{% if not forloop.last %}, {% endif %}
+                        {% endfor %}</td>
+                        <td>{{ care.datetime|date:"Y년 n월 j일 A g:i" }}</td>
                     </tr>
                 {% endfor %}
             </tbody>
@@ -193,53 +290,76 @@
         <div class="pagination">
             <span class="step-links">
                 {% if page_obj1.has_previous %}
-                    <a href="?page1=1&sort_by={{ current_sort_by }}&order={{ current_order }}&user={{ selected_user }}">처음</a>
-                    <a href="?page1={{ page_obj1.previous_page_number }}&sort_by={{ current_sort_by }}&order={{ current_order }}&user={{ selected_user }}"><</a>
+                    <a href="?page1=1&sort_by_pending={{ current_sort_by_pending }}&order_pending={{ current_order_pending }}&user_pending={{ selected_user_pending }}">처음</a>
+                    <a href="?page1={{ page_obj1.previous_page_number }}&sort_by_pending={{ current_sort_by_pending }}&order_pending={{ current_order_pending }}&user_pending={{ selected_user_pending }}"><</a>
                 {% endif %}
 
                 {% for num in page_obj1.paginator.page_range %}
                     {% if page_obj1.number == num %}
                         <span class="current">{{ num }}</span>
                     {% elif num > page_obj1.number|add:'-2' and num < page_obj1.number|add:'3' %}
-                        <a href="?page1={{ num }}&sort_by={{ current_sort_by }}&order={{ current_order }}&user={{ selected_user }}">{{ num }}</a>
+                        <a href="?page1={{ num }}&sort_by_pending={{ current_sort_by_pending }}&order_pending={{ current_order_pending }}&user_pending={{ selected_user_pending }}">{{ num }}</a>
                     {% endif %}
                 {% endfor %}
 
                 {% if page_obj1.has_next %}
-                    <a href="?page1={{ page_obj1.next_page_number }}&sort_by={{ current_sort_by }}&order={{ current_order }}&user={{ selected_user }}">></a>
-                    <a href="?page1={{ page_obj1.paginator.num_pages }}&sort_by={{ current_sort_by }}&order={{ current_order }}&user={{ selected_user }}">마지막</a>
+                    <a href="?page1={{ page_obj1.next_page_number }}&sort_by_pending={{ current_sort_by_pending }}&order_pending={{ current_order_pending }}&user_pending={{ selected_user_pending }}">></a>
+                    <a href="?page1={{ page_obj1.paginator.num_pages }}&sort_by_pending={{ current_sort_by_pending }}&order_pending={{ current_order_pending }}&user_pending={{ selected_user_pending }}">마지막</a>
                 {% endif %}
             </span>
         </div>
-        <hr style = "margin:50px 0px;">
+        <hr style="margin:50px 0px;">
         <h2>[요청 승인 <span class="pending-approval-text">완료</span>] 목록</h2>
-        <table>
+        <form method="get" class="filter-form">
+            <label for="sort_by_approved">정렬:</label>
+            <select name="sort_by_approved" id="sort_by_approved">
+                <option value="care_type" {% if current_sort_by_approved == 'care_type' %}selected{% endif %}>케어 타입</option>
+                <option value="datetime" {% if current_sort_by_approved == 'datetime' %}selected{% endif %}>시간</option>
+                <option value="care_state" {% if current_sort_by_approved == 'care_state' %}selected{% endif %}>케어 상태</option>
+            </select>
+            <select name="order_approved" id="order_approved">
+                <option value="asc" {% if current_order_approved == 'asc' %}selected{% endif %}>오름차순</option>
+                <option value="desc" {% if current_order_approved == 'desc' %}selected{% endif %}>내림차순</option>
+            </select>
+            <label for="user_approved">신청자:</label>
+            <select name="user_approved" id="user_approved">
+                <option value="">전체</option>
+                {% for user in users %}
+                    <option value="{{ user.id }}" {% if user.id == selected_user_approved %}selected{% endif %}>{{ user.username }}</option>
+                {% endfor %}
+            </select>
+            <button type="submit">적용하기</button>
+        </form>
+        <table class="bottom-table">
             <thead>
                 <tr>
-                    <th>케어타입</th>
-                    <th>시간</th>
-                    <th>제목</th>
-                    <th>상태</th>
-                    <th>신청자</th>
                     <th>대상 어르신</th>
+                    <th>케어 타입</th>
+                    <th class="title">제목</th>
+                    <th class="content">내용</th>
                     <th>파킨슨병 진단 요청</th>
+                    <th>주소</th>
+                    <th>케어 신청 날짜 / 방문 예정 날짜</th> 
                 </tr>
             </thead>
             <tbody>
                 {% for care in page_obj2.object_list %}
-                    <tr class="clickable-row" onclick="location.href='/management/care/list/status/update/{{care.id}}/'">
-                        <td>{{ care.care_type }}</td>
-                        <td>{{ care.datetime|date:"Y년 n월 j일 A g:i" }}</td>
-                        <td>{{ care.title }}</td>
-                        <td>{{ care.get_care_state_display }}</td>
-                        <td>{{ care.user_id.username }}</td>
+                <tr class="clickable-row" data-id="{{ care.id }}" data-title="{{ care.title }}" data-content="{{ care.content }}" data-caretype="{{ care.care_type }}" data-parkinson="{% if care.parkinson_diagnosis %}O{% else %}X{% endif %}" data-seniors="{% for senior in care.seniors.all %}{{ senior.name }}{% if not forloop.last %}, {% endif %}{% endfor %}" data-address="{% for senior in care.seniors.all %}{{ senior.address }} {{senior.detail_address}}{% if not forloop.last %}, {% endif %}{% endfor %}" data-datetime="{{ care.datetime|date:'Y년 n월 j일 A g:i' }}" data-visit_date="{{ care.visit_date|date:'Y년 n월 j일' }}" data-visit_time="{{ care.visit_time|time:'A g:i' }}">
+
                         <td>{% for senior in care.seniors.all %}
                             {{ senior.name }}{% if not forloop.last %}, {% endif %}
                         {% endfor %}</td>
+                        <td>{{ care.care_type }}</td>                            
+                        <td class="title">{{ care.title }}</td>
+                        <td class="content">{{ care.content }}</td>
                         <td>{% if care.parkinson_diagnosis %} O
                             {%else%}X
                             {%endif%}
                         </td>
+                        <td>{% for senior in care.seniors.all %}
+                            {{ senior.address }} {{senior.detail_address}}{% if not forloop.last %}, {% endif %}
+                        {% endfor %}</td>
+                        <td>{{ care.datetime|date:"Y년 n월 j일 A g:i" }}{% if care.visit_date and care.visit_time %} / <br>{{ care.visit_date|date:"Y년 n월 j일" }} {{ care.visit_time|date:"A g:i" }}{% endif %}</td>
                     </tr>
                 {% endfor %}
             </tbody>
@@ -249,25 +369,103 @@
         <div class="pagination">
             <span class="step-links">
                 {% if page_obj2.has_previous %}
-                    <a href="?page2=1&sort_by={{ current_sort_by }}&order={{ current_order }}&user={{ selected_user }}">처음</a>
-                    <a href="?page2={{ page_obj2.previous_page_number }}&sort_by={{ current_sort_by }}&order={{ current_order }}&user={{ selected_user }}"><</a>
+                    <a href="?page2=1&sort_by_approved={{ current_sort_by_approved }}&order_approved={{ current_order_approved }}&user_approved={{ selected_user_approved }}">처음</a>
+                    <a href="?page2={{ page_obj2.previous_page_number }}&sort_by_approved={{ current_sort_by_approved }}&order_approved={{ current_order_approved }}&user_approved={{ selected_user_approved }}"><</a>
                 {% endif %}
 
                 {% for num in page_obj2.paginator.page_range %}
                     {% if page_obj2.number == num %}
                         <span class="current">{{ num }}</span>
                     {% elif num > page_obj2.number|add:'-2' and num < page_obj2.number|add:'3' %}
-                        <a href="?page2={{ num }}&sort_by={{ current_sort_by }}&order={{ current_order }}&user={{ selected_user }}">{{ num }}</a>
+                        <a href="?page2={{ num }}&sort_by_approved={{ current_sort_by_approved }}&order_approved={{ current_order_approved }}&user_approved={{ selected_user_approved }}">{{ num }}</a>
                     {% endif %}
                 {% endfor %}
 
                 {% if page_obj2.has_next %}
-                    <a href="?page2={{ page_obj2.next_page_number }}&sort_by={{ current_sort_by }}&order={{ current_order }}&user={{ selected_user }}">></a>
-                    <a href="?page2={{ page_obj2.paginator.num_pages }}&sort_by={{ current_sort_by }}&order={{ current_order }}&user={{ selected_user }}">마지막</a>
+                    <a href="?page2={{ page_obj2.next_page_number }}&sort_by_approved={{ current_sort_by_approved }}&order_approved={{ current_order_approved }}&user_approved={{ selected_user_approved }}">></a>
+                    <a href="?page2={{ page_obj2.paginator.num_pages }}&sort_by_approved={{ current_sort_by_approved }}&order_approved={{ current_order_approved }}&user_approved={{ selected_user_approved }}">마지막</a>
                 {% endif %}
             </span>
         </div>
     </div>
+
+    <!-- Modal Structure -->
+    <div id="careModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h1>케어 상세 정보</h1>
+            <div class="modal-container">
+                <p><strong>ㆍ대상 어르신 : </strong> <span id="modalSeniors"></span></p>
+                <p><strong>ㆍ케어 타입 : </strong> <span id="modalCareType"></span></p>
+                <p><strong>ㆍ제목 : </strong> <span id="modalTitle"></span></p>
+                <p><strong>ㆍ내용 : </strong> <span id="modalContent"></span></p>
+                <p><strong>ㆍ파킨슨병 진단 요청 : </strong> <span id="modalParkinson"></span></p>
+                <p><strong>ㆍ주소 : </strong> <span id="modalAddress"></span></p>
+                <p><strong>ㆍ케어 신청 날짜 : </strong> <span id="modalDatetime"></span></p>
+                <p id="visitTime-text" style="display: none;"><strong>ㆍ방문 예정 날짜 : </strong> <span id="visitTime"></span></p>
+                <button id="updateCareButton" class="update-button" style="display: none;">케어 작성하기</button>
+                <button id="updateCareButton2" class="update-button" style="display: none;">케어 수정하기</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const rows = document.querySelectorAll('.clickable-row');
+            const modal = document.getElementById('careModal');
+            const span = document.getElementsByClassName('close')[0];
+
+            rows.forEach(row => {
+                row.addEventListener('click', function() {
+                    const careId = this.dataset.id;
+                    document.getElementById('modalSeniors').textContent = this.dataset.seniors;
+                    document.getElementById('modalCareType').textContent = this.dataset.caretype;
+                    document.getElementById('modalTitle').textContent = this.dataset.title;
+                    document.getElementById('modalContent').textContent = this.dataset.content;
+                    document.getElementById('modalParkinson').textContent = this.dataset.parkinson;
+                    document.getElementById('modalAddress').textContent = this.dataset.address;
+                    document.getElementById('modalDatetime').textContent = this.dataset.datetime;
+                    const visitTimeElement = document.getElementById('visitTime');
+                    const visitTimeText = document.getElementById('visitTime-text');
+                    const updateButton = document.getElementById('updateCareButton');
+                    const updateButton2 = document.getElementById('updateCareButton2');
+
+                    visitTimeElement.style.display = 'none';
+                    visitTimeText.style.display = 'none';
+                    updateButton.style.display = 'none';
+                    updateButton2.style.display = 'none';
+
+                    if (this.dataset.visit_date) { // 방문 예정 날짜 정해지면
+                        visitTimeElement.textContent = this.dataset.visit_date + " " + this.dataset.visit_time;
+                        visitTimeText.style.display = 'block';
+                        visitTimeElement.style.display = 'inline';
+                        updateButton2.style.display = 'block';
+                        updateButton2.onclick = function() {
+                            window.location.href = `/management/care/list/status/update/${careId}/`;
+                        };
+                    } else {
+                        updateButton.style.display = 'block';
+                        updateButton.onclick = function() {
+                            window.location.href = `/management/care/list/status/update/${careId}/`;
+                        };
+                    }
+
+                    modal.style.display = 'block';
+
+                });
+            });
+
+            span.onclick = function() {
+                modal.style.display = 'none';
+            };
+
+            window.onclick = function(event) {
+                if (event.target == modal) {
+                    modal.style.display = 'none';
+                }
+            };
+        });
+    </script>
     {% endblock %}
 </body>
 </html>

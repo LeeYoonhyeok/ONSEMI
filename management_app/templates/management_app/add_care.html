@@ -95,6 +95,7 @@
                 if (data.error) {
                     alert(data.error);
                 } else if (data.success) {
+                    alert('케어 요청이 승인 되었습니다');
                     window.location.href = data.redirect_url;
                 }
             })
@@ -104,7 +105,7 @@
 </head>
 <body>
     <div class="container">
-        <h1>케어 작성</h1>
+        <h1>{{ selected_senior.name }}님의 케어 작성</h1>
         <form method="post" onsubmit="submitForm(event)">
             {% csrf_token %}
             <div class="form-group">
@@ -131,16 +132,14 @@
                 <label for="content">내용</label>
                 <textarea id="content" name="content" rows="5"></textarea>
             </div>
-            <div class="form-group">
+            <div class="form-group" style="display:none;">
                 <label for="senior">서비스 대상자</label>
                 <select id="senior" name="senior" required>
-                    {% for senior in seniors %}
-                        <option value="{{ senior.id }}">{{ senior.name }}</option>
-                    {% endfor %}
+                    <option value="{{ selected_senior.id }}" selected>{{ selected_senior.name }}</option>
                 </select>
             </div>
             <button type="submit" class="submit">요청</button>
-            <button type="button" onclick="window.location.href = '/monitoring/family_monitor/'" class="cancle">취소</button>
+            <button type="button" onclick="window.location.href = '/monitoring/family_monitor/?selected_senior_id={{selected_senior.id}}'" class="cancle">취소</button>
         </form>
     </div>
 </body>

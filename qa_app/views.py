@@ -1,15 +1,12 @@
 from django.shortcuts import render, redirect
-from django.contrib.auth import login, authenticate, logout
-from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib.auth.decorators import login_required
-from django.http import HttpResponse
 from django.http import JsonResponse
-from django import forms
-from django.urls import reverse
-from django.utils import timezone
-
+from datetime import datetime
+from pytz import timezone
+import sqlite3
+import pandas as pd
+import json
 from .models import ChatHistory
-
 from langchain.chat_models import ChatOpenAI
 from langchain_core.output_parsers import StrOutputParser
 from langchain_core.prompts import ChatPromptTemplate
@@ -19,44 +16,22 @@ from langchain.vectorstores import Chroma
 from langchain.chains import RetrievalQA, ConversationalRetrievalChain
 from langchain.memory import ConversationBufferMemory , ChatMessageHistory 
 from langchain.schema import Document
-
-import pandas as pd
-import os
-import sqlite3
-from datetime import datetime
-from django.shortcuts import render
-from pytz import timezone
-from django.contrib import messages
-
-# Create your views here.
-
-
-
-# 전역변수
-i = 0
-
-# Chroma 데이터베이스 초기화 - 사전에 database가 완성 되어 있다는 가정하에 진행 - aivleschool_qa.csv 내용이 저장된 상태임
+# Initialize Chroma database
 embeddings = OpenAIEmbeddings(model="text-embedding-ada-002")
 database = Chroma(persist_directory="./database", embedding_function=embeddings)
-
-
-# 채팅
+i = 0
 @login_required
 def chatting(request):
     global i
-    
-    if request.method == 'GET':
-        # 세션의 대화 내역 초기화
-        request.session['conversation'] = []
-        request.session.save()
-        
-    conversation = request.session.get('conversation', [])
-    memory = ConversationBufferMemory(memory_key="chat_history", input_key="question", output_key="answer", return_messages=True)
-    
-    embeddings = OpenAIEmbeddings(model="text-embedding-ada-002")
-    database = Chroma(persist_directory="./database", embedding_function=embeddings)
+
     if request.method == 'POST':
-        query = request.POST.get('question')
+        data = json.loads(request.body)
+        query = data.get('question')
+
+        conversation = request.session.get('conversation', [])
+        memory = ConversationBufferMemory(memory_key="chat_history", input_key="question", output_key="answer", return_messages=True)
+        embeddings = OpenAIEmbeddings(model="text-embedding-ada-002")
+        database = Chroma(persist_directory="./database", embedding_function=embeddings)
         
         seoul_time = datetime.now(timezone('Asia/Seoul')).strftime('%H:%M')
 
@@ -130,12 +105,12 @@ def chatting(request):
         metadata = [{'질문': category} for category in metadata_list]
         documents = [Document(page_content=text, metadata=meta) for text, meta in zip(text_list, metadata)]
         
-
         database.add_documents(documents)
         
-    return render(request, 'qa/chat.html', {'conversation': conversation})
+        return JsonResponse({'answer': result['answer']})
 
-# 대화 내용 초기화
+    return render(request, 'qa/chat.html', {'conversation': request.session.get('conversation', [])})
+
 @login_required
 def reset(request):
     global i
@@ -165,7 +140,7 @@ def reset(request):
     delete_list
     
     for i in delete_list:
-        database.delete(ids=i
-    )
+        database.delete(ids=i)
+    
     i = 0
-    return redirect('qa:chatting')
+    return JsonResponse({'status': 'reset'})

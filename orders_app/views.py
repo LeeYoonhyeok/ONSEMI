@@ -51,7 +51,7 @@ def export_orders_to_csv(request):
 
 @login_required
 def my_orders(request):
-    orders = Order.objects.filter(user=request.user)
+    orders = Order.objects.filter(user=request.user, paid=True)
     return render(request, 'orders/order/my_orders.html', {'orders': orders})
 
 @login_required

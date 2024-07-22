@@ -4,13 +4,8 @@
     font-weight: normal;
     font-style: normal;
 }
-html, body {
-    height: 100%;
-    margin: 0;
-    padding: 0;
-    font-family: 'GmarketSansMedium';
-  
-}
+
+
 
 body {
     display: flex;
@@ -27,11 +22,16 @@ body {
     flex: 1;
 }
 
+
+
 /* 추가 스타일 */
 header {
+
+    
     background: url('background.jpg') no-repeat center center;
     background-size: cover;
     padding: 20px 0;
+    z-index: 10; /* 헤더가 이미지 위에 보이도록 z-index 설정 */
 }
 .header-container {
     display: flex;
@@ -39,7 +39,7 @@ header {
     align-items: center;
     max-width: 100%;
     margin: 0 auto;
-    padding: 0 20px;
+   
 }
 
 .logo {
@@ -61,6 +61,7 @@ nav ul {
 
 nav ul li {
     margin: 0 15px;
+    color: rgb(0, 0, 0);
 }
 
 
@@ -71,7 +72,7 @@ nav ul li a {
 }
 
 nav ul li a:hover {
-    text-decoration: underline;
+    color: #156741;
 }
 
 .footer-content {
@@ -103,6 +104,8 @@ nav ul li a:hover {
     z-index: 1000; /* Ensures the link is above other content */
 }
 
+
+
 #chat-link {
     display: flex;
     align-items: center;
@@ -115,8 +118,31 @@ nav ul li a:hover {
     text-decoration: none;
     font-size: 24px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    border:none;
 }
 
 #chat-link:hover {
     background-color: #0056b3;
 }
+
+
+#chat-link2 {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 50px;
+    height: 50px;
+    background-color: #516b87;
+    border-radius: 50%;
+    color: white;
+    text-decoration: none;
+    font-size: 24px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    margin-top:20px;
+    
+}
+
+#chat-link:hover2 {
+    background-color: #0f2e4f;
+}
+

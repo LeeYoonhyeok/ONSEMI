@@ -58,7 +58,8 @@ def payment_success(request, order_id):
     cart = Cart(request)
     cart.clear()
 
-    return render(request, 'orders/order/created.html', {'order': order})
+    # return render(request, 'orders/order/created.html', {'order': order})
+    return render(request, 'payment_app/payment_success.html', {'order_id': order_id})
 
 def payment_fail(request, order_id):
     # 주문 실패 시 주문 삭제

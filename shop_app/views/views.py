@@ -11,6 +11,7 @@ from django.core.paginator import Paginator
 
 import pandas as pd
 
+
 @login_required
 def product_list(request, category_slug=None):
     
@@ -75,11 +76,8 @@ def product_list(request, category_slug=None):
 
 
 @login_required
-def product_detail(request, id, slug):
-    product = get_object_or_404(Product,
-                                id=id,
-                                slug=slug,
-                                available=True)
+def product_detail(request, id, slug, category_slug=None):
+    product = get_object_or_404(Product, id=id, slug=slug, available=True)
     cart_product_form = CartAddProductForm()
     stock_alert = product.stock <= 10
 
@@ -104,7 +102,13 @@ def product_detail(request, id, slug):
     paginator = Paginator(comments, 5)  
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
-    
+
+    # Category related context
+    categories = Category.objects.all()
+    category = None
+    if category_slug:
+        category = get_object_or_404(Category, slug=category_slug)
+
     context = {
         'product': product,
         'cart_product_form': cart_product_form,
@@ -115,8 +119,10 @@ def product_detail(request, id, slug):
         'has_purchased': has_purchased,
         'average_rating': average_rating,
         'page_obj': page_obj,
+        'categories': categories,
+        'category': category,
     }
-    return render(request,'shop/product/detail.html',context)
+    return render(request, 'shop/product/detail.html', context)
 
 
 @login_required
