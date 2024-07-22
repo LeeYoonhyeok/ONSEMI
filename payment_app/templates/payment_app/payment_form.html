@@ -5,6 +5,28 @@
 
 {% block content %}
 {{ block.super }}
+<style>
+    .button-container {
+        display: flex;
+        justify-content: flex-end;
+        margin-top: 20px;
+    }
+    
+    #payment_button {
+        background-color: blue;
+        color: white;
+        padding: 10px 20px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 16px;
+        float:right;
+    }
+    
+    #payment_button:hover {
+        background-color: darkblue;
+    }
+</style>
 <h1>주문 내용</h1>
 <table class="cart">
     <thead>
