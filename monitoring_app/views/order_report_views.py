@@ -44,6 +44,7 @@ def order_to_dataframe(orders):
             })
     df = pd.DataFrame(data)
     if 'created' in df.columns: #임의로 만든 데이터들은 created고 서비스 상에서 데이터를 쌓으면 Created임
+
         df['Created'] = pd.to_datetime(df['created'], format='ISO8601', errors='coerce') # 21일 새벽 오류 발견하여 최종 수정
 
     if 'Created' in df.columns: #임의로 만든 데이터들은 created고 서비스 상에서 데이터를 쌓으면 Created임
@@ -53,7 +54,9 @@ def order_to_dataframe(orders):
         df['Date'] = pd.to_datetime(df['Date'], format='ISO8601', errors='coerce')
 
     if 'quantity' in df.columns: #임의로 만든 데이터들은 created고 서비스 상에서 데이터를 쌓으면 Created임
+
         df['Quantity'] = df['quantity'].astype(float) # 21일 새벽 오류 발견하여 최종 수정
+
 
     if 'Quantity' in df.columns: #임의로 만든 데이터들은 created고 서비스 상에서 데이터를 쌓으면 Created임
         df['Quantity'] = df['Quantity'].astype(float)
@@ -179,11 +182,7 @@ def generate(request):
             # 데이터가 없을 경우 빈 꺾은선 그래프 생성
             plt.figure(figsize=(10, 6))
             plt.title('요청된 데이터가 없습니다', fontproperties=fm.FontProperties(fname=font_path))
-            plt.xlabel('기간', fontproperties=fm.FontProperties(fname=font_path))
-            plt.ylabel('요청횟수', fontproperties=fm.FontProperties(fname=font_path))
-            plt.xticks(rotation=45, fontproperties=fm.FontProperties(fname=font_path))
-            plt.yticks(fontproperties=fm.FontProperties(fname=font_path))
-            plt.tight_layout()
+            plt.axis('off')  # x축과 y축을 숨김
 
             # 빈 그래프 이미지를 메모리에 저장
             buffer = BytesIO()
@@ -212,7 +211,9 @@ def generate(request):
         all_df = pd.DataFrame(all_data)
 
         if not all_df.empty:
+
             all_df['Quantity'] = all_df['Quantity'].astype(float) # 21일 새벽 오류 발견하여 최종 수정
+
             plt.figure(figsize=(10, 6))
             category_counts = all_df.groupby('Category')['Quantity'].sum()
             plt.pie(category_counts, labels=category_counts.index, colors=colors[:len(category_counts)], autopct='%1.1f%%', startangle=140,
@@ -231,7 +232,7 @@ def generate(request):
         else:
             plt.figure(figsize=(10, 6))
             plt.title('요청된 데이터가 없습니다', fontproperties=fm.FontProperties(fname=font_path))
-            plt.axis('equal')
+            plt.axis('off')  # x축과 y축을 숨김
 
             buffer = BytesIO()
             plt.savefig(buffer, format='png')
