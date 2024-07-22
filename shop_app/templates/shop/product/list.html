@@ -1,3 +1,4 @@
+
 {% extends "shop/product/base_shop.html" %}
 {% load static %}
 
@@ -10,7 +11,6 @@
 {% block content %}
 {{ block.super }}
 <style>
-
   body {
     margin: 0;
     padding: 0;
@@ -27,6 +27,7 @@
     color: white;
     margin-bottom: 20px; /* Add some space below the banner */
   }
+
   .banner-text {
     max-width: 50%;
   }
@@ -252,6 +253,7 @@
   .recent-products button:hover {
     background-color: #e60000;
   }
+
   .product-list {
     display: flex;
     flex-wrap: wrap;
@@ -396,7 +398,6 @@
     transition: background-color 0.3s;
   }
 
-
   .predict-price button:nth-child(2) {
     background-color: blue;
     color: white;
@@ -414,117 +415,131 @@
   .price-prediction button:nth-child(2):hover {
     background-color: darkblue; /* 하락 예측 버튼 호버 효과 */
   }
+
+
 </style>
 
 <body>
-<div id="content">
-  <div id="sidebar">
-    <h1 class="cate">카테고리</h1>
-    <ul>
-      <li {% if not category %}class="selected"{% endif %}>
-        <a href="{% url "shop_app:product_list" %}">전체</a>
-      </li>
-      {% for c in categories %}
-        <li {% if category.slug == c.slug %}class="selected"{% endif %}>
-          <a href="{% url 'shop_app:product_list_by_category' category_slug=c.slug %}">{{ c.name }}</a>
+  <div class="banner">
+    <div class="banner-text">
+      <h1>신선한 식품 주문 및 배송도 온새미에서</h1>
+      <p>온새미를 통해서 부모님에게 신선식품과 마음을 전달하세요</p>
+    </div>
+    <img src="{% static 'image/onsemi_img.png' %}" alt="Delivery Image">
+  </div>
+  <div id="content">
+    <div class="categories">
+      <h1 class="cate">카테고리</h1>
+      <ul>
+        <li {% if not category %}class="selected"{% endif %}>
+          <a href="{% url "shop_app:product_list" %}">전체</a>
         </li>
-      {% endfor %}
-    </ul>
-    <hr>
-    <h2><div class="ordered-list-container">
-      <a href="{% url 'orders_app:my_orders' %}" class="ordered-list">주문 내역</a></h2>
-  </div>
-  <div class="predict-price">
-    <button id="show-decrease">하락 예측</button>
-    <button id="show-increase">상승 예측</button>
-  </div>
-  <!-- 쉼표 추가해서 가독성 높이기 -->
-  <div id="predict-price-increase" class="predict-price-section" style="display: none;">
-    <h2>가격 <span class="highlight-increase">상승&uarr;</span> 전망 목록</h2>
-    {% load humanize %}
-    <table class="price-list">
-      <tr>
-          <td><span class="number">1</span>
-          <span class="item-name">{{ increases.0.0 }}</span>
-          <span class="price">{{ increases.0.1|intcomma }}원 &nbsp;&rarr;</span>
-          <span class="change-increase">{{ increases.0.2|intcomma }}원</span></td>
-      </tr>
-      <tr>
-        <td><span class="number">2</span>
-        <span class="item-name">{{ increases.1.0 }}</span>
-        <span class="price">{{ increases.1.1|intcomma }}원 &nbsp;&rarr;</span>
-        <span class="change-increase">{{ increases.1.2|intcomma }}원</span></td>
-    </tr>
-    <tr>
-      <td><span class="number">3</span>
-      <span class="item-name">{{ increases.2.0 }}</span>
-      <span class="price">{{ increases.2.1|intcomma }}원 &nbsp;&rarr;</span>
-      <span class="change-increase">{{ increases.2.2|intcomma }}원</span></td>
-  </tr>
-  </table>
-  </div>
-  <div id="predict-price-decrease" class="predict-price-section">
-    <h2>가격 <span class="highlight-decrease">하락&darr;</span> 전망 목록</h2>
-    {% load humanize %}
-    <table class="price-list">
-      <tr>
-          <td><span class="number">1</span>
-          <span class="item-name">{{ decreases.0.0 }}</span>
-          <span class="price">{{ decreases.0.1|intcomma }}원 &nbsp;&rarr;</span>
-          <span class="change-decrease">{{ decreases.0.2|intcomma }}원</span></td>
-      </tr>
-      <tr>
-        <td><span class="number">2</span>
-        <span class="item-name">{{ decreases.1.0 }}</span>
-        <span class="price">{{ decreases.1.1|intcomma }}원 &nbsp;&rarr;</span>
-        <span class="change-decrease">{{ decreases.1.2|intcomma }}원</span></td>
-    </tr>
-    <tr>
-      <td><span class="number">3</span>
-      <span class="item-name">{{ decreases.2.0 }}</span>
-      <span class="price">{{ decreases.2.1|intcomma }}원 &nbsp;&rarr;</span>
-      <span class="change-decrease">{{ decreases.2.2|intcomma }}원</span></td>
-  </tr>
-  </table>
-  </div>
-  <div id="main" class="product-list">
-    <h1>{% if category %}{{ category.name }}{% else %}전체 상품{% endif %}</h1>
-    {% for product in products %}
-    <!-- 가격이 0이면 숨기게 처리 -->
-      {% if product.price > 0 %} 
-        <div class="item">
-          <a href="{{ product.get_absolute_url }}">
-            <img src="{% if product.image %}{{ product.image.url }}{% else %}{% static "img/no_image.png" %}{% endif %}">
-          </a>
-          <a href="{{ product.get_absolute_url }}">{{ product.name }}</a>
-          <br>
-          {{ product.price|intcomma }}원
+        {% for c in categories %}
+          <li {% if category.slug == c.slug %}class="selected"{% endif %}>
+            <a href="{% url 'shop_app:product_list_by_category' category_slug=c.slug %}">{{ c.name }}</a>
+          </li>
+        {% endfor %}
+      </ul>
+      <div class="price-prediction">
+        <div class="price-prediction-header" onclick="togglePricePrediction()">
+          <span>가격변동</span>
+          <span id="price-toggle-icon">-</span>
         </div>
-      {% endif %}
-    {% endfor %}
-  </div>
-  <div class="recent-products">
-    <h2>최근 본 상품</h2>
-    {% for product in recent_products %}
-      <div class="product-item">
-        <a href="{% url 'shop_app:product_detail' product.id product.slug %}">
-          <img src="{% if product.image %}{{ product.image.url }}{% else %}{% static "img/no_image.png" %}{% endif %}" alt="{{ product.name }}">
-          <h3>{{ product.name }}</h3>
-        </a>
-        <form action="{% url 'shop_app:remove_from_recent_products' product.id %}" method="post">
-          {% csrf_token %}
-          <button type="submit">X</button>
-        </form>
-
+        <div id="price-prediction-content" class="price-prediction-content">
+          <div id="predict-price-increase" class="predict-price-section">
+            <h2>가격 <span class="highlight-increase" style="color:red;">상승&uarr;</span> 전망 목록</h2>
+            <table class="price-list">
+              <tr>
+                <td><span class="number">1</span>
+                <span class="item-name">{{ increases.0.0 }}</span>
+                <span class="price">{{ increases.0.1 }}원 &nbsp;&rarr;</span>
+                <span class="change-increase">{{ increases.0.2 }}원</span></td>
+              </tr>
+              <tr>
+                <td><span class="number">2</span>
+                <span class="item-name">{{ increases.1.0 }}</span>
+                <span class="price">{{ increases.1.1 }}원 &nbsp;&rarr;</span>
+                <span class="change-increase">{{ increases.1.2 }}원</span></td>
+              </tr>
+              <tr>
+                <td><span class="number">3</span>
+                <span class="item-name">{{ increases.2.0 }}</span>
+                <span class="price">{{ increases.2.1 }}원 &nbsp;&rarr;</span>
+                <span class="change-increase">{{ increases.2.2 }}원</span></td>
+              </tr>
+            </table>
+          </div>
+          <div id="predict-price-decrease" class="predict-price-section" style="display: none;">
+            <h2>가격 <span class="highlight-decrease" style="color:blue;">하락&darr;</span> 전망 목록</h2>
+            <table class="price-list">
+              <tr>
+                <td><span class="number">1</span>
+                <span class="item-name">{{ decreases.0.0 }}</span>
+                <span class="price">{{ decreases.0.1 }}원 &nbsp;&rarr;</span>
+                <span class="change-decrease">{{ decreases.0.2 }}원</span></td>
+              </tr>
+              <tr>
+                <td><span class="number">2</span>
+                <span class="item-name">{{ decreases.1.0 }}</span>
+                <span class="price">{{ decreases.1.1 }}원 &nbsp;&rarr;</span>
+                <span class="change-decrease">{{ decreases.1.2 }}원</span></td>
+              </tr>
+              <tr>
+                <td><span class="number">3</span>
+                <span class="item-name">{{ decreases.2.0 }}</span>
+                <span class="price">{{ decreases.2.1 }}원 &nbsp;&rarr;</span>
+                <span class="change-decrease">{{ decreases.2.2 }}원</span></td>
+              </tr>
+            </table>
+          </div>
+          <div class="predict-price">
+            <button id="show-increase">상승 예측</button>
+            <button id="show-decrease">하락 예측</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="main-content">
+      <div class="order-history">
+        <a href="{% url 'orders_app:my_orders' %}">주문 내역</a>
+      </div>
+      <h1 style="width: 100%;">{% if category %}{{ category.name }}{% else %}전체 상품{% endif %}</h1>
+      <div id="main" class="product-list">
+        {% for product in products %}
+          <div class="item">
+            <a href="{{ product.get_absolute_url }}">
+              <img src="{% if product.image %}{{ product.image.url }}{% else %}{% static "img/no_image.png" %}{% endif %}">
+            </a>
+            <a href="{{ product.get_absolute_url }}">{{ product.name }}</a>
+            <br>
+            <span style="color: #B41C11;">{{ product.price }}원</span> 
+          </div>
+        {% endfor %}
+      </div>
+      <div class="recent-products-container">
+        <div class="recent-products-header">최근 본 상품</div>
+        <div class="recent-products-content">
+          {% for product in recent_products %}
+            <div class="product-item">
+              <a href="{% url 'shop_app:product_detail' product.id product.slug %}">
+                <img src="{% if product.image %}{{ product.image.url }}{% else %}{% static "img/no_image.png" %}{% endif %}" alt="{{ product.name }}">
+                <h3>{{ product.name }}</h3>
+              </a>
+              <form action="{% url 'shop_app:remove_from_recent_products' product.id %}" method="post">
+                {% csrf_token %}
+                <button type="submit">X</button>
+              </form>
+            </div>
+          {% endfor %}
+        </div>
       </div>
     </div>
   </div>
-</div>
+</body>
 {% endblock %}
 
 {% block script %}
 <script>
-
   function togglePricePrediction() {
     var content = document.getElementById('price-prediction-content');
     var icon = document.getElementById('price-toggle-icon');
@@ -536,6 +551,7 @@
       icon.textContent = '+';
     }
   }
+
   document.getElementById('show-decrease').addEventListener('click', function() {
     document.getElementById('predict-price-decrease').style.display = 'block';
     document.getElementById('predict-price-increase').style.display = 'none';
