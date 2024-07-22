@@ -287,8 +287,8 @@ def my_task():
 #   data['datetime'] = pd.to_datetime(data['datetime'])
 
   data = pd.read_csv('total.csv')
-  print(data.head()) 
-  data = data[['datetime', '양배추']]
+  print(data.tail()) 
+  # data = data[['datetime', '양배추']]
   data['datetime'] = pd.to_datetime(data['datetime'])
  
   time_step = 7
@@ -297,8 +297,8 @@ def my_task():
   models = {}
  
   # 작물별 학습 및 예측
-#   for crop_index in range(1, data.shape[1] - 2):  # 컬럼 제외
-  for crop_index in range(1, data.shape[1]):  # 컬럼 제외
+  for crop_index in range(1, data.shape[1] - 2):  # 컬럼 제외
+  # for crop_index in range(1, data.shape[1]):  # 컬럼 제외
       crop_name = data.columns[crop_index]
       print(f"Preprocessing column: {crop_name}")
       X, y, scalers = preprocess_time(data, crop_index, time_step)
@@ -335,27 +335,30 @@ def my_task():
       results.append((crop_name, start_price, end_price, rise_ratio))
       models[crop_name] = (gru_model, scalers, future_prices)
  
- 
-  # 상승 상위5개
-  results_top = sorted(results, key=lambda x: x[3], reverse=True)[:5]
-  results_bottom = sorted(results, key=lambda x: x[3], reverse=True)[-5:]
+  # 상품에 가격을 반영할 전용 csv 생성
+  results_shop = pd.DataFrame(results, columns=["작물명", "시작 가격", "종료 가격", "상승 비율"])
+  results_shop.to_csv('result_shop.csv',index = False, encoding = 'UTF-8')
 
-  results_top = pd.DataFrame(results_top, columns=["작물명", "시작 가격", "종료 가격", "상승 비율"])
-  results_bottom = pd.DataFrame(results_bottom, columns=["작물명", "시작 가격", "종료 가격", "상승 비율"])
+#   # 상승 상위5개
+#   results_top = sorted(results, key=lambda x: x[3], reverse=True)[:5]
+#   results_bottom = sorted(results, key=lambda x: x[3], reverse=True)[-5:]
 
-#   results_df = pd.concat([results_top, results_bottom], axis=0)
-#   results_df.to_csv('result_total.csv', index=False, encoding='UTF-8')
-#   results_df[["작물명", "상승 비율"]].to_csv('result.csv', index=False, encoding='UTF-8')
+#   results_top = pd.DataFrame(results_top, columns=["작물명", "시작 가격", "종료 가격", "상승 비율"])
+#   results_bottom = pd.DataFrame(results_bottom, columns=["작물명", "시작 가격", "종료 가격", "상승 비율"])
+
+# #   results_df = pd.concat([results_top, results_bottom], axis=0)
+# #   results_df.to_csv('result_total.csv', index=False, encoding='UTF-8')
+# #   results_df[["작물명", "상승 비율"]].to_csv('result.csv', index=False, encoding='UTF-8')
  
  
-#   results_top = pd.DataFrame(results_top)
-#   results_bottom = pd.DataFrame(results_bottom)
+# #   results_top = pd.DataFrame(results_top)
+# #   results_bottom = pd.DataFrame(results_bottom)
  
-  results_df = pd.concat([results_top,results_bottom], axis = 0)
-  print(results_df.head()) 
-  results_df.to_csv('result_total.csv',index = False, encoding = 'UTF-8')
-#   results_df[[0,3]].to_csv('result.csv',index = False, encoding = 'UTF-8')
-  results_df.iloc[:, [0, 3]].to_csv('result.csv', index=False, encoding='UTF-8')
+#   results_df = pd.concat([results_top,results_bottom], axis = 0)
+#   print(results_df.tail()) 
+#   results_df.to_csv('result_total.csv',index = False, encoding = 'UTF-8')
+# #   results_df[[0,3]].to_csv('result.csv',index = False, encoding = 'UTF-8')
+#   results_df.iloc[:, [0, 3]].to_csv('result.csv', index=False, encoding='UTF-8')
 #   ans = pd.read_csv('total.csv')
 #   print(ans.head())
 
@@ -363,9 +366,8 @@ def my_task():
 
   return "작업 완료"
 
-# from celery import shared_task
 
 # @shared_task
-# def debug_task():
+# def my_task():
 #     print('고생했다')
 #     return 'Task completed'

@@ -13,8 +13,8 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 from pathlib import Path
 import os
 import db_settings
-
 import pymysql
+
 pymysql.install_as_MySQLdb()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -64,6 +64,7 @@ INSTALLED_APPS = [
     'allauth.socialaccount',
     
     'allauth.socialaccount.providers.google',
+    'django.contrib.humanize', # 금액 1,000 처럼 보이게 하려고 설정
 ]
 
 MIDDLEWARE = [
@@ -102,12 +103,15 @@ WSGI_APPLICATION = "config.wsgi.application"
 # Database
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
 
-DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": BASE_DIR / "db.sqlite3",
-    }
-}
+#DATABASES = {
+#    "default": {
+#        "ENGINE": "django.db.backends.sqlite3",
+#        "NAME": BASE_DIR / "db.sqlite3",
+#    }
+#}
+
+DATABASES = db_settings.DATABASES
+
 
 # DATABASES = db_settings.DATABASES
 
@@ -209,29 +213,32 @@ app.autodiscover_tasks()
 def debug_task(self):
     print(f'Request: {self.request!r}')
 
-# from dotenv import load_dotenv
-# ###############################################################################
-# load_dotenv(os.path.join(BASE_DIR, '.env'))
-# # AWS configuration
-# AWS_ACCESS_KEY_ID = os.getenv('AWS_ACCESS_KEY_ID')
-# AWS_SECRET_ACCESS_KEY = os.getenv('AWS_SECRET_ACCESS_KEY')
-# AWS_STORAGE_BUCKET_NAME = os.getenv('AWS_STORAGE_BUCKET_NAME')
-# AWS_S3_REGION_NAME = os.getenv('AWS_S3_REGION_NAME')
-# AWS_S3_SIGNATURE_VERSION = 's3v4'
 
-# # 스토리지 백엔드 설정
-# DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
-# STATICFILES_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
+from dotenv import load_dotenv
+###############################################################################
+load_dotenv(os.path.join(BASE_DIR, '.env'))
+# AWS configuration
+AWS_ACCESS_KEY_ID = os.getenv('AWS_ACCESS_KEY_ID')
+AWS_SECRET_ACCESS_KEY = os.getenv('AWS_SECRET_ACCESS_KEY')
+AWS_STORAGE_BUCKET_NAME = os.getenv('AWS_STORAGE_BUCKET_NAME')
+AWS_S3_REGION_NAME = os.getenv('AWS_S3_REGION_NAME')
+AWS_S3_SIGNATURE_VERSION = 's3v4'
 
-# AWS_S3_CUSTOM_DOMAIN = f'{AWS_STORAGE_BUCKET_NAME}.s3.amazonaws.com'
+# 스토리지 백엔드 설정
+DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
+STATICFILES_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
 
-# # 정적 파일 설정
-# STATIC_URL = f'https://{AWS_S3_CUSTOM_DOMAIN}/static/'
-# STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')  # 로컬에서 collectstatic 명령어 실행 시 사용될 경로
+AWS_S3_CUSTOM_DOMAIN = f'{AWS_STORAGE_BUCKET_NAME}.s3.amazonaws.com'
 
-# # 미디어 파일 설정
-# MEDIA_URL = f'https://{AWS_S3_CUSTOM_DOMAIN}/media/'
-# MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+# 정적 파일 설정
+STATIC_URL = f'https://{AWS_S3_CUSTOM_DOMAIN}/static/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')  # 로컬에서 collectstatic 명령어 실행 시 사용될 경로
 
-STATIC_URL = '/static/'
-MEDIA_URL = '/media/'
+# 미디어 파일 설정
+MEDIA_URL = f'https://{AWS_S3_CUSTOM_DOMAIN}/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
+
+# STATIC_URL = '/static/'
+# MEDIA_URL = '/media/'
+
