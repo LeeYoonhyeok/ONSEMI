@@ -330,6 +330,8 @@
             const chatInput = document.getElementById('chatInput');
             const chatBody = document.getElementById('chatBody');
 
+            chatModal.style.display = 'none';
+
             chatLink.addEventListener('click', () => {
                 if (chatModal.style.display === 'flex') {
                     chatModal.style.display = 'none';
