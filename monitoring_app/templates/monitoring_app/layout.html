@@ -235,22 +235,17 @@
             <img src="{% static 'main/onsemi_logos.png' %}" alt="Main Image">
             </a>
         </div>
-       
         <div class="user-controls" class="home">
             <div class="nav-item">
-            <a href="/">
-                <span class="material-symbols-outlined nav-icon selected" title="홈" id="home">home</span>
-                <span class="tooltip">홈</span>
-            </a>
+                <a href="/introduce/" class="green">소개</a>
         </div>
- 
-            <a href="/shop">
-                <span class="material-symbols-outlined nav-icon" title="상점" id="shop">storefront</span>
-            </a>
-            <a href="/user_page/">
-            <span class="material-symbols-outlined" title="마이페이지">
-                account_circle
-                </span></a>
+            <a href="/user/logout" class="green">로그아웃</a>
+            <a href="/blog/notice_list" class="green">커뮤니티</a>
+            <a href="/user_page/" class="green">마이페이지</a>
+            <a href="/shop/" class="green">온새미 마트</a>
+            <br>
+
+
             <div class="user-profile" onclick="toggleInfoBox()">
                 <span class="material-symbols-outlined icon" id="notification-icon" title="알림">notifications</span>
                 <div id="infoBox" class="info-box">
@@ -264,9 +259,6 @@
                     </div>
                 </div>
             </div>
-            <a href="/user/logout/" class="logout">
-                <span class="material-symbols-outlined icon" title="로그아웃">logout</span>
-            </a>
         </div>
     </div>
     <div class="wrapper">
