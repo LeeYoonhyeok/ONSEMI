@@ -33,6 +33,14 @@ def care_list(request):
     
     users = User.objects.all()
 
+    # 요청 승인 대기 목록의 신청자 목록 가져오기
+    pending_user_ids = not_approved_cares.values_list('user_id', flat=True).distinct()
+    pending_users = User.objects.filter(id__in=pending_user_ids).values('id', 'username').distinct()
+
+    # 요청 승인 완료 목록의 신청자 목록 가져오기
+    approved_user_ids = approved_cares.values_list('user_id', flat=True).distinct()
+    approved_users = User.objects.filter(id__in=approved_user_ids).values('id', 'username').distinct()
+
     # 페이지네이션 설정
     paginator1 = Paginator(not_approved_cares, 5)  # 페이지당 10개의 객체를 보여줌
     paginator2 = Paginator(approved_cares, 5)  # 페이지당 10개의 객체를 보여줌
@@ -48,6 +56,8 @@ def care_list(request):
         "selected_user": user_id,
         "current_sort_by": request.GET.get("sort_by", "datetime"),  # 요청된 sort_by 그대로 전달
         "current_order": request.GET.get("order", "desc"),  # 요청된 order 그대로 전달
+        "pending_users": pending_users,
+        "approved_users": approved_users,
     }
 
     return render(request, "management_app/volunteer_care_list.html", context)
