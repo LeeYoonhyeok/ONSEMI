@@ -79,7 +79,8 @@ a.button, input[type="submit"] {
 }
 
 #main {
-    width: 1000px;
+    /* width: 1000px; */
+    justify-content: flex-start;
 }
 
 .product-info {

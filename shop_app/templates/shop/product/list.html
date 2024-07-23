@@ -256,10 +256,11 @@
   .product-list {
     display: flex;
     flex-wrap: wrap;
-    justify-content: space-around;
+    justify-content: flex-start; /* Left align the items */
     width: 100%;
+    padding: 0; /* Ensure there is no padding */
   }
-
+  
   .product-list .item {
     background-color: #fff;
     border: 1px solid #ddd;
@@ -274,6 +275,7 @@
     display: flex;
     flex-direction: column;
     justify-content: space-between;
+    margin-right: 20px; /* Add margin to the right */
   }
 
   .product-list .item:hover {
