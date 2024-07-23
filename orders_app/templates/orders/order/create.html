@@ -133,27 +133,41 @@ h1{
   <script>
     document.addEventListener("DOMContentLoaded", function() {
         const phoneInput = document.getElementById("id_phone");
-        
-        // 초기 플레이스홀더 설정
-        phoneInput.placeholder = "000-0000-0000";
-        
+    
+        // 포커스 이벤트: 입력 필드에 포커스가 생길 때 값이 "010-0000-0000"이나 빈 값이면 초기화
         phoneInput.addEventListener("focus", function() {
-            if (phoneInput.value === "000-0000-0000" || phoneInput.value === "") {
+            if (phoneInput.value === "010-0000-0000" || phoneInput.value === "") {
                 phoneInput.value = "";
             }
         });
-
+    
+        // 블러 이벤트: 입력 필드에 포커스가 사라질 때 아무 값도 없으면 placeholder를 빈 값으로 설정
         phoneInput.addEventListener("blur", function() {
             if (phoneInput.value === "") {
-                phoneInput.placeholder = "000-0000-0000";
+                phoneInput.placeholder = "";
             }
         });
-
+    
+        // 입력 이벤트: 사용자가 입력할 때마다 하이픈 자동 추가
         phoneInput.addEventListener("input", function() {
-            if (phoneInput.value === "000-0000-0000") {
-                phoneInput.value = "";
+            let cleaned = phoneInput.value.replace(/\D/g, '');
+            let match = cleaned.match(/^(\d{3})(\d{0,4})(\d{0,4})$/);
+    
+            if (match) {
+                let formatted = match[1];
+                if (match[2]) {
+                    formatted += '-' + match[2];
+                }
+                if (match[3]) {
+                    formatted += '-' + match[3];
+                }
+                phoneInput.value = formatted;
             }
         });
+    
+        // 페이지 로드 시 기본 값 제거
+        phoneInput.value = "";
     });
-</script>
+    </script>
+    
 {% endblock %}

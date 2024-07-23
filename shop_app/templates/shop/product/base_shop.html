@@ -14,7 +14,7 @@
 </head>
 <body>
     <div class="page-container">
-        <header>
+        <header id="start-image"> 
             <div class="container">
                 <div class="logo">
                     <a href="/">
@@ -41,7 +41,11 @@
         <div class="wrapper">
             {% block content %}{% endblock %}
         </div>
-        
+        <a href="#start-image" id="chat-link3">
+            <span class="material-symbols-outlined">
+                arrow_upward
+            </span>
+        </a>
         <footer id="footer">
             <div class="footer-content">
                
@@ -53,7 +57,24 @@
         </footer>
     </div>
     <script>
+        function handleScroll() {
+            const chatLink2 = document.getElementById('chat-link3');
+            const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+            if (scrollTop > 600) { // Show the button when scroll is greater than 600px
+                chatLink2.style.display = 'flex';
+            } else {
+                chatLink2.style.display = 'none';
+            }
+        }
 
+        // Ensure the button is hidden initially and only shown after scrolling
+        document.addEventListener('DOMContentLoaded', () => {
+            const chatLink2 = document.getElementById('chat-link3');
+            chatLink2.style.display = 'none';
+            window.addEventListener('scroll', handleScroll);
+
+            window.scrollTo(0, 0);
+        });
         document.addEventListener('DOMContentLoaded', function() {
             const hamburger = document.getElementById('hamburger');
             const menu = document.getElementById('menu');

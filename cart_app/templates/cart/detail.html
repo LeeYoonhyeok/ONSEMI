@@ -26,10 +26,12 @@
         {% for item in cart %}
           {% with product=item.product %}
             <tr>
-              <td>
+              <td class="product-cell">
                 <a href="{{ product.get_absolute_url }}">
-                  <img src="{% if product.image %}{{ product.image.url }}{% else %}{% static "img/no_image.png" %}{% endif %}">
-                  {{ item.product.name }}
+                  <div class="product-info">
+                    <img src="{% if product.image %}{{ product.image.url }}{% else %}{% static "img/no_image.png" %}{% endif %}" class="product-image">
+                    <span class="product-name">{{ item.product.name }}</span>
+                  </div>
                 </a>
               </td>
               <td>
@@ -60,9 +62,90 @@
     </table>
     <div class="cart-actions">
       <a href="{% url "shop_app:product_list" %}" class="button continue-shopping">계속 쇼핑하기</a>
-      <a href="{% url "orders_app:order_create" %}" class="button checkout-button">결제하기</a>
+      <a href="{% url "orders_app:order_create" %}" class="button checkout-button">주문하기</a>
     </div>
   </div>
 {% endblock %}
 </body>
 </html>
+
+<style>
+  .cart-container {
+    width: 80%;
+    margin: 0 auto;
+  }
+
+  .cart {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+  }
+
+  .cart th, .cart td {
+    border: 1px solid #ddd;
+    padding: 10px;
+    text-align: center;
+  }
+
+  .product-cell {
+    text-align: left;
+  }
+
+  .product-info {
+    display: flex;
+    align-items: center;
+  }
+
+  .product-image {
+    width: 100px; /* Increased width */
+    height: 100px; /* Increased height */
+    object-fit: cover;
+    margin-right: 10px;
+  }
+
+  .product-name {
+    vertical-align: middle;
+  }
+
+  .num {
+    text-align: right;
+  }
+
+  .total {
+    font-weight: bold;
+  }
+
+  .cart-actions {
+    display: flex;
+    justify-content: space-between;
+  }
+
+  .button {
+    padding: 10px 20px;
+    text-decoration: none;
+    background-color: #4CAF50;
+    color: white;
+    border-radius: 5px;
+    transition: background-color 0.3s;
+  }
+
+  .button:hover {
+    background-color: #45a049;
+  }
+
+  .continue-shopping {
+    background-color: #008CBA;
+  }
+
+  .continue-shopping:hover {
+    background-color: #007bb5;
+  }
+
+  .checkout-button {
+    background-color: #f44336;
+  }
+
+  .checkout-button:hover {
+    background-color: #da190b;
+  }
+</style>

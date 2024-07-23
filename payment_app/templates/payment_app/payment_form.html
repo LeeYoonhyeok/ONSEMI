@@ -5,6 +5,28 @@
 
 {% block content %}
 {{ block.super }}
+<style>
+    .button-container {
+        display: flex;
+        justify-content: flex-end;
+        margin-top: 20px;
+    }
+    
+    #payment_button {
+        background-color: blue;
+        color: white;
+        padding: 10px 20px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 16px;
+        float:right;
+    }
+    
+    #payment_button:hover {
+        background-color: darkblue;
+    }
+</style>
 <h1>주문 내용</h1>
 <table class="cart">
     <thead>
@@ -51,12 +73,12 @@ $(document).ready(function() {
             pg: "nice_v2.iamport00m",
             pay_method: "card",
             merchant_uid: 'merchant_' + new Date().getTime(),
-            name: "주문명:결제테스트",
+            name: "주문",
             amount: totalAmount,
-            buyer_email: "test@portone.io",
-            buyer_name: "구매자이름",
-            buyer_tel: "010-1234-5678",
-            buyer_addr: "서울특별시 강남구 삼성동",
+            buyer_email: "{{order.email}}",
+            buyer_name: "{{order.name}}",
+            buyer_tel: "{{order.phone}}",
+            buyer_addr: "{{order.address}}",
             buyer_postcode: "123-456",
             m_redirect_url: '{% url "payment_app:payment_success" order.id %}',
         }, function (rsp) {

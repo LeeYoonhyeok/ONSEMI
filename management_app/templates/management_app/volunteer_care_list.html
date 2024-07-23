@@ -262,7 +262,7 @@
             <label for="user_pending">신청자:</label>
             <select name="user_pending" id="user_pending">
                 <option value="">전체</option>
-                {% for user in users %}
+                {% for user in pending_users %}
                     <option value="{{ user.id }}" {% if user.id == selected_user_pending %}selected{% endif %}>{{ user.username }}</option>
                 {% endfor %}
             </select>
@@ -342,7 +342,7 @@
             <label for="user_approved">신청자:</label>
             <select name="user_approved" id="user_approved">
                 <option value="">전체</option>
-                {% for user in users %}
+                {% for user in approved_users %}
                     <option value="{{ user.id }}" {% if user.id == selected_user_approved %}selected{% endif %}>{{ user.username }}</option>
                 {% endfor %}
             </select>
