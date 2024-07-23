@@ -13,15 +13,44 @@
         font-family: 'GmarketSansMedium';
         min-width: 100%;
         width: 100%;
+        overflow: hidden;
+    }
+
+    .main {
+        scroll-snap-type: y mandatory;
+        overflow-y: scroll;
+        scroll-behavior: smooth;
+        height: 100vh;
     }
 
     section {
+        scroll-snap-align: start;
+        overflow: hidden;
+    }
+
+    .vision-section {
         height: 100vh;
         display: flex;
         justify-content: center;
         align-items: center;
         position: relative;
-        overflow: hidden;
+    }
+
+    .story-section {
+        height: 100vh;
+        display: flex;
+        justify-content: left;
+        align-items: center;
+        position: relative;
+    }
+
+    .values-section {
+        height: 100vh;
+        display: flex;
+        justify-content: right;
+        align-items: center;
+        position: relative;
+        padding: 0px 20px;
     }
 
     section video{
@@ -34,29 +63,96 @@
         z-index: -1;
     }
 
-    .text-box {
+    .text-box1 {
         position: relative;
+        text-align: center;
+        z-index: 1;
+        color: black;
+    }
+
+    .onsemi {
+        font-size: 35px;
+        margin-bottom: 50px;
+    }
+
+    .text-box2 {
+        position: relative;
+        width: 600px;
+        text-align: left;
+        word-break: keep-all;
         z-index: 1;
         color: white;
         background: rgba(0, 0, 0, 0.2); /* 반투명 배경 */
         padding: 20px;
-        border-radius: 20px;
+        border-radius: 30px;
+        margin-left: 60px;
     }
+
+    .text-box3 {
+        position: relative;
+        display: flex;
+        justify-content: space-around;
+        flex-wrap: wrap;
+        width: 600px;
+        text-align: center;
+        word-break: keep-all;
+        z-index: 1;
+        color: white;
+        padding: 20px;
+        margin-right: 60px;
+    }
+
+    .values-section h1 {
+        margin-bottom: 20px;
+    }
+
+    .value-box {
+        background-color: rgba(2, 103, 56, 0.3);
+        padding: 20px;
+        margin: 10px;
+        border-radius: 10px;
+        width: 80%;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+
+    .value-box img {
+        width: 50px;
+        height: 50px;
+        margin-right: 20px;
+    }
+
+    .value-box .text {
+        text-align: right;
+    }
+
+    .value-box .text h3 {
+        margin: 0;
+        font-size: 20px;
+        font-weight: bold;
+    }
+
+
 </style>
 {% endblock %}
 
 {% block content %}
+
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 <div class="main">
     <section class="vision-section">
         <video autoplay muted loop>
             <source src="{% static 'main/intro.mp4' %}" type="video/mp4">
             Your browser does not support HTML5 video.
         </video>
-        <div class="text-box">
-            <h1>온새미(ONSEMI)</h1>
-            <p>식료품을 구하는 것도 녹록지 않은 동네</p>
-            <p>그 안에서 지긋한 연세가 되어버린 우리 부모님</p>
-            <p>서로에게 보내지 못한 마음과 소식들</p>
+        <div class="text-box1">
+            <h1 class="onsemi">온새미(ONSEMI)</h1>
+            <h3>식료품을 구하는 것도 녹록지 않은 동네</h3>
+            <h3>그 안에서 지긋한 연세가 되어버린 우리 부모님</h3>
+            <h3>서로에게 보내지 못한 마음과 소식들</h3>
             <h2>그 모든 갈증, 이 땅에서 솟아나는 샘물 되어 온새미가 채우겠습니다</h2>
         </div>
     </section>
@@ -65,7 +161,7 @@
         <video autoplay muted loop>
             <source src="{% static 'main/story.mp4' %}" type="video/mp4" />
         </video>
-        <div class="text-box">
+        <div class="text-box2">
             <h1>Story</h1>
             <p>"사막에서 필요한 식품을 구하기 어려운 것처럼 몸에 좋은 식품을 판매하는 상점이 없어 멀리 가서야만 필요한 식품을 구할 수 있는 지역"</p>
             <p>바로 '식품사막'입니다.</p>
@@ -84,36 +180,34 @@
         <video autoplay muted loop>
             <source src="{% static 'main/services.mp4' %}" type="video/mp4" />
         </video>
-        <div class="text-box">
-            <h2>온새미의 서비스</h2>
-            <div class="">
-                <div class="">
-                    <img src="{% static 'images/customer.png' %}" alt=" Icon" class="">
-                    <div class="">
-                        <h3 class="">고객</h3>
-                        <p>고객</p>
-                    </div>
+        <div class="text-box3">
+            <h1>서비스</h1>
+            <div class="value-box">
+                <div class="icon"><img src="{% static 'main/delivery.png' %}" alt="Delivery Icon"></div>
+                <div class="text">
+                    <h3>방문</h3>
+                    <p>신선식품 전달, 건강상태 확인, 병원 진료</p>
                 </div>
-                <div class="">
-                    <img src="{% static 'images/competence.png' %}" alt=" Icon" class="">
-                    <div class="">
-                        <h3 class="text-xl font-bold">어르신</h3>
-                        <p>어르신</p>
-                    </div>
+            </div>
+            <div class="value-box">
+                <div class="icon"><img src="{% static 'main/ai.png' %}" alt="AI Icon"></div>
+                <div class="text">
+                    <h3>AI</h3>
+                    <p>식품 가격 예측, 파킨슨병 의심 여부 분석, 챗봇</p>
                 </div>
-                <div class="">
-                    <img src="{% static 'images/reality.png' %}" alt=" Icon" class="">
-                    <div class="">
-                        <h3 class="">봉사자</h3>
-                        <p>봉사자</p>
-                    </div>
+            </div>
+            <div class="value-box">
+                <div class="icon"><img src="{% static 'main/shop.png' %}" alt="Shop Icon"></div>
+                <div class="text">
+                    <h3>온새미마트</h3>
+                    <p>신선식품 구매</p>
                 </div>
-                <div class="">
-                    <img src="{% static 'images/harmony.png' %}" alt=" Icon" class="">
-                    <div class="">
-                        <h3 class="">뭐뭐뭐</h3>
-                        <p>뭐뭐뭐</p>
-                    </div>
+            </div>
+            <div class="value-box">
+                <div class="icon"><img src="{% static 'main/monitoring.png' %}" alt="Monitoring Icon"></div>
+                <div class="text">
+                    <h3>모니터링</h3>
+                    <p>배송상태/방문/진료 결과 확인, 메시지 전달</p>
                 </div>
             </div>
         </div>
