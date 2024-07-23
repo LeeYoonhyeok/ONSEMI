@@ -142,7 +142,8 @@ li{
     padding-left: 20px;
     padding-right: 20px;
     padding-bottom: 20px;
-    height: 100vh;
+    
+    overflow-y: auto;
     
 }
 
@@ -459,7 +460,7 @@ th {
 }
 
 .senior-photo img {
-    max-width: 150px;
+    max-width: 100px;
     height: auto;
     border-radius: 10px;
 }

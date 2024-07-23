@@ -29,18 +29,20 @@ class Cart:
     def add(self, product, quantity=1, override_quantity=False):
         product_id = str(product.id)
         if product_id not in self.cart:
-            self.cart[product_id] = {'quantity': 0,
-                                     'price': str(product.price)}
+            self.cart[product_id] = {'quantity': 0, 'price': str(product.price)}
+        
         if override_quantity:
-            self.cart[product_id]['quantity'] = quantity
+            new_quantity = quantity
         else:
-            self.cart[product_id]['quantity'] += quantity
-        self.save()
+            new_quantity = self.cart[product_id]['quantity'] + quantity
 
-        if self.cart[product_id]['quantity'] > product.stock:
-            self.cart[product_id]['quantity'] = product.stock
-            self.save()
-            return True
+        # 재고 확인 로직
+        if new_quantity > product.stock:
+            return False  # 재고 부족 시 False 반환
+
+        self.cart[product_id]['quantity'] = new_quantity
+        self.save()
+        return True
 
     def save(self):
         self.session.modified = True

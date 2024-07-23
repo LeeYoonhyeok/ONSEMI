@@ -156,7 +156,7 @@ def generate(request):
             weekly_data = df_care.groupby(['Week', 'care_type']).size().unstack().fillna(0)
 
             plt.figure(figsize=(10, 6))
-            colors = ['#2D4059', '#EA5455', '#F07B3F', '#FFD460', '#CABBE9']  # 필요한 색상을 리스트로 정의
+            colors = ['#2D4059', '#EA5455', '#F07B3F', '#FFD460', '#CABBE9','#111111']  # 필요한 색상을 리스트로 정의
             for idx, column in enumerate(weekly_data.columns):
                 plt.plot(weekly_data.index, weekly_data[column], marker='o', label=column, color=colors[idx % len(colors)])
             
