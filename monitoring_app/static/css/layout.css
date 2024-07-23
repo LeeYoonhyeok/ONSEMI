@@ -66,9 +66,13 @@ body {
     align-items: center;
 }
 
-.header .user-controls .logout:hover {
+.header .user-controls .logout:hover{
     color: #2E7D32;
 }
+.header .user-controls .green:hover{
+    color: #2E7D32;
+}
+
 
 .header .user-profile {
     display: flex;
