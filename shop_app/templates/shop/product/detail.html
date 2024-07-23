@@ -569,8 +569,10 @@
 
     <!-- The Modal -->
     <div id="myModal" class="modal">
+      <h2>후기</h2>
       <div class="modal-content">
         <span class="close">&times;</span>
+        {% if has_purchased %}
         <form action="{% url 'shop_app:add_comment' product.id product.slug %}" method="post" enctype="multipart/form-data">
           {% csrf_token %}
           <div class="form-group">
@@ -587,6 +589,9 @@
           </div>
           <button type="submit" class="button">후기 등록</button>
         </form>
+        {% else %}
+        <p>이 제품을 구매한 사용자만 댓글을 작성할 수 있습니다.</p>
+        {% endif %}
       </div>
     </div>
   </div>
