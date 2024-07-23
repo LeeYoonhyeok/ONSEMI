@@ -1,4 +1,4 @@
-from django.db import models, IntegrityError, transaction
+from django.db import models
 from django.conf import settings
 from auth_app.models import User
 from django.utils import timezone

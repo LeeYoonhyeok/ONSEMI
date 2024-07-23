@@ -1,5 +1,4 @@
-from django.contrib import admin
-from django.urls import path, include
+from django.urls import path
 from .views import family_list_views, family_post_views, volunteer_list_views, report_post_views, report_list_views
 from django.conf import settings
 from django.conf.urls.static import static
