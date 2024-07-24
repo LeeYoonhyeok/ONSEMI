@@ -1,0 +1,607 @@
+body {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    width: 100%;
+    background-color: #f8f9fa;
+    color: #333;
+    overflow: hidden;
+    overflow-y:auto;
+   
+}
+
+
+.content-container {
+    display: flex;
+    height: 100vh;
+    overflow: hidden;
+}
+.sidebar {
+    width: 100px;
+    background-color: #fff;
+    color: black;
+    padding: 10px 0;
+    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    transition: width 0.3s;
+    min-height: 100vh;
+    position: relative;
+    
+   
+    overflow-y: auto; 
+}
+.sidebar.expanded {
+    width: 250px;
+    align-items: flex-start;
+}
+.sidebar .sidebar-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    margin-top: 120px;
+}
+.sidebar.expanded .sidebar-content {
+    align-items: flex-start;
+    padding-left: 20px;
+}
+.sidebar .nav-item {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    margin-bottom: 20px;
+    position: relative;
+    justify-content: center;
+}
+.sidebar.expanded .nav-item {
+    justify-content: flex-start;
+    padding-left: 20px;
+}
+.sidebar .nav-item a {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    color: inherit;
+    text-decoration: none;
+}
+.sidebar .nav-icon {
+    font-size: 1.5em;
+    cursor: pointer;
+    color: #333;
+    text-align: center;
+    width: 40px;
+    flex-shrink: 0;
+}
+.sidebar .nav-icon img {
+    width: 24px;
+    height: 24px;
+}
+.sidebar .nav-icon:hover {
+    color: #2E7D32;
+}
+.sidebar .nav-text {
+    display: none;
+    font-size: 1em;
+    color: #333;
+    white-space: nowrap;
+    margin-left: 10px;
+}
+.sidebar.expanded .nav-text {
+    display: inline;
+}
+.sidebar .toggle-icon {
+    font-size: 1.5em;
+    cursor: pointer;
+    color: #333;
+    align-self: flex-end;
+    margin-right: 20px;
+    margin-top: auto;
+}
+.sidebar .senior-icons {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: auto;
+    margin-bottom: 20px;
+}
+.sidebar.expanded .senior-icons {
+    align-items: center;
+}
+.sidebar .senior-icon {
+    width: 50px;
+    height: 50px;
+    margin: 5px 0;
+    border-radius: 50%;
+    cursor: pointer;
+    overflow: hidden;
+    border: 2px solid transparent;
+}
+.sidebar .senior-icon img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+.sidebar .senior-icon.selected {
+    border-color: #2E7D32;
+}
+.sidebar.expanded .senior-icon {
+    width: 70px;
+    height: 90px;
+    border-radius: 10px;
+}
+.main-content {
+    flex: 1;
+    padding: 1.5rem 4rem 6.4rem;
+    display: flex;
+    flex-direction: column;
+    overflow: auto;
+    background-color: #f8f9fa;
+    height:100vh;
+
+}
+.card {
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    height: auto;
+}
+.card-header {
+    display: flex;
+    flex-direction: column;
+    border-bottom: 1px solid #ccc;
+    margin-bottom: 5px;
+}
+.card-header h3 {
+    margin: 0;
+    text-align: left;
+}
+.card-body {
+    overflow-y: auto;
+    flex-grow: 1;
+}
+.add-button,
+.plus-button {
+    background-color: #156741;
+    color: white;
+    border: none;
+    padding: 10px;
+    cursor: pointer;
+    border-radius: 5px;
+    text-align: center;
+    text-decoration: none;
+}
+.add-button:hover {
+    background-color: #104e31;
+}
+.plus-button {
+    background-color: #156741;
+    color: white;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+    text-align: center;
+    text-decoration: none;
+    margin-left: 10px;
+    padding: 0px;
+
+}
+.image-box {
+    text-decoration: none;
+    color: black;
+    text-align: center;
+}
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+table th,
+table td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: center;
+}
+table th {
+    background-color: #f2f2f2;
+}
+table td.title,
+table td.content {
+    max-width: 150px; /* You can adjust the width as needed */
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.clickable-row:hover {
+    background-color: #f1f1f1;
+    cursor: pointer;
+}
+.photo-box {
+    margin-right: 10px;
+    text-align: center;
+    height: auto;
+    width: 200px;
+    height: 200px;
+}
+.health-box {
+    margin-left: 10px;
+    text-align: center;
+    height: 250px;
+}
+.hamburger-menu {
+    cursor: pointer;
+}
+.sidebar .nav-item a {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+}
+.sidebar.expanded .nav-item a {
+    justify-content: flex-start;
+    flex-direction: row;
+}
+.sidebar .nav-icon {
+    margin-right: 10px;
+}
+.sidebar .nav-text {
+    display: none;
+    text-align: left;
+}
+.sidebar.expanded .nav-text {
+    display: inline;
+}
+.tooltip {
+    visibility: hidden;
+    background-color: #555;
+    color: #fff;
+    text-align: center;
+    border-radius: 5px;
+    padding: 5px 10px;
+    position: absolute;
+    z-index: 1;
+    top: 125%;
+    left: 50%;
+    transform: translateX(-50%);
+    opacity: 0;
+    transition: opacity 0.3s;
+    white-space: nowrap;
+}
+.tooltip::after {
+    content: '';
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    margin-left: -5px;
+    border-width: 5px;
+    border-style: solid;
+    border-color: transparent transparent #555 transparent;
+}
+.nav-item:hover .tooltip {
+    visibility: visible;
+    opacity: 1;
+}
+.sidebar.expanded .tooltip {
+    display: none;
+}
+.senior-select {
+    margin-top: 20px;
+    width: 100%;
+    padding: 10px;
+    text-align: center;
+}
+.senior-photo {
+    position: absolute;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    text-align: center;
+    margin-bottom: 20px;
+}
+.senior-photo img {
+    width: 50px;
+    height: 50px;
+    border: 2px solid #2E7D32;
+    border-radius: 50%;
+}
+.sidebar.expanded .senior-photo img {
+    width: 150px;
+    height: 100px;
+    border-radius: 10px;
+}
+.dropdown {
+    position: relative;
+    display: inline-block;
+    margin-top: 20px;
+    text-align: center;
+    width: 100%;
+    
+   
+}
+.dropbtn {
+    background-color: #156741;
+    border: none;
+    color: white;
+    border-radius: 50%;
+    padding: 10px;
+    cursor: pointer;
+    font-size: 24px;
+}
+.dropdown-content {
+    display: none;
+    position: absolute;
+    background-color: #f9f9f9;
+    min-width: 100%;
+    max-height: 150px; /* 추가: 최대 높이 설정 */
+    overflow-y: auto; /* 추가: 스크롤바 추가 */
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    z-index: 1;
+    text-align: center;
+    left: 0;
+    transform: translateX(0);
+    border: 1px solid #ccc;
+    box-sizing: border-box;
+}
+.dropdown-content a {
+    color: black;
+    padding: 12px 16px;
+    text-decoration: none;
+    display: block;
+    text-align: center;
+}
+.dropdown-content a:hover {
+    background-color: #156741;
+    color: white;
+}
+.dropdown:hover .dropdown-content {
+    display: block;
+}
+.dropdown.expanded {
+    width: 100%;
+    text-align: left;
+}
+.dropdown.expanded .dropbtn {
+    width: 85%;
+    border-radius: 10px;
+}
+.dropdown.expanded .dropdown-content {
+    left: 0;
+    transform: none;
+}
+.dropdown.expanded .dropdown-content a {
+    text-align: center;
+}
+.dropdown.expanded .dropbtn::after {
+    content: ' 어르신선택';
+    margin-left: 10px;
+    font-size: 16px;
+    font-weight: bold;
+}
+
+.plus-button .tooltip {
+    visibility: hidden;
+    background-color: #555;
+    color: #fff;
+    text-align: center;
+    border-radius: 5px;
+    padding: 5px 10px;
+    position: absolute;
+    z-index: 10;
+    top: 125%;
+    left: -10%;
+    transform: translateX(-50%);
+    opacity: 0;
+    transition: opacity 0.3s;
+    white-space: nowrap;
+    font-size:10px;
+}
+.plus-button .tooltip::after {
+    content: '';
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    margin-left: -5px;
+    border-width: 5px;
+    border-style: solid;
+    border-color: transparent transparent #555 transparent;
+    font-size:10px;
+}
+.plus-button:hover .tooltip {
+    visibility: visible;
+    opacity: 1;
+    font-size:10px;
+}
+
+/* Modal styles */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0, 0, 0, 0.5);
+}
+
+.modal-content {
+    background-color: #fff;
+    margin: 10% auto;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 80%;
+    max-width: 800px;
+    border-radius: 10px;
+    position: relative;
+    height: auto; /* 높이를 자동으로 조정 */
+    max-height: 80vh; /* 최대 높이를 설정 */
+    overflow-y: auto; /* 내용이 넘치지 않도록 설정 */
+}
+
+.modal-content2 {
+    background-color: #fff;
+    margin: 5% auto;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 40%;
+    max-height: 80vh;
+    border-radius: 10px;
+    position: relative;
+}
+
+.close {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+    position: absolute;
+    top: 10px;
+    right: 25px;
+}
+
+.close:hover,
+.close:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.container {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    display: block;
+    flex-grow: 1; /* 컨텐츠가 모달의 대부분을 차지하게 함 */
+    overflow-y: auto; /* 컨텐츠가 많으면 스크롤바 생성 */
+}
+.text {
+    margin-bottom: 10px;
+    word-wrap: break-word; /* 긴 단어를 자동으로 줄바꿈 */
+    white-space: pre-wrap; /* 공백과 줄바꿈을 그대로 유지 */
+}
+.text strong {
+    margin-right: 10px; /* 간격 조정 */
+    vertical-align: top; /* 상단에 맞춤 */
+}
+#modal-title, #modal-care-content {
+    word-wrap: break-word; /* 긴 단어가 박스를 넘치지 않도록 */
+    white-space: pre-wrap; /* 공백과 줄바꿈을 그대로 유지 */
+    width: 90%; /* 전체 너비 사용 */
+    overflow-wrap: break-word; /* 긴 단어를 줄바꿈 */
+    white-space: normal; /* 기본 줄바꿈 동작 */
+}
+.circle {
+    width: 5px;
+    height: 5px;
+    background-color: #333;
+    border-radius: 50%;
+    display: inline-block;
+    margin-right: 10px;
+}
+h1 {
+    text-align: center;
+    margin-bottom: 20px;
+}
+strong{
+margin-right:10px;
+}
+
+/* .photo-box2 {
+{% comment %} background-color: #fff;
+border: 1px solid #ccc;
+box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+display: flex;
+flex-direction: column; /* 아래부터 위로 정렬 
+height: 100%; {% endcomment %}
+} */
+
+.photo-box {
+    margin-right: 10px;
+    text-align: center;
+    height: 250px;
+    width: 100%;
+}
+.photo-grid {
+    display: flex;
+    flex-direction: column; /* 세로로 한 줄로 */
+    align-items: center;
+    width: 100%;
+}
+.photo-item {
+    width: 100%; /* 해당 박스에 맞게 조절 */
+    box-sizing: border-box; /* 패딩 포함한 박스 크기 계산 */
+}
+.photo-item img {
+    width: 60%; /* 박스에 맞게 width 조절 */
+    height: auto;
+    object-fit: contain;
+    display: block;
+    margin: 0 auto;
+    border-radius: 10px; /* 사진에 테두리 둥글게 추가 */ 
+    margin-bottom : 20px;      
+}
+
+
+.button-container {
+    display: flex;
+    justify-content: flex-end; /* 오른쪽 끝에 배치 */
+    margin-top: 20px; /* 위쪽에 여백 추가 */
+}
+
+.modal button {        
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    cursor: pointer;
+    border-radius: 5px;
+    font-size: 16px;
+    float:left;
+    margin-left: 10px; /* 버튼 간격 추가 */
+}
+.edit-button {
+    background-color: #156741;
+}
+.edit-button:hover{
+    background-color: #104e31;
+}
+.delete-button {
+    background-color: #d94a3a;
+}
+.delete-button:hover {
+    background-color: #a2312b;
+}
+.small-text {
+    font-size: 0.7em;
+    color: gray;
+    text-align: right;     
+}
+.report-box {
+    text-align: left;
+    border-bottom: 2px solid #ccc;
+    border-bottom-style:dashed;
+    margin-bottom: 10px;
+    padding-bottom: 10px;
+}
+.report-box h3 {
+    text-align: left;
+    margin: 10px 0px;
+}
+.order-box .card-header {
+    display: flex;
+    flex-direction: row; /* 세로 정렬을 가로 정렬로 변경 */            
+    align-items: center; /* 수직 정렬 */
+    border-bottom: 1px solid #ccc;
+    padding-bottom: 15px;
+}
+
+.add-button {
+    margin-left: 10px; /* 버튼 간격 추가 */
+    padding: 5px 10px; /* 적절한 크기로 조정 */
+
+}
