@@ -27,8 +27,9 @@
                         {% comment %} <li> <a href="/introduce/">소개</a></li> {% endcomment %}
                         {% if request.user.is_authenticated %}
                         <li> <a href="/user/logout" class="logout">로그아웃</a></li>
-                        <li><a href="/user/profile">내정보</a></li>
-                        <li><a href="/blog/notice_list">커뮤니티</a></li>
+                        <li> <a href="/user_page/" class="logout">마이페이지</a></li>
+                        <li><a href="/cart/">장바구니</a></li>
+                        <li><a href="/blog/notice_list">게시판</a></li>
                         {% else %}
                         <li><a href="/user/login/">로그인</a></li>
                         <li><a href="/user/register/">회원가입</a></li>
@@ -60,7 +61,7 @@
         function handleScroll() {
             const chatLink2 = document.getElementById('chat-link3');
             const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-            if (scrollTop > 600) { // Show the button when scroll is greater than 600px
+            if (scrollTop > 800) { // Show the button when scroll is greater than 800px
                 chatLink2.style.display = 'flex';
             } else {
                 chatLink2.style.display = 'none';

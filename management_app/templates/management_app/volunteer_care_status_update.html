@@ -70,7 +70,7 @@
 
         input[type="submit"]:hover,
         button:hover {
-            opacity: 0.9;
+            filter:brightness(80%)
         }
 
         .radio-buttons input[type="radio"],
@@ -92,7 +92,7 @@
 </head>
 <body>
     <div class="container">
-    <h1>{{ senior.name }}님의 케어 작성</h1>
+    <h1>{{ senior.name }}님의 서비스 등록</h1>
 
     <form method="post" id="care-form">
         {% csrf_token %}
@@ -120,7 +120,7 @@
                 <br><br>
             </div>
         </div>
-        <button type="submit" class="submit disabled" id="update-button" disabled>업데이트</button>
+        <button type="submit" class="submit disabled" id="update-button" disabled>승인</button>
         <button type="button" onclick="window.location.href = '/management/care/list/'" class="cancle">취소</button>
     </form>
     </div>

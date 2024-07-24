@@ -243,7 +243,7 @@
 <body>
     {% block content %}
     <div class="select-list">
-        <a id='selected' href="{% url 'management_app:care_list' %}">케어 목록</a>
+        <a id='selected' href="{% url 'management_app:care_list' %}">서비스 목록</a>
         <a id='not_selected' href="{% url 'management_app:report_list' %}">보고서 목록</a>
     </div>
     <div class="body-container">
@@ -276,12 +276,12 @@
                 <thead>
                     <tr>
                         <th>대상 어르신</th>
-                        <th>케어 타입</th>
+                        <th>종류</th>
                         <th class="title">제목</th>
                         <th class="content">내용</th>
                         <th>파킨슨병 진단 요청</th>
                         <th>주소</th>
-                        <th>케어 신청 날짜</th> 
+                        <th>서비스 신청 날짜</th> 
                     </tr>
                 </thead>
                 <tbody>
@@ -360,12 +360,12 @@
                 <thead>
                     <tr>
                         <th>대상 어르신</th>
-                        <th>케어 타입</th>
+                        <th>종류</th>
                         <th class="title">제목</th>
                         <th class="content">내용</th>
                         <th>파킨슨병 진단 요청</th>
                         <th>주소</th>
-                        <th>케어 신청 날짜 / 방문 예정 날짜</th> 
+                        <th>서비스 신청 날짜 / 방문 예정 날짜</th> 
                     </tr>
                 </thead>
                 <tbody>
@@ -418,18 +418,18 @@
     <div id="careModal" class="modal">
         <div class="modal-content">
             <span class="close">&times;</span>
-            <h1>케어 상세 정보</h1>
+            <h1>서비스 상세 정보</h1>
             <div class="modal-container">
                 <p><strong>ㆍ대상 어르신 : </strong> <span id="modalSeniors"></span></p>
-                <p><strong>ㆍ케어 타입 : </strong> <span id="modalCareType"></span></p>
+                <p><strong>ㆍ서비스 타입 : </strong> <span id="modalCareType"></span></p>
                 <p><strong>ㆍ제목 : </strong> <span id="modalTitle"></span></p>
                 <p><strong>ㆍ내용 : </strong> <span id="modalContent"></span></p>
                 <p><strong>ㆍ파킨슨병 진단 요청 : </strong> <span id="modalParkinson"></span></p>
                 <p><strong>ㆍ주소 : </strong> <span id="modalAddress"></span></p>
-                <p><strong>ㆍ케어 신청 날짜 : </strong> <span id="modalDatetime"></span></p>
+                <p><strong>ㆍ서비스 신청 날짜 : </strong> <span id="modalDatetime"></span></p>
                 <p id="visitTime-text" style="display: none;"><strong>ㆍ방문 예정 날짜 : </strong> <span id="visitTime"></span></p>
-                <button id="updateCareButton" class="update-button" style="display: none;">케어 작성하기</button>
-                <button id="updateCareButton2" class="update-button" style="display: none;">케어 수정하기</button>
+                <button id="updateCareButton" class="update-button" style="display: none;">서비스 등록하기</button>
+                <button id="updateCareButton2" class="update-button" style="display: none;">서비스 수정하기</button>
             </div>
         </div>
     </div>
