@@ -776,7 +776,7 @@
                         <h3>주문 및 돌봄 내역</h3>
                         <button class="add-button" onclick="checkRecentCareStatus()">서비스 요청 +</button>
                         <div class="button-container">                            
-                            <button class="plus-button" onclick="location.href='{% url 'monitoring_app:generate' %}';">+<span class="tooltip">케어 요청 목록</span></button>
+                            <button class="plus-button" onclick="location.href='{% url 'monitoring_app:generate' %}';">+<span class="tooltip">서비스 요청 목록</span></button>
                         </div>
                     </div>
                     <div class="card-body">
@@ -795,7 +795,9 @@
                             <tbody>
                                 {% if selected_senior_id %}
                                     {% for care in sorted_cares_latest %}
-                                        <tr class="clickable-row" onclick="openModal('{{ care.title }}', '{{ care.care_type }}', '{{ care.datetime|date:"Y년 n월 j일 A g:i" }}', '{{ care.visit_date }}', '{{ care.visit_time }}', '{{ care.get_care_state_display }}', '{{ care.content }}', '{{ care.seniors.all|join:', ' }}', '{{ care.user_id.username }}', '{{ care.id }}')">
+                                        {% comment %} <tr class="clickable-row" onclick="openModal('{{ care.title }}', '{{ care.care_type }}', '{{ care.datetime|date:"Y년 n월 j일 A g:i" }}', '{{ care.visit_date }}', '{{ care.visit_time }}', '{{ care.get_care_state_display }}', '{{ care.content }}', '{{ care.seniors.all|join:', ' }}', '{{ care.user_id.username }}', '{{ care.id }}')"> {% endcomment %}
+                                        <tr class="clickable-row" onclick="openModal('{{ care.title }}', '{{ care.care_type }}', '{{ care.datetime|date:"Y년 n월 j일 A g:i" }}', '{{ care.visit_date }}', '{{ care.visit_time }}', '{{ care.get_care_state_display }}', '{{ care.content|escapejs }}', '{{ care.seniors.all|join:", "|escapejs }}', '{{ care.user_id.username|escapejs }}', '{{ care.id }}')">
+
                                             <td>
                                                 {% for senior in care.seniors.all %}
                                                     {{ senior.name }}{% if not forloop.last %}, {% endif %}
@@ -831,9 +833,9 @@
     <div id="modal" class="modal">
         <div class="modal-content">
             <span class="close" onclick="closeModal()">&times;</span>
-            <h1>케어 상세</h1>
+            <h1>서비스 상세</h1>
             <div class="container">
-                <div class="text"><span class="circle"></span><strong>케어 종류 :</strong> <span id="modal-care-type"></span></div>
+                <div class="text"><span class="circle"></span><strong>서비스 종류 :</strong> <span id="modal-care-type"></span></div>
                 <div class="text"><span class="circle"></span><strong>등록 시간 :</strong> <span id="modal-request-date"></span></div>
                 <div class="text"><span class="circle"></span><strong>제목 :</strong> <span id="modal-title"></span></div>
                 <div class="text"><span class="circle"></span><strong>내용 :</strong> <span id="modal-care-content"></span></div>
@@ -861,14 +863,14 @@
     </div>
 
     <script>
-        // 케어 요청 클릭했을 때
+        // 서비스 요청 클릭했을 때
         function checkRecentCareStatus() {
             var recentCareState = "{{ recent_not_approved_care.care_state|default:'' }}";
             var recentCareId = "{{ recent_not_approved_care.id|default:'' }}";
             var seniorName = "{{ selected_senior.name }}";
             
             if (recentCareState === 'NOT_APPROVED') {                
-                if (confirm(seniorName + '님은 승인 되지 않은 요청 건이 존재합니다. \n해당 정보를 수정 및 확인해보시겠습니까? \n※ 승인 되기 전까지 케어 요청을 무한히 보내는 것을 방지')) {
+                if (confirm(seniorName + '님은 승인 되지 않은 요청 건이 존재합니다. \n해당 정보를 수정 및 확인해보시겠습니까? \n※ 승인 되기 전까지 서비스 요청을 무한히 보내는 것을 방지')) {
                     openModal(
                         "{{ recent_not_approved_care.title }}",
                         "{{ recent_not_approved_care.care_type }}",
@@ -893,7 +895,7 @@
             document.getElementById('modal-care-type').textContent = careType;
             document.getElementById('modal-request-date').textContent = requestDate;
             document.getElementById('modal-title').textContent = title;
-            document.getElementById('modal-care-content').textContent = content;
+            document.getElementById('modal-care-content').textContent = content.replace(/\\n/g, '\n');
             document.getElementById('modal-username').textContent = username;
             document.getElementById('modal-seniors').textContent = seniors;
             document.getElementById('modal-care-state').textContent = careState;
