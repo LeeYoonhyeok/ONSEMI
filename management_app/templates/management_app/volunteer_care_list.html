@@ -250,16 +250,17 @@
         <h2>[요청 승인 <span class="pending-approval-text">대기</span>] 목록 <span class="care-count"> ({{ page_obj1.paginator.count }}개)</span></h2>
         <form method="post" class="filter-form">
             {% csrf_token %}
-            <label for="sort_by_pending">정렬:</label>
+            <label for="sort_by_pending">서비스타입:</label>
             <select name="type_pending" id="type_pending">
                 <option selected value="total">전체</option>
                 <option value="방문">방문</option>
                 <option value="병원">병원</option>
                 <option value="배송">배송</option>
             </select>
+            <label>서비스 신청 날짜:</label>
             <select name="order_pending" id="order_pending">
-                <option selected value="-datetime">날짜내림차순</option>
-                <option value="datetime">날짜오름차순</option>
+                <option selected value="-datetime">최신순</option>
+                <option value="datetime">과거순</option>
             </select>
             <label for="user_pending">신청자:</label>
             <select name="user_pending" id="user_pending">
