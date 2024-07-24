@@ -1,7 +1,16 @@
+@font-face {
+    font-family: 'GmarketSansMedium';
+    src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_2001@1.1/GmarketSansMedium.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+}
+
+
 html, body {
     height: 100%;
     margin: 0;
     padding: 0;
+    font-family: 'GmarketSansMedium';
 }
 
 
@@ -9,6 +18,7 @@ body {
     display: flex;
     flex-direction: column;
     min-height: 100vh;
+    font-family: 'MaruBuriBold';
 }
 
 .wrapper {

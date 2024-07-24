@@ -21,7 +21,7 @@
         height: 100%;
         width: 100%;
         overflow: hidden; /* Prevent scrolling */
-        font-family: Arial, sans-serif;
+        
     }
     .container {
         display: flex;
@@ -41,7 +41,7 @@
         align-items: center;
         box-sizing: border-box;
         height: 100%;
-        overflow-y: auto; /* Allow vertical scrolling */
+        overflow-y: auto;
     }
     .sidebar h2 {
         text-align: center;
@@ -71,11 +71,11 @@
         width: 100%;
         max-width: 220px;
         border: 1px solid #ccc;
-        color: black; /* Ensure the text color is visible */
+        color: black; 
     }
     .sidebar form select {
         text-align: center;
-        text-align-last: center; /* For modern browsers */
+        text-align-last: center;
     }
     .sidebar form button {
         background-color: #007bff;
@@ -91,11 +91,9 @@
         overflow-y: auto;
         box-sizing: border-box;
         height: 100%;
-        width: 100%; /* Take remaining space */
+        width: 100%; 
     }
-    .form-container {
-        font-family: Arial, sans-serif;
-    }
+    
     .form-header {
         font-size: 16px;
         margin-bottom: 8px;
@@ -123,7 +121,7 @@
         width: 100%;
         max-width: 200px;
         text-align: center;
-        color: black; /* Ensure the text color is visible */
+        color: black; 
     }
     .chart-container {
         margin-bottom: 20px;
@@ -133,7 +131,7 @@
         height: auto;
     }
     .hamburger-menu {
-        display: none; /* Hide the hamburger button */
+        display: none; 
     }
     @media (max-width: 1024px) {
         .sidebar {
@@ -163,15 +161,15 @@
             width: 100%; /* Full width on small screens */
         }
         .sidebar h2 {
-            font-size: 1.5rem; /* Smaller font size for headings */
+            font-size: 1.5rem;
         }
         .sidebar form label {
-            font-size: 10px; /* Smaller font size for labels */
+            font-size: 10px; 
         }
         .sidebar form input,
         .sidebar form select,
         .sidebar form button {
-            font-size: 0.875rem; /* Smaller font size for inputs and buttons */
+            font-size: 0.875rem; 
         }
         .main-content {
             padding: 10px;
@@ -179,7 +177,7 @@
     }
     
     .flatpickr-calendar .flatpickr-day {
-        width: 2.5em; /* Adjust this value to ensure the Saturday is fully visible */
+        width: 2.5em;
     }
 
     .hamburger-menu {
@@ -234,9 +232,9 @@
                 {% endif %}
                 {% if graph_url %}
                     <div class="chart-container">
-                        <h3>주간별 서비스 요청량</h3>
+                        <h3>주간별 케어 요청량</h3>
                         {% if request.method == 'POST' %}
-                            <p><a class="detail" href="{% url 'monitoring_app:csv_view' %}?type=care">서비스 요청 데이터 자세히 보기</a></p>
+                            <p><a class="detail" href="{% url 'monitoring_app:csv_view' %}?type=care">케어 요청 데이터 자세히 보기</a></p>
                         {% endif %}
                         <img src="{{ graph_url }}" alt="Daily Order Quantity by Category">
                     </div>
