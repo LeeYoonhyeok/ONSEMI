@@ -1,16 +1,10 @@
 from django.shortcuts import render
-from django.views.generic import ListView
-from management_app.models import Care, Senior
-from django.contrib.auth.mixins import LoginRequiredMixin
+from management_app.models import Senior
 from django.contrib.auth.decorators import login_required
-from django.shortcuts import render, redirect, get_object_or_404
-from django.views.generic import ListView
-from django.contrib.auth.mixins import LoginRequiredMixin
+from django.shortcuts import render
 from auth_app.utils import family_required
 from django.core.paginator import Paginator
 from datetime import date
-
-# Create your views here.
 
 def calculate_age(birthdate):
     today = date.today()

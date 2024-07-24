@@ -2,10 +2,6 @@ from django.db import models
 from shop_app.models import Product
 from auth_app.models import User
 from management_app.models import Care, Senior
-from django.dispatch import receiver
-from django.db.models.signals import post_save
-from django.dispatch import receiver
-from django.db.models.signals import post_save
 
 # 실제 서비스에서 작동할 코드
 # class Order(models.Model):

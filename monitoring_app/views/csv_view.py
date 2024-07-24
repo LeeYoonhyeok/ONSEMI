@@ -6,7 +6,6 @@ from ..forms import FilterForm
 from orders_app.models import Order
 from datetime import datetime, time
 from management_app.models import Care
-from django.utils import timezone
 
 # 맥 전용 한글 폰트
 from matplotlib import rc

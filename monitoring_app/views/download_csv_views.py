@@ -1,19 +1,9 @@
-from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.utils.timezone import make_aware
 from django.http import HttpResponse
 
 import pandas as pd
-import matplotlib.pyplot as plt
-import matplotlib.dates as mdates
-from io import BytesIO
-import base64
 import csv 
-
-from ..forms import FilterForm
-from orders_app.models import Order
-from datetime import datetime, time
-from management_app.models import Care , Senior
 
 @login_required
 def download_order_csv(request):
