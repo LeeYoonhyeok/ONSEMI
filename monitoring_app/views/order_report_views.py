@@ -17,10 +17,14 @@ from management_app.models import Care , Senior
 from matplotlib import font_manager, rc
 import matplotlib.font_manager as fm
 
-# 한글 폰트 설정
-font_path = 'C:\\Windows\\Fonts\\Arial.ttf'
+# 한글 폰트 설정=
+font_path = '/usr/share/fonts/truetype/nanum/NanumGothic.ttf'
 font_name = fm.FontProperties(fname=font_path, size=10).get_name()
 plt.rcParams['font.family'] = font_name
+
+# font_path = 'C:\\Windows\\Fonts\\Arial.ttf'
+# font_name = fm.FontProperties(fname=font_path, size=10).get_name()
+# plt.rcParams['font.family'] = font_name
 
 # 주문 데이터 DataFrame으로 변환
 def order_to_dataframe(orders):
