@@ -335,22 +335,23 @@
         <h2>[요청 승인 <span class="pending-approval-text">완료</span>] 목록</h2>
         <form method="post" class="filter-form">
             {% csrf_token %}
-            <label for="sort_by_approved">정렬:</label>
+            <label for="sort_by_approved">서비스 타입:</label>
             <select name="type_pending_approved" id="type_pending">
                 <option selected value="total">전체</option>
                 <option value="방문">방문</option>
                 <option value="병원">병원</option>
                 <option value="배송">배송</option>
             </select>
+            <label for="order_approved">서비스 신청 날짜:</label>
             <select name="order_approved" id="order_approved">
-                <option selected value="-datetime">날짜내림차순</option>
-                <option value="datetime">날짜오름차순</option>
+                <option selected value="-datetime">최신순</option>
+                <option value="datetime">과거순</option>
             </select>
             <label for="user_approved">신청자:</label>
             <select name="user_approved" id="user_approved">
                 <option selected value="total">전체</option>
                 {% for user in approved_users %}
-                    <option value="{{ user.user_id.id }}">{{ user.user_id.username }}</option>
+                    <option value="{{ user.id }}">{{ user.username }}</option>
                 {% endfor %}
             </select>
             <button type="submit">적용하기</button>
