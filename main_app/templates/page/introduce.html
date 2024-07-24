@@ -1,255 +1,97 @@
 {% extends 'layout.html' %}
+
+{% block title %}소개{% endblock %}
 {% load static %}
-
-{% block title %}Main Page{% endblock %}
-
-{% block extra_css %}
-<style>
-    body {
-        overflow: hidden;
-    }
-
-    .header-wrapper {
-        position: relative;
-        width: 100%;
-        height: 100vh; /* 전체 뷰포트 높이 */
-        min-width: 100%;
-    }
-
-    .main-image {
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-        display: block;
-        min-width: 100%;
-        filter: brightness(60%);
-    }
-
-    header {
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        background: transparent;
-        color: white;
-    }
-
-    .logo img {
-        filter: brightness(0) invert(1);
-    }
-
-    nav ul li a {
-        color: white;
-    }
-
-    .main-content {
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        width: 100%;
-        text-align: center;
-        color: white;
-        animation: enlargeText 2s ease-out forwards;
-        min-width: 100%;
-    }
-
-    @keyframes enlargeText {
-        0% {
-            font-size: 1.17em; /* 기본 h3 크기 */
-            font-weight: normal;
-            letter-spacing: normal;
-        }
-        100% {
-            font-size: 2em; /* h1 크기 */
-            font-weight: bold;
-            letter-spacing: 2px;
-        }
-    }
-
-    .scroll-button {
-        position: absolute;
-        bottom: 10px;
-        left: 50%;
-        transform: translateX(-50%);
-        background-color: rgba(0, 0, 0, 0.5);
-        color: white;
-        border: none;
-        padding: 10px 20px;
-        cursor: pointer;
-        font-size: 16px;
-    }
-
-    .content-wrapper {
-        display: none; /* 버튼 클릭 전까지 숨김 */
-        width: 100%;
-        box-sizing: border-box; /* 패딩을 포함한 너비 계산 */
-        margin: 0;
-        padding: 0;
-    }
-
-    h1, h2, h3 {
-        text-align: center;
-        color: black;
-        margin: 0;
-    }
-
-    .main {
-        padding: 0;
-        background-color: #fff;
-        margin: 0;
-    }
-
-    .vision-section {
-        position: relative;
-        text-align: center;
-        margin: 0;
-        padding: 0;
-        height: 100vh;
-    }
-
-    .vision-section img {
-        width: 100%;
-        height: 100%;
-        brightness(40%);
-        margin: 0;
-        padding: 0;
-    }
-
-    .vision-text {
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        margin: 0;
-        padding: 0;
-    }
-
-    .vision-text h1 {
-        font-size: 36px;
-        margin: 0;
-    }
-
-    .vision-text p {
-        font-size: 18px;
-        margin: 0;
-    }
-
-    .values-section {
-        text-align: center;
-        padding: 40px 20px;
-        margin: 0;
-    }
-
-    .values-section h2 {
-        font-size: 28px;
-        margin-bottom: 20px;
-    }
-
-    .values-container {
-        display: flex;
-        justify-content: space-around;
-        flex-wrap: wrap;
-    }
-
-    .value-box {
-        background-color: #f0f4f8;
-        padding: 20px;
-        margin: 10px;
-        border-radius: 8px;
-        width: 45%;
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-    }
-
-    .value-box img {
-        width: 50px;
-        height: 50px;
-        margin-right: 20px;
-    }
-
-    .value-box .text {
-        text-align: left;
-    }
-
-    .value-box .text h3 {
-        margin: 0;
-        font-size: 18px;
-        font-weight: bold;
-    }
-
-    .animated-text {
-        font-size: 50px;
-    }
-
-    .animated-small-text {
-        font-size: 20px;
-    }
-</style>
-{% endblock %}
-
 {% block content %}
-<div class="header-wrapper">
-    <img src="{% static 'main/onsemi_main.png' %}" alt="Main Image" class="main-image">
-    <div class="main-content">
-        <p class="animated-text">부모님께 효도를 대신해 드리겠습니다.</p>
-        <p class="animated-small-text">방문 케어와 신선한 음식 배달을 통해<br>
-            노부모와 보호자의 행복과 마음의 평화를 보장합니다.<br>
-            Caring for Your Loved Ones, Wherever You Are
-        </p>
-    </div>
-    <button class="scroll-button" onclick="showContent()">더보기</button>
-</div>
-<div class="content-wrapper" id="extra-content">
-    <div class="main">
-        <div class="vision-section">
-            <img src="{% static 'main/submainimg.png' %}" alt="Sub Image">
-            <div class="vision-text">
-                <h3>식료품을 구하는 것도 녹록지 않은 동네</h3>
-                <h3>그 안에서 지긋한 연세가 되어버린 우리 부모님</h3>
-                <h3>서로에게 보내지 못한 마음과 소식들</h3>
-                <h2>그 모든 갈증,
-                    이 땅에서 솟아나는 샘물 되어
-                    온새미가 채우겠습니다</h2>
-            </div>
+<div class="introduce-container">
+    <div class="image-grid">
+        <div class="image-item">
+            <img src="{% static 'main/onsemi.png' %}" alt="Onsemi Image">
+            <p>소개<br>블라블라</p>
+        </div>
+        <div class="image-item">
+            <img src="{% static 'main/onsemi.png' %}" alt="Onsemi Image">
+            <p>소개<br>블라블라</p>
+        </div>
+        <div class="image-item">
+            <img src="{% static 'main/onsemi.png' %}" alt="Onsemi Image">
+            <p>소개<br>블라블라</p>
+        </div>
+        <div class="image-item">
+            <img src="{% static 'main/onsemi.png' %}" alt="Onsemi Image">
+            <p>소개<br>블라블라</p>
+        </div>
+        <div class="image-item">
+            <img src="{% static 'main/onsemi.png' %}" alt="Onsemi Image">
+            <p>소개<br>블라블라</p>
+        </div>
+        <div class="image-item">
+            <img src="{% static 'main/onsemi.png' %}" alt="Onsemi Image">
+            <p>소개<br>블라블라</p>
+        </div>
+        <div class="image-item">
+            <img src="{% static 'main/onsemi.png' %}" alt="Onsemi Image">
+            <p>소개<br>블라블라</p>
+        </div>
+        <div class="image-item">
+            <img src="{% static 'main/onsemi.png' %}" alt="Onsemi Image">
+            <p>소개<br>블라블라</p>
         </div>
     </div>
 </div>
-
 {% endblock %}
 
-{% block script %}
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-        // 페이지가 로드된 후 항상 맨 위로 스크롤
-        window.scrollTo(0, 0);
-        // 페이지가 로드된 후 실행
-        document.body.style.overflow = 'hidden'; // 처음에 숨김
-        document.querySelector('.scroll-button').style.display = 'block'; // 버튼 표시
-        document.getElementById('extra-content').style.display = 'none'; // 추가 콘텐츠 숨김
-    });
-
-    function showContent() {
-        document.body.style.overflowY = 'auto'; /* 세로 스크롤만 활성화 */
-        document.body.style.overflowX = 'hidden'; /* 가로 스크롤 비활성화 */
-        document.querySelector('.scroll-button').style.display = 'none'; /* 버튼 숨기기 */
-        document.getElementById('extra-content').style.display = 'block'; /* 추가 콘텐츠 표시 */
-        document.getElementById('extra-content').scrollIntoView({ behavior: 'smooth' }); /* 부드럽게 스크롤 */
+{% block extra_css %}
+<style>
+    .introduce-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
+        padding: 40px 20px;
     }
 
-    // Wheel event to handle visibility
-    let scrolled = false;
-    window.addEventListener('wheel', function(event) {
-        if (event.deltaY > 0 && !scrolled) {
-            scrolled = true;
-            showContent();
-        }
-    });
+    .image-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 30px;
+    }
 
-    // Prevent default behavior of refreshing to top of the page
-    window.addEventListener('beforeunload', function () {
-        window.scrollTo(0, 0);
-    });
-</script>
+    .image-item {
+        text-align: center;
+        max-width: 150px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .image-item img {
+        width: 100%;
+        height: auto;
+        border: 1px solid #ddd;
+        padding: 10px;
+        background-color: #f9f9f9;
+    }
+
+    .image-item p {
+        margin-top: 10px;
+        font-size: 14px;
+        color: #333;
+        text-align: center;
+    }
+
+    @media (max-width: 992px) {
+        .image-grid {
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+        }
+    }
+
+    @media (max-width: 576px) {
+        .image-grid {
+            grid-template-columns: 1fr;
+            gap: 15px;
+        }
+    }
+</style>
 {% endblock %}
