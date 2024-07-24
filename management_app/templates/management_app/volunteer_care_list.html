@@ -288,9 +288,12 @@
                 <tbody>
                     {% for care in page_obj1.object_list %}
                     <tr class="clickable-row" data-id="{{ care.id }}" data-title="{{ care.title }}" data-content="{{ care.content }}" data-caretype="{{ care.care_type }}" data-parkinson="{% if care.parkinson_diagnosis %}O{% else %}X{% endif %}" data-seniors="{% for senior in care.seniors.all %}{{ senior.name }}{% if not forloop.last %}, {% endif %}{% endfor %}" data-address="{% for senior in care.seniors.all %}{{ senior.address }} {{senior.detail_address}}{% if not forloop.last %}, {% endif %}{% endfor %}" data-datetime="{{ care.datetime|date:'Y년 n월 j일 A g:i' }}" data-visit_date="{{ care.visit_date|date:'Y년 n월 j일' }}" data-visit_time="{{ care.visit_time|time:'A g:i' }}">
-                            <td>{% for senior in care.seniors.all %}
-                                {{ senior.name }}{% if not forloop.last %}, {% endif %}
-                            {% endfor %}</td>
+                            <td>
+                                {% for senior in care.seniors.all %}
+                                    {{ senior.name }} (보호자: {{ senior.user_id.username }})
+                                    {% if not forloop.last %}, {% endif %}
+                                {% endfor %}
+                            </td>
                             <td>{{ care.care_type }}</td>                            
                             <td class="title">{{ care.title }}</td>
                             <td class="content">{{ care.content }}</td>
@@ -374,9 +377,12 @@
                     {% for care in page_obj2.object_list %}
                     <tr class="clickable-row" data-id="{{ care.id }}" data-title="{{ care.title }}" data-content="{{ care.content }}" data-caretype="{{ care.care_type }}" data-parkinson="{% if care.parkinson_diagnosis %}O{% else %}X{% endif %}" data-seniors="{% for senior in care.seniors.all %}{{ senior.name }}{% if not forloop.last %}, {% endif %}{% endfor %}" data-address="{% for senior in care.seniors.all %}{{ senior.address }} {{senior.detail_address}}{% if not forloop.last %}, {% endif %}{% endfor %}" data-datetime="{{ care.datetime|date:'Y년 n월 j일 A g:i' }}" data-visit_date="{{ care.visit_date|date:'Y년 n월 j일' }}" data-visit_time="{{ care.visit_time|time:'A g:i' }}">
 
-                            <td>{% for senior in care.seniors.all %}
-                                {{ senior.name }}{% if not forloop.last %}, {% endif %}
-                            {% endfor %}</td>
+                            <td>
+                                {% for senior in care.seniors.all %}
+                                    {{ senior.name }} (보호자: {{ senior.user_id.username }})
+                                    {% if not forloop.last %}, {% endif %}
+                                {% endfor %}
+                            </td>
                             <td>{{ care.care_type }}</td>                            
                             <td class="title">{{ care.title }}</td>
                             <td class="content">{{ care.content }}</td>
