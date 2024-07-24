@@ -471,7 +471,7 @@
           <h2>제품 검색</h2><hr>
         </div>
         <form method="get" action="{% url 'shop_app:product_list' %}">
-          <input type="text" name="query" placeholder="검색어 입력" value="{{ query }}">
+          <input type="text" name="query" placeholder="검색어 입력" value="{{ query|default_if_none:'' }}">
         </form>
       </div>
       <h1 class="cate">카테고리</h1>
