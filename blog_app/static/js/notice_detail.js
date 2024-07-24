@@ -1,12 +1,27 @@
-document.addEventListener("DOMContentLoaded", function() {
-    document.querySelectorAll('.reply-link').forEach(function(element) {
-        element.onclick = function(e) {
-            e.preventDefault();
-            document.getElementById('parent_id').value = this.getAttribute('data-id');
-            window.scrollTo(0, document.body.scrollHeight);
-        };
-    });
+function showReplyForm(element) {
+    var parentId = element.getAttribute('data-id');
+    var replyFormHtml = `
+        <form method="post" class="reply-form">
+            <input type="hidden" name="csrfmiddlewaretoken" value="${document.querySelector('[name=csrfmiddlewaretoken]').value}">
+            <textarea name="content" placeholder="댓글을 입력하세요." rows="3" required></textarea>
+            <input type="hidden" name="parent_id" value="${parentId}">
+            <div class="comment-submit-container">
+                <input type="submit" value="답글 달기" class="comment-submit-button">
+            </div>
+        </form>
+    `;
 
+    var existingForm = document.querySelector('.reply-form');
+    if (existingForm) {
+        existingForm.remove();
+    }
+
+    var commentActions = element.parentElement;
+    commentActions.insertAdjacentHTML('afterend', replyFormHtml);
+}
+
+
+document.addEventListener("DOMContentLoaded", function() {
     document.getElementById('like-button').onclick = function(e) {
         e.preventDefault();
         const url = this.getAttribute('data-url');

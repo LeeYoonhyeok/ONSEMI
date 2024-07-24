@@ -27,7 +27,7 @@
                         {% comment %} <li> <a href="/introduce/">소개</a></li> {% endcomment %}
                         {% if request.user.is_authenticated %}
                         <li> <a href="/user/logout" class="logout">로그아웃</a></li>
-                        <li><a href="/user/profile">프로필</a></li>
+                        <li><a href="/user/profile">내정보</a></li>
                         <li><a href="/blog/notice_list">커뮤니티</a></li>
                         {% else %}
                         <li><a href="/user/login/">로그인</a></li>
