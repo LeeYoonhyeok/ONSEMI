@@ -52,6 +52,6 @@ def download_care_csv(request):
     writer.writerow(['제목', '케어 종류', '요청 날짜', '방문 예정 날짜' '처리 상태', '요청 내용', '대상 노인'])
 
     for care in filtered_cares:
-        writer.writerow([care['title'], care['care_type'], care['datetime'], care['visit_date'], care['care_state'], care['content'], care['seniors']])
+        writer.writerow([care['care_title'], care['care_type'], care['datetime'], care['visit_date'], care['care_state'], care['care_content'], care['care_seniors']])
 
     return response
