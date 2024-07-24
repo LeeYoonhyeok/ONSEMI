@@ -16,7 +16,7 @@
         height: 100%;
         width: 100%;
         overflow: hidden; /* Prevent scrolling */
-        font-family: Arial, sans-serif;
+        /*font-family: Arial, sans-serif;*/
     }
     .container {
         
@@ -56,7 +56,7 @@
 
     .sidebar form input,
     .sidebar form select {
-        margin-bottom: 10px;
+        margin-bottom: 15px;
         padding: 8px;
         font-size: 1rem;
         border-radius: 4px;
@@ -81,7 +81,7 @@
     }
 
     .sidebar form button:hover {
-        background-color: #156741;
+        background-color: #12301f;
         color: white;
     }
 
@@ -257,14 +257,15 @@
                 {% endif %}
             </div>
             {% endif %}
-            <h3>{{ selected_senior.name }}</h3>
+            <h3>{{ selected_senior.name }}</h3>            
             <form method="get" id="seniorForm">
+                <label for="selected_senior_id" stlye="float:left;">어르신 선택:</label>
                 <select name="selected_senior_id" onchange="document.getElementById('seniorForm').submit();">
                     {% for senior in senior_list %}
                         <option value="{{ senior.id }}" {% if selected_senior_id == senior.id|stringformat:"s" %}selected{% endif %}>{{ senior.name }}</option>
                     {% endfor %}
                 </select>
-                <label for="sort_by">정렬:</label>
+                <label for="sort_by">날짜 정렬:</label>
                 <select name="sort_by" id="sort_by">
                     <option value="-created_at" {% if request.GET.sort_by == '-created_at' %}selected{% endif %}>최신순</option>
                     <option value="created_at" {% if request.GET.sort_by == 'created_at' %}selected{% endif %}>오래된 순</option>
@@ -274,9 +275,10 @@
                 {{ form.end_date.label_tag }}
                 <input type="text" id="end_date" name="end_date" class="date-picker" placeholder="날짜선택" value="{{ form.end_date.value|default_if_none:'' }}"/>
                 
+                <label for="type_filter">서비스 종류:</label>
                 <select name="type_filter" id="type_filter">
                     <option value="all" {% if type_filter == 'all' %}selected{% endif %}>전체</option>
-                    <option value="shop" {% if type_filter == 'shop' %}selected{% endif %}>쇼핑</option>
+                    <option value="shop" {% if type_filter == 'shop' %}selected{% endif %}>배송</option>
                     <option value="visit" {% if type_filter == 'visit' %}selected{% endif %}>방문</option>
                     <option value="hospital" {% if type_filter == 'hospital' %}selected{% endif %}>병원</option>
                 </select>
