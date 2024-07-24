@@ -5,6 +5,9 @@
     background: linear-gradient(to right, #ece9e6, #ffffff);
     margin: 0;
     padding: 0;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
   }
 
   .orders-wrapper {
@@ -12,6 +15,7 @@
     flex-direction: column;
     align-items: center;
     padding: 20px;
+    flex-grow: 1;
   }
 
   .order-container {
@@ -24,6 +28,10 @@
     width: 90%;
     max-width: 800px;
     transition: transform 0.3s ease, box-shadow 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
   }
 
   .order-container:hover {
@@ -32,9 +40,9 @@
   }
 
   .order-info {
-    width: 95%;
-    text-align: center;
+    width: 100%;
     margin-bottom: 20px;
+    text-align: center;
   }
 
   .order-info img {
@@ -66,14 +74,21 @@
     border: 1px solid #ddd;
     border-radius: 10px;
     padding: 20px;
-    margin-bottom: 20px;
-    text-align: center;
+    width: 100%;
+    max-height: 60vh;
+    overflow-y: auto;
+  }
+
+  .code-content p {
+    margin: 5px 0;
+    text-align: left;
   }
 
   .code-content ul {
     list-style-type: none;
     padding: 0;
     margin: 0 0 20px;
+    text-align: left;
   }
 
   .code-content ul li {
@@ -82,7 +97,6 @@
     border-radius: 5px;
     margin-bottom: 5px;
     padding: 10px;
-    text-align: left;
     transition: background-color 0.3s ease;
   }
 
@@ -96,16 +110,16 @@
   .order-actions a {
     display: inline-block;
     padding: 10px 20px;
-    border: 2px solid #007bff;
+    background: #156741;
     border-radius: 5px;
-    color: black;
+    color: white;
     text-decoration: none;
     font-weight: bold;
     transition: all 0.3s ease;
   }
 
   .order-actions a:hover {
-    background-color: #007bff;
+    background-color: #026738;
     color: #ffffff;
   }
 
@@ -140,10 +154,9 @@
             featured_seasonal_and_gifts
             </span>
             <h2>결제 완료</h2>
-            
         </div>
         <div class="code-content">
-            <h3>주문 상세 정보</h3>
+          <h3>주문 상세 정보</h3>
             <ul>
                 {% for item in order.items.all %}
                 <li>{{ item.product.name }} - {{ item.quantity }} x {{ item.price }}</li>
@@ -165,7 +178,6 @@
             {% endif %}
         </div>
         <div class="order-actions">
-            <a href="{% url 'orders_app:order_edit' order.id %}">주문 수정</a>
             <a href="{% url 'orders_app:order_cancel' order.id %}">내역 삭제</a>
             <a href="{% url 'orders_app:my_orders' %}">돌아가기</a>
         </div>
