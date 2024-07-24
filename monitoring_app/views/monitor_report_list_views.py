@@ -31,7 +31,7 @@ def report_list(request):
             reports = reports.filter(created_at__date__gte=start_date, created_at__date__lte=end_date)
 
     if type_filter == 'shop':
-        reports = reports.filter(care__care_type='쇼핑')
+        reports = reports.filter(care__care_type='배송')
     elif type_filter == 'visit':
         reports = reports.filter(care__care_type='방문')
     elif type_filter == 'hospital':

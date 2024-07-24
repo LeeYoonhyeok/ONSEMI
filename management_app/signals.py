@@ -1,7 +1,6 @@
 from django.db.models.signals import post_save, post_delete
 from django.dispatch import receiver
-from orders_app.models import Order
-from management_app.models import Care, Report
+from management_app.models import Report
 
 # Report가 생성될 때 care_status를 'COMPLETED'로 변경하는 시그널
 @receiver(post_save, sender=Report)

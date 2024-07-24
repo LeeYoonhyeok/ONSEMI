@@ -15,6 +15,7 @@
         table {
             width: 100%;
             border-collapse: collapse;
+            border-style: hidden; 
         }
         th, td {
             padding: 8px 12px;
@@ -126,10 +127,6 @@
         .filter-form button:hover {
             background-color: #0056b3;
         }
-        .table-wrapper {
-            width: 100%;
-            overflow-x: auto;
-        }
         .report-count {
             font-size : 17px;
             color : #727875;
@@ -149,36 +146,124 @@
             background-color: #bebebe;
         }
         .table-wrapper {
-            background-color : #d5d4ce;
-        }    
+            width: 100%;
+            overflow-x: auto;
+            background-color : #f3eae8;
+            border-radius: 5px;
+            box-shadow: 0 0 0 1px #ccc;
+            border-style: hidden;
+        }
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.5);
+        }
+
+        .modal-content {
+            background-color: #fff;
+            margin: 10% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+            max-width: 800px;
+            border-radius: 10px;
+            position: relative;
+            height: auto;
+            max-height: 80vh;
+            overflow-y: auto;
+            animation-name: animatetop;
+            animation-duration: 1s;
+        }
+        .modal-content h1 {
+            text-align : center;
+        }
+        @keyframes animatetop {
+            from {opacity: 0}
+            to {opacity: 1}
+        }
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            position: absolute;
+            top: 10px;
+            right: 25px;
+        }
+
+        .close:hover,
+        .close:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+        .modal-container {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            display: block;
+            flex-grow: 1;
+            overflow-y: auto;
+        }
+
+        .modal-container p {
+            margin-bottom: 10px;
+            word-wrap: break-word;
+            white-space: pre-wrap;
+        }
+        .update-button {
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            cursor: pointer;
+            border-radius: 5px;
+            font-size: 16px;
+            float:left;
+            margin-left: 10px;
+            background-color: #156741;
+        }
+        .update-button:hover {
+            background-color: #104e31;
+        }
     </style>
     {% endblock %}
 </head>
 <body>
     {% block content %}
     <div class="select-list">
-        <a id='not_selected' href="{% url 'management_app:care_list' %}">케어 목록</a>
+        <a id='not_selected' href="{% url 'management_app:care_list' %}">서비스 목록</a>
         <a id='selected' href="{% url 'management_app:report_list' %}">보고서 목록</a>
     </div>
     <div class="body-container">
         <div>
             <h2>[작성 <span class="pending-approval-text">예정</span> 보고서] 목록 <span class="report-count">({{ pending_reports_count }}개)</span></h2>
-            <form method="get" class="filter-form">
-                <label for="sort_by_pending">정렬:</label>
-                <select name="sort_by_pending" id="sort_by_pending">
-                    <option value="care_type" {% if current_sort_by_pending == 'care_type' %}selected{% endif %}>케어 타입</option>
-                    <option value="datetime" {% if current_sort_by_pending == 'datetime' %}selected{% endif %}>시간</option>
-                    <option value="care_state" {% if current_sort_by_pending == 'care_state' %}selected{% endif %}>케어 상태</option>
+            <form method="post" class="filter-form">
+                {% csrf_token %}
+                <label for="sort_by_pending">서비스 타입:</label>
+                <select name="type_pending" id="type_pending">
+                    <option selected value="total">전체</option>
+                    <option value="방문">방문</option>
+                    <option value="병원">병원</option>
+                    <option value="배송">배송</option>
                 </select>
+                <label for="order_pending">서비스 신청 날짜:</label>
                 <select name="order_pending" id="order_pending">
-                    <option value="asc" {% if current_order_pending == 'asc' %}selected{% endif %}>오름차순</option>
-                    <option value="desc" {% if current_order_pending == 'desc' %}selected{% endif %}>내림차순</option>
+                    <option selected value="-datetime">최신순</option>
+                    <option value="datetime">과거순</option>
                 </select>
-                <label for="user_pending">신청자:</label>
-                <select name="user_pending" id="user_pending">
-                    <option value="">전체</option>
-                    {% for user in users %}
-                        <option value="{{ user.id }}" {% if user.id == selected_user_pending %}selected{% endif %}>{{ user.username }}</option>
+                <label for="pending_report_user">신청자:</label>
+                <select name="pending_report_user" id="pending_report_user">
+                    <option selected value="total">전체</option>
+                    {% for user in pending_report_users %}
+                        <option value="{{ user.id }}">{{ user.username }}</option>
                     {% endfor %}
                 </select>
                 <button type="submit">적용하기</button>
@@ -189,20 +274,24 @@
                 <thead>
                     <tr>
                         <th>대상 어르신</th>
-                        <th>케어 타입</th>
+                        <th>종류</th>
                         <th>제목</th>
                         <th>내용</th>
                         <th>파킨슨병 진단 요청</th>
                         <th>주소</th>
-                        <th>케어 신청 날짜 / 방문 예정 날짜</th>
+                        <th>서비스 신청 날짜 / 방문 예정 날짜</th>
                     </tr>
                 </thead>
                 <tbody>
                     {% for care in pending_page_obj %}
-                        <tr class="clickable-row" onclick="redirectToCreateReport('{{ care.id }}')">
-                            <td>{% for senior in care.seniors.all %}
-                                {{ senior.name }}{% if not forloop.last %}, {% endif %}
-                            {% endfor %}</td>
+                        <tr class="clickable-row" data-id="{{ care.id }}" data-title="{{ care.title }}" data-content="{{ care.content }}" data-caretype="{{ care.care_type }}" data-parkinson="{% if care.parkinson_diagnosis %}O{% else %}X{% endif %}" data-seniors="{% for senior in care.seniors.all %}{{ senior.name }}{% if not forloop.last %}, {% endif %}{% endfor %}" data-address="{% for senior in care.seniors.all %}{{ senior.address }} {{senior.detail_address}}{% if not forloop.last %}, {% endif %}{% endfor %}" data-datetime="{{ care.datetime|date:'Y년 n월 j일 A g:i' }}" data-visit_date="{{ care.visit_date|date:'Y년 n월 j일' }} {{ care.visit_time|date:'A g:i' }}" data-care_state="{{ report.care.care_state }}">
+
+                            <td>
+                                {% for senior in care.seniors.all %}
+                                    {{ senior.name }} (보호자: {{ senior.user_id.username }})
+                                    {% if not forloop.last %}, {% endif %}
+                                {% endfor %}
+                            </td>
                             <td>{{ care.care_type }}</td>
                             <td class="title-cell">{{ care.title }}</td>
                             <td class="content-cell">{{ care.content }}</td>
@@ -245,22 +334,25 @@
         <hr style="margin:50px 0px;">
         
         <h2>[작성 <span class="pending-approval-text">완료</span> 보고서] 목록</h2>
-        <form method="get" class="filter-form">
-            <label for="sort_by_approved">정렬:</label>
-            <select name="sort_by_approved" id="sort_by_approved">
-                <option value="care_type" {% if current_sort_by_approved == 'care_type' %}selected{% endif %}>케어 타입</option>
-                <option value="datetime" {% if current_sort_by_approved == 'datetime' %}selected{% endif %}>시간</option>
-                <option value="care_state" {% if current_sort_by_approved == 'care_state' %}selected{% endif %}>케어 상태</option>
+        <form method="post" class="filter-form">
+            {% csrf_token %}
+            <label for="sort_by_submitted">서비스 타입:</label>
+            <select name="type_submitted" id="type_submitted">
+                <option selected value="total">전체</option>
+                <option value="방문">방문</option>
+                <option value="병원">병원</option>
+                <option value="배송">배송</option>
             </select>
-            <select name="order_approved" id="order_approved">
-                <option value="asc" {% if current_order_approved == 'asc' %}selected{% endif %}>오름차순</option>
-                <option value="desc" {% if current_order_approved == 'desc' %}selected{% endif %}>내림차순</option>
+            <label for="order_submitted">보고서 제출 날짜:</label>
+            <select name="order_submitted" id="order_submitted">
+                <option selected value="-updated_at">최신순</option>
+                <option value="updated_at">과거순</option>
             </select>
-            <label for="user_approved">신청자:</label>
-            <select name="user_approved" id="user_approved">
-                <option value="">전체</option>
-                {% for user in users %}
-                    <option value="{{ user.id }}" {% if user.id == selected_user_approved %}selected{% endif %}>{{ user.username }}</option>
+            <label for="submitted_report_user">신청자:</label>
+            <select name="submitted_report_user" id="submitted_report_user">
+                <option selected value="total">전체</option>
+                {% for user in submitted_report_users %}
+                    <option value="{{ user.id }}">{{ user.username }}</option>
                 {% endfor %}
             </select>
             <button type="submit">적용하기</button>
@@ -270,20 +362,23 @@
                 <thead>
                     <tr>
                         <th>대상 어르신</th>
-                        <th>케어 타입</th>
+                        <th>종류</th>
                         <th>제목</th>
                         <th>내용</th>
                         <th>파킨슨병 진단 요청</th>
                         <th>주소</th>
-                        <th>방문 날짜 / 보고서 작성 날짜</th>
+                        <th>보고서 작성 날짜 / 방문 날짜</th>
                     </tr>
                 </thead>
                 <tbody>
                     {% for report in report_page_obj %}
-                        <tr class="clickable-row" onclick="redirectToManageReport('{{ report.id }}')">
-                            <td>{% for senior in report.care.seniors.all %}
-                                {{ senior.name }}{% if not forloop.last %}, {% endif %}
-                            {% endfor %}</td>
+                    <tr class="clickable-row" data-id="{{ report.id }}" data-title="{{ report.care.title }}" data-content="{{ report.care.content }}" data-caretype="{{ report.care.care_type }}" data-parkinson="{% if report.care.parkinson_diagnosis %}O{% else %}X{% endif %}" data-seniors="{% for senior in report.care.seniors.all %}{{ senior.name }}{% if not forloop.last %}, {% endif %}{% endfor %}" data-address="{% for senior in report.care.seniors.all %}{{ senior.address }} {{senior.detail_address}}{% if not forloop.last %}, {% endif %}{% endfor %}" data-datetime="{{ report.care.datetime|date:'Y년 n월 j일 A g:i' }}" data-visit_date="{{ report.care.visit_date|date:'Y년 n월 j일' }} {{ report.care.visit_time|date:'A g:i' }}" data-updated_at="{{ report.updated_at|date:'Y년 n월 j일 A g:i' }}" data-care_state="{{ report.care.care_state }}">
+                        <td>
+                            {% for senior in report.care.seniors.all %}
+                                {{ senior.name }} (보호자: {{ senior.user_id.username }})
+                                {% if not forloop.last %}, {% endif %}
+                            {% endfor %}
+                        </td>
                             <td>{{ report.care.care_type }}</td>
                             <td class="title-cell">{{ report.care.title }}</td>
                             <td class="content-cell">{{ report.care.content }}</td>
@@ -294,7 +389,7 @@
                             <td>{% for senior in report.care.seniors.all %}
                                 {{ senior.address }} {{senior.detail_address}}{% if not forloop.last %}, {% endif %}
                             {% endfor %}</td>
-                            <td>{% if report.care.visit_date and report.care.visit_time %}{{ report.care.visit_date|date:"Y년 n월 j일" }} {{ report.care.visit_time|date:"A g:i" }} / <br>{% endif %}{{ report.updated_at|date:"Y년 n월 j일 A g:i" }}</td>
+                            <td>{% if report.care.visit_date and report.care.visit_time %} {{ report.updated_at|date:"Y년 n월 j일 A g:i" }} / <br>{{ report.care.visit_date|date:"Y년 n월 j일" }} {{ report.care.visit_time|date:"A g:i" }}{% endif %}</td>
                         </tr>
                     {% endfor %}
                 </tbody>
@@ -322,17 +417,82 @@
                 {% endif %}
             </span>
         </div>
-    </div>    
-    <script>
-        function redirectToCreateReport(careId) {
-            const url = "{% url 'management_app:create_report' 0 %}".replace('0', careId);
-            location.href = url;
-        }
+    </div>
+    <!-- Modal Structure -->
+    <div id="reportModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h1>보고서 상세 정보</h1>
+            <div class="modal-container">
+                <p><strong>ㆍ대상 어르신 : </strong> <span id="modalSeniors"></span></p>
+                <p><strong>ㆍ서비스 타입 : </strong> <span id="modalCareType"></span></p>
+                <p><strong>ㆍ제목 : </strong> <span id="modalTitle"></span></p>
+                <p><strong>ㆍ내용 : </strong> <span id="modalContent"></span></p>
+                <p><strong>ㆍ파킨슨병 진단 요청 : </strong> <span id="modalParkinson"></span></p>
+                <p><strong>ㆍ주소 : </strong> <span id="modalAddress"></span></p>
+                <p><strong>ㆍ서비스 신청 날짜 : </strong> <span id="modalDatetime"></span></p>
+                <p><strong>ㆍ방문 날짜 : </strong> <span id="visitTime"></span></p>
+                <p class="report-Time" style="display: none;"><strong>ㆍ보고서 작성 날짜 : </strong> <span id="reportTime"></span></p>
+                <button id="updateCareButton" class="update-button" style="display: none;">보고서 작성하기</button>
+                <button id="updateCareButton2" class="update-button" style="display: none;">보고서 수정하기</button>
+            </div>
+        </div>
+    </div>
 
-        function redirectToManageReport(reportId) {
-            const url = "{% url 'management_app:update_report' 0 %}".replace('0', reportId);
-            location.href = url;
-        }
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const rows = document.querySelectorAll('.clickable-row');
+            const modal = document.getElementById('reportModal');
+            const span = document.getElementsByClassName('close')[0];
+
+            rows.forEach(row => {
+                row.addEventListener('click', function() {
+                    const reportId = this.dataset.id;
+                    document.getElementById('modalSeniors').textContent = this.dataset.seniors;
+                    document.getElementById('modalCareType').textContent = this.dataset.caretype;
+                    document.getElementById('modalTitle').textContent = this.dataset.title;
+                    document.getElementById('modalContent').textContent = this.dataset.content;
+                    document.getElementById('modalParkinson').textContent = this.dataset.parkinson;
+                    document.getElementById('modalAddress').textContent = this.dataset.address;
+                    document.getElementById('modalDatetime').textContent = this.dataset.datetime;
+                    document.getElementById('visitTime').textContent = this.dataset.visit_date
+                    const updateButton = document.getElementById('updateCareButton');
+                    const updateButton2 = document.getElementById('updateCareButton2');
+                    const reportTimeElement = document.querySelector('.report-Time');
+
+                    updateButton.style.display = 'none';
+                    updateButton2.style.display = 'none';
+                    reportTimeElement.style.display = 'none';
+
+                    if (this.dataset.care_state === "COMPLETED") { // 보고서 작성 완료 했다면
+                        document.getElementById('reportTime').textContent = this.dataset.updated_at;
+                        reportTimeElement.style.display = 'block';                        
+                        updateButton2.style.display = 'block';
+                        updateButton2.onclick = function() {
+                            window.location.href = `/management/report/update/${reportId}/`;
+                        };
+                    } else {
+                        updateButton.style.display = 'block';
+                        updateButton.onclick = function() {
+                            window.location.href = `/management/report/create/${reportId}/`;
+                        };
+                    }
+
+                    modal.style.display = 'block';
+
+                });
+            });
+
+            span.onclick = function() {
+                modal.style.display = 'none';
+            };
+
+            window.onclick = function(event) {
+                if (event.target == modal) {
+                    modal.style.display = 'none';
+                }
+            };
+        });
     </script>
     {% endblock %}
 </body>

@@ -1,5 +1,4 @@
-{% comment %} {% extends "shop/product/base.html" %} {% endcomment %}
-{% comment %} {% extends "shop/product/base_shop.html" %} {% endcomment %}
+{% extends "shop/product/base_shop.html" %}
 {% block content %}
 <style>
   body {
@@ -27,25 +26,21 @@
     transition: transform 0.3s ease, box-shadow 0.3s ease;
   }
 
-  a{
-    color:black;
-  }
-
   .order-container:hover {
     transform: scale(1.02);
     box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
   }
 
-  .order-details {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+  .order-info {
+    width: 95%;
+    text-align: center;
+    margin-bottom: 20px;
   }
 
-  .order-info {
-    width: 100%;
-    margin-bottom: 20px;
-    text-align: center;
+  .order-info img {
+    width: 50px;
+    height: 50px;
+    margin-bottom: 10px;
   }
 
   .order-info h2 {
@@ -54,19 +49,34 @@
     color: #333;
   }
 
-  .order-info h3 {
-    font-size: 1.5em;
-    margin-bottom: 15px;
-    color: #555;
+  .order-info p {
+    margin: 5px 0;
+    font-size: 1em;
+    color: #666;
+    text-align: center;
   }
 
-  .order-info ul {
+  .order-info strong {
+    display: block;
+    margin-bottom: 10px;
+  }
+
+  .code-content {
+    background-color: #f9f9f9;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    padding: 20px;
+    margin-bottom: 20px;
+    text-align: center;
+  }
+
+  .code-content ul {
     list-style-type: none;
     padding: 0;
     margin: 0 0 20px;
   }
 
-  .order-info ul li {
+  .code-content ul li {
     background-color: #f9f9f9;
     border: 1px solid #ddd;
     border-radius: 5px;
@@ -76,22 +86,11 @@
     transition: background-color 0.3s ease;
   }
 
-  /*.order-info ul li:hover {
-    background-color: #f0f0f0;
-  }*/
-
-  .order-info p {
-    margin: 5px 0;
-    font-size: 1em;
-    color: #666;
-    text-align:center;
-    float:none;
-  }
-
   .order-actions {
     display: flex;
     justify-content: space-around;
     width: 100%;
+    margin-top: 20px;
   }
 
   .order-actions a {
@@ -109,6 +108,7 @@
     background-color: #007bff;
     color: #ffffff;
   }
+
   @media (max-width: 600px) {
     .order-container {
       width: 95%;
@@ -126,44 +126,48 @@
     }
   }
 
+  .order-info .material-symbols-outlined {
+    font-size: 50px; /* 크기 조정 */
+    display: block;
+    margin: 0 auto 10px auto; /* 가운데 정렬 */
+  }
 </style>
+
 <div class="orders-wrapper">
     <div class="order-container">
-        <div class="order-details">
-            <div class="order-info">
-              <h2>주문번호{{ order.id }}</h2>
-              <h3>상품:</h3>
-              <ul>
-                {% comment %} <a href="{% url 'orders_app:order_edit' order.id %}">수정 {% endcomment %}
+        <div class="order-info">
+          <span class="material-symbols-outlined">
+            featured_seasonal_and_gifts
+            </span>
+            <h2>결제 완료</h2>
+            
+        </div>
+        <div class="code-content">
+            <h3>주문 상세 정보</h3>
+            <ul>
                 {% for item in order.items.all %}
                 <li>{{ item.product.name }} - {{ item.quantity }} x {{ item.price }}</li>
                 {% endfor %}
-                {% comment %} </a> {% endcomment %}
-              </ul>
-              <p><strong>주문 일시:</strong> {{ order.created }}</p>
-              <br>
-              <p><strong>주소:</strong> {{ order.address }}</p>
-              <br>
-              <p><strong>이메일:</strong> {{ order.email }}</p>
-              <br>
-              <p><strong>전화번호:</strong> {{ order.phone }}</p>
-              <br>
-              <p><strong>지불:</strong>
+            </ul>
+            <p><strong>주문 일시:</strong> {{ order.created }}</p>
+            <p><strong>주소:</strong> {{ order.address }}</p>
+            <p><strong>이메일:</strong> {{ order.email }}</p>
+            <p><strong>전화번호:</strong> {{ order.phone }}</p>
+            <p><strong>지불:</strong>
                 {% if order.paid %}
                   결제 완료
                 {% else %}
                   결제 필요
                 {% endif %}
-              </p>
-              {% if order.care.care_state == "REJECT" %}
-              <p><strong>관리자 메시지:</strong> {{ order.care.admin_message }}</p>
-              {% endif %}
-            </div>
-            <div class="order-actions">
-              <a href="{% url 'orders_app:order_edit' order.id %}">주문 수정</a>
-              <a href="{% url 'orders_app:order_cancel' order.id %}">내역 삭제</a>
-              <a href="{% url 'orders_app:my_orders' %}">돌아가기</a>
-            </div>
+            </p>
+            {% if order.care.care_state == "REJECT" %}
+            <p><strong>관리자 메시지:</strong> {{ order.care.admin_message }}</p>
+            {% endif %}
+        </div>
+        <div class="order-actions">
+            <a href="{% url 'orders_app:order_edit' order.id %}">주문 수정</a>
+            <a href="{% url 'orders_app:order_cancel' order.id %}">내역 삭제</a>
+            <a href="{% url 'orders_app:my_orders' %}">돌아가기</a>
         </div>
     </div>
 </div>

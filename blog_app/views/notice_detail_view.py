@@ -36,9 +36,7 @@ def notice_detail(request, pk):
             if parent_id:
                 new_comment.parent = Comment.objects.get(id=parent_id)
             new_comment.save()
-            page_number = request.POST.get('page', 1)            
-            #return redirect('blog_app:notice_detail', pk=pk, page=page_number)
-            #print('test 중이다아아',post.get_absolute_url())
+            page_number = request.POST.get('page', 1)
             return HttpResponseRedirect(f'{post.get_absolute_url()}?page={page_number}')
     
     # GET 방식: 댓글 작성 폼 로드

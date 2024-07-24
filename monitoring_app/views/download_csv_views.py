@@ -1,19 +1,9 @@
-from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.utils.timezone import make_aware
 from django.http import HttpResponse
 
 import pandas as pd
-import matplotlib.pyplot as plt
-import matplotlib.dates as mdates
-from io import BytesIO
-import base64
 import csv 
-
-from ..forms import FilterForm
-from orders_app.models import Order
-from datetime import datetime, time
-from management_app.models import Care , Senior
 
 @login_required
 def download_order_csv(request):
@@ -62,6 +52,6 @@ def download_care_csv(request):
     writer.writerow(['제목', '케어 종류', '요청 날짜', '방문 예정 날짜' '처리 상태', '요청 내용', '대상 노인'])
 
     for care in filtered_cares:
-        writer.writerow([care['title'], care['care_type'], care['datetime'], care['visit_date'], care['care_state'], care['content'], care['seniors']])
+        writer.writerow([care['care_title'], care['care_type'], care['datetime'], care['visit_date'], care['care_state'], care['care_content'], care['care_seniors']])
 
     return response

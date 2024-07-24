@@ -6,188 +6,11 @@
 <html lang="ko">
 {% block extra_css %}
 <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+<link rel="stylesheet" href="{% static 'css/generate.css' %}">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0">
-<script src="{% static 'js/scripts.js' %}"></script>
-<!-- Flatpickr CSS -->
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
-<!-- Flatpickr JS -->
-<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
-<!-- Include Korean locale for Flatpickr -->
-<script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/ko.js"></script>
-<style>
-    body, html {
-        margin: 0;
-        padding: 0;
-        height: 100%;
-        width: 100%;
-        overflow: hidden; /* Prevent scrolling */
-        font-family: Arial, sans-serif;
-    }
-    .container {
-        display: flex;
-        justify-content: center;
-        align-items: flex-start;
-        height: 100vh; /* Full height */
-        width: 100vw; /* Full width */
-        box-sizing: border-box;
-    }
-    .sidebar {
-        background-color: #fff;
-        color: black;
-        padding: 20px;
-        width: 300px;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        box-sizing: border-box;
-        height: 100%;
-        overflow-y: auto; /* Allow vertical scrolling */
-    }
-    .sidebar h2 {
-        text-align: center;
-        margin-bottom: 20px;
-        width: 100%;
-    }
-    .sidebar form {
-        display: flex;
-        flex-direction: column;
-        width: 100%;
-        align-items: center;
-    }
-    .sidebar form label {
-        margin-bottom: 5px;
-        font-size: 12px;
-        width: 100%;
-        text-align: center;
-    }
-    .sidebar form input,
-    .sidebar form select,
-    .sidebar form button {
-        margin-bottom: 10px;
-        padding: 10px;
-        font-size: 1rem;
-        border-radius: 4px;
-        border: none;
-        width: 100%;
-        max-width: 220px;
-        border: 1px solid #ccc;
-        color: black; /* Ensure the text color is visible */
-    }
-    .sidebar form select {
-        text-align: center;
-        text-align-last: center; /* For modern browsers */
-    }
-    .sidebar form button {
-        background-color: #007bff;
-        color: white;
-        cursor: pointer;
-    }
-    .sidebar form button:hover {
-        background-color: #0056b3;
-    }
-    .main-content {
-        flex-grow: 1;
-        padding: 20px;
-        overflow-y: auto;
-        box-sizing: border-box;
-        height: 100%;
-        width: 100%; /* Take remaining space */
-    }
-    .form-container {
-        font-family: Arial, sans-serif;
-    }
-    .form-header {
-        font-size: 16px;
-        margin-bottom: 8px;
-    }
-    .form-header span {
-        color: #FF6600;
-    }
-    .form-group {
-        display: flex;
-        flex-direction: column;
-        margin-bottom: 16px;
-        width: 100%;
-        align-items: center;
-    }
-    .form-group label {
-        font-weight: bold;
-        margin-bottom: 5px;
-        text-align: center;
-    }
-    .form-group input[type="text"] {
-        padding: 8px;
-        border: 1px solid #ccc;
-        border-radius: 4px;
-        font-size: 13px;
-        width: 100%;
-        max-width: 200px;
-        text-align: center;
-        color: black; /* Ensure the text color is visible */
-    }
-    .chart-container {
-        margin-bottom: 20px;
-    }
-    .chart-container img {
-        max-width: 100%;
-        height: auto;
-    }
-    .hamburger-menu {
-        display: none; /* Hide the hamburger button */
-    }
-    @media (max-width: 1024px) {
-        .sidebar {
-            width: 250px; /* Adjust width for medium screens */
-        }
-        .main-content {
-            width: calc(100% - 270px); /* Adjust for the sidebar width */
-        }
-    }
-    @media (max-width: 768px) {
-        .container {
-            flex-direction: column;
-            align-items: stretch;
-        }
-        .sidebar {
-            width: 100%;
-            max-width: none;
-        }
-        .main-content {
-            width: 100%;
-            height: calc(100vh - 200px); /* Adjust height */
-        }
-    }
-    @media (max-width: 480px) {
-        .sidebar {
-            padding: 10px;
-            width: 100%; /* Full width on small screens */
-        }
-        .sidebar h2 {
-            font-size: 1.5rem; /* Smaller font size for headings */
-        }
-        .sidebar form label {
-            font-size: 10px; /* Smaller font size for labels */
-        }
-        .sidebar form input,
-        .sidebar form select,
-        .sidebar form button {
-            font-size: 0.875rem; /* Smaller font size for inputs and buttons */
-        }
-        .main-content {
-            padding: 10px;
-        }
-    }
-    
-    .flatpickr-calendar .flatpickr-day {
-        width: 2.5em; /* Adjust this value to ensure the Saturday is fully visible */
-    }
-
-    .hamburger-menu {
-        display: none;
-    }
-    
-</style>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">  <!-- Flatpickr CSS -->
 {% endblock %}
+
 {% block content %}
 <head>
 </head>
@@ -244,40 +67,13 @@
             </div>
         </div>
     </div>
-
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const startDatePicker = flatpickr("#id_start_date", {
-                dateFormat: "Y-m-d",
-                locale: "ko", // Set locale to Korean
-                clickOpens: false,
-                onChange: function(selectedDates, dateStr, instance) {
-                    endDatePicker.set('minDate', dateStr);
-                }
-            });
-
-            const endDatePicker = flatpickr("#id_end_date", {
-                dateFormat: "Y-m-d",
-                locale: "ko", // Set locale to Korean
-                clickOpens: false,
-                onChange: function(selectedDates, dateStr, instance) {
-                    const startDate = document.getElementById('id_start_date').value;
-                    if (selectedDates.length > 0 && new Date(dateStr) < new Date(startDate)) {
-                        alert("종료 날짜는 시작 날짜 이후여야 합니다. 다시 선택해주세요.");
-                        this.clear();
-                    }
-                }
-            });
-
-            document.getElementById('id_start_date').addEventListener('click', function () {
-                startDatePicker.open();
-            });
-
-            document.getElementById('id_end_date').addEventListener('click', function () {
-                endDatePicker.open();
-            });
-        });
-    </script>
 </body>
+{% endblock %}
+
+{% block script %}
+<script src="{% static 'js/scripts.js' %}"></script>
+<script src="{% static 'js/generate.js' %}"></script>
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>                  <!-- Include Korean locale for Flatpickr -->
+<script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/ko.js"></script>  <!-- Flatpickr JS -->
 {% endblock %}
 </html>

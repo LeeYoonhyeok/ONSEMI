@@ -16,6 +16,7 @@ import onnxruntime as ort
 import os
 import platform
 import logging
+from django.utils import timezone
 logger = logging.getLogger('django')
 
 # report 생성 기능
@@ -80,6 +81,7 @@ def update_report(request, report_id):
         report.other_text = request.POST.get('other_text', '')
         report.doctor_opinion = request.POST.get('doctor_opinion', '')
         report.user_request = request.POST.get('user_request', '')
+        report.updated_at = timezone.now()
 
         # 이미지 삭제 처리
         delete_image_ids = request.POST.getlist('delete_images')

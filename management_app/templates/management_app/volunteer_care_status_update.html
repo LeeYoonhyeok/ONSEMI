@@ -24,13 +24,13 @@
             text-align: center;
             margin-bottom: 20px;
         }
-        
+
         label {
             display: block;
             margin-bottom: 5px;
             padding: 5px;
         }
-        
+
         input[type="text"],
         input[type="file"],
         input[type="date"],
@@ -43,7 +43,11 @@
             border-radius: 4px;
         }
 
-        /* input[type="submit"]와 button의 공통 스타일 */
+        .long-text {
+            word-wrap: break-word;
+            overflow: hidden;
+        }
+
         input[type="submit"],
         button {
             width: 100%;
@@ -54,25 +58,25 @@
             font-size: 16px;
             cursor: pointer;
         }
-       
+
         .cancle {
             background-color: #dc3545;
             margin-top: 10px;
         }
-        
+
         .submit {
             background-color: blue;
         }
 
         input[type="submit"]:hover,
         button:hover {
-            opacity: 0.9;
+            filter:brightness(80%)
         }
 
         .radio-buttons input[type="radio"],
         .radio-buttons label {
             display: inline-block;
-            margin-right: 10px; /* 각 라디오 버튼과 라벨 사이의 간격 조절 */
+            margin-right: 10px;
         }
 
         .hidden {
@@ -88,14 +92,14 @@
 </head>
 <body>
     <div class="container">
-    <h1>상태 업데이트</h1>
+    <h1>{{ senior.name }}님의 서비스 등록</h1>
 
     <form method="post" id="care-form">
         {% csrf_token %}
         <div>
-            <label for="title">제목: {{ care.title }}</label>
-            <label for="content">내용: {{ care.content }}</label>
-        
+            <label for="title" class="long-text">제목: {{ care.title }}</label>
+            <label for="content" class="long-text">내용: {{ care.content }}</label>
+
             <label for="state">상태: </label>
             <div class="radio-buttons">
                 <input type="radio" id="NOT_APPROVED" name="state" value="NOT_APPROVED" {% if care.care_state == 'NOT_APPROVED' %}checked{% endif %}>
@@ -103,7 +107,7 @@
                 <input type="radio" id="APPROVED" name="state" value="APPROVED" {% if care.care_state == 'APPROVED' %}checked{% endif %}>
                 <label for="APPROVED">요청 승인 완료</label>
             </div>
-            
+
             <div id="visit-details" class="{% if care.care_state != 'APPROVED' %}hidden{% endif %}">
                 <label for="visit_date">방문 날짜:</label>
                 <input type="date" id="visit_date" name="visit_date" value="{{ care.visit_date|date:'Y-m-d' }}">
@@ -116,7 +120,7 @@
                 <br><br>
             </div>
         </div>
-        <button type="submit" class="submit disabled" id="update-button" disabled>업데이트</button>
+        <button type="submit" class="submit disabled" id="update-button" disabled>승인</button>
         <button type="button" onclick="window.location.href = '/management/care/list/'" class="cancle">취소</button>
     </form>
     </div>
@@ -143,7 +147,7 @@
             function checkFormValidity() {
                 const visitDate = visitDateInput.value;
                 const visitTime = visitTimeInput.value;
-                
+
                 if (approvedRadio.checked && visitDate && visitTime) {
                     updateButton.classList.remove('disabled');
                     updateButton.disabled = false;

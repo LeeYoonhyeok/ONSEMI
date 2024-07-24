@@ -72,25 +72,17 @@
         margin: 0;
         list-style: disc;
         padding-left: 20px;
+        margin-top:20px;
     }
     .senior-info li {
         margin-bottom: 5px;
         font-size: 14px;
     }
-    .actions a:last-child {
+    .actions a {
         text-decoration: none;
         font-size: 20px;
-    }
-    .actions a:first-child {
-        text-decoration: none;
-        color: gray;
-        margin-right: 20px;
-    }
-    .actions a:last-child:hover {
-        background-color: #72a858;
-    }
-    .actions a:first-child:hover {
-        text-decoration: underline;
+        border-radius: 5px;
+        padding: 15px;
     }
     .actions {
         text-align: right;
@@ -135,10 +127,13 @@
         color: #45434b;
     }
     .actions-add {
-        border-radius: 5px;
-        padding: 15px;
         background-color : #c2e271;
         color: #332225;
+    }
+    .actions-profile {
+        background-color : #ffda4a;
+        color: #332225;
+        margin-right: 10px;
     }
     .body-container {
         max-width: 1700px;
@@ -174,13 +169,20 @@
         margin: 10px;
         cursor: pointer;
     }
+    .actions-profile:hover {
+        background-color: #d1b56c;
+    }
+    .actions-add:hover {
+        background-color: #9bba52;
+    }
 </style>
 {% endblock %}
 {% block content %}
 <main>
     <div class="top-bar">
         <div class="list-text">어르신 목록 <span class="dim-text">[총 {{ total_seniors }}명]<span></div>
-        <div class="actions">                
+        <div class="actions">
+            <a class="actions-profile" href='/user/profile/'>내정보</a>
             <a class="actions-add" href='/management/add/senior/'>어르신 추가 등록</a>
         </div>
     </div>
@@ -199,7 +201,6 @@
                             <li><strong>성별:</strong> {{ senior_data.gender_display }}</li>
                             <li><strong>핸드폰 번호:</strong> {{ senior_data.senior.phone_number }}</li>
                             <li><strong>주소:</strong> {{ senior_data.senior.address }} {{senior_data.senior.detail_address}}</li>                            
-                            <li><strong>치매 유무:</strong> {{ senior_data.has_alzheimers_display }}</li>
                             <li><strong>파킨슨 유무:</strong> {{ senior_data.has_parkinsons_display }}</li>
                         </ul>
                     </div>

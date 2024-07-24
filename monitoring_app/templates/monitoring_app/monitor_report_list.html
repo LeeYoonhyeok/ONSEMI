@@ -5,217 +5,8 @@
 {% block title %}ONSEMI{% endblock %}
 {% block extra_css %}
 <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+<link rel="stylesheet" href="{% static 'css/monitor_report_list.css' %}">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
-<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
-<script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/ko.js"></script>
-<style>
-
-    body, html {
-        margin: 0;
-        padding: 0;
-        height: 100%;
-        width: 100%;
-        overflow: hidden; /* Prevent scrolling */
-        font-family: Arial, sans-serif;
-    }
-    .container {
-        
-            display: flex;
-            justify-content: center;
-            align-items: flex-start;
-            height: 100vh; /* Full height */
-            width: 100vw; /* Full width */
-            box-sizing: border-box;
-            min-height:100vh;
-      
-    }
-
-    .sidebar {
-        background-color: #fff;
-        color: black;
-        padding: 20px;
-        width: 300px;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        box-sizing: border-box;
-        overflow-y: auto;
-        position: sticky;
-        min-height:100vh;
-        top: 0;
-    }
-
-    .main-content {
-        flex: 1;
-        overflow-y: auto;
-        padding: 20px;
-        height:100vh;
-    }
-
-    
-
-    .sidebar form input,
-    .sidebar form select {
-        margin-bottom: 10px;
-        padding: 10px;
-        font-size: 1rem;
-        border-radius: 4px;
-        border: none;
-        width: 100%;
-        max-width: 220px;
-        border: 1px solid #ccc;
-        color: black;
-    }
-
-    .sidebar form button {
-        background-color: #156741;
-        color: white;
-        margin-bottom: 10px;
-        padding: 10px;
-        font-size: 1rem;
-        border-radius: 4px;
-        border: none;
-        width: 100%;
-        max-width: 220px;
-        border: 1px solid #ccc;
-    }
-
-    .sidebar form button:hover {
-        background-color: #156741;
-        color: white;
-    }
-
-    .sidebar form input {
-        max-width: 200px;
-    }
-
-    .sidebar form select {
-        width: 100%;
-    }
-
-    .senior-photo {
-        text-align: center;
-        margin-bottom: 10px;
-    }
-
-    header .hamburger {
-        display: none;
-    }
-
-    .hamburger-menu {
-        display: none;
-    }
-
-    /* Modal styles */
-    .modal {
-        display: none;
-        position: fixed;
-        z-index: 1000;
-        left: 0;
-        top: 0;
-        width: 100%;
-        height: 100%;
-        overflow: auto;
-        background-color: rgba(0, 0, 0, 0.5);
-        justify-content: center;
-        align-items: center;
-    }
-
-    .modal-content {
-        background-color: white;
-        margin: auto;
-        padding: 20px;
-        border: 1px solid #888;
-        width: 80%;
-        max-width: 600px;
-        box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
-        animation-name: animatetop;
-        animation-duration: 1s;
-        overflow-y: auto;
-        max-height: 80vh;
-        word-wrap: break-word;
-        position: relative;
-        top: 50%;
-        transform: translateY(-50%);
-    }
-
-    @keyframes animatetop {
-        from {opacity: 0}
-        to {opacity: 1}
-    }
-
-    .close {
-        color: #aaa;
-        float: right;
-        font-size: 28px;
-        font-weight: bold;
-    }
-
-    .close:hover,
-    .close:focus {
-        color: black;
-        text-decoration: none;
-        cursor: pointer;
-    }
-
-    .modal-open {
-        overflow: hidden;
-    }
-
-    .circle {
-        width: 5px;
-        height: 5px;
-        background-color: #333;
-        border-radius: 50%;
-        display: inline-block;
-        margin-right: 10px;
-    }
-
-    .text {
-        margin-bottom : 10px;
-    }
-    /* Table styles */
-    .table-report {
-        width: 100%;
-        border-collapse: collapse;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        border-radius: 5px;
-    }
-
-    .table-report th, .table-report td {
-        border: 1px solid #ddd;
-        padding: 8px;
-        text-align: left;
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        max-width: 150px; 
-    }
-
-    .table-report th {        
-        text-align: center;
-    }
-
-    .table-report td {
-        max-width: 200px;
-        border-color : #9da4a8;
-    }
-    .table-report tbody tr:hover {
-        background-color: #bebebe;
-    }
-
-    .table-report .clickable-row {
-        cursor: pointer;
-    }
-
-    /* 이미지 스타일 추가 */
-    .report-image {
-        display: block;
-        margin: 10px auto;
-        max-width: 100%;
-        height: auto;
-    }
-</style>
 {% endblock %}
 {% block content %}
 <head>
@@ -232,26 +23,28 @@
                 {% endif %}
             </div>
             {% endif %}
-            <h3>{{ selected_senior.name }}</h3>
+            <h3>{{ selected_senior.name }}</h3>            
             <form method="get" id="seniorForm">
+                <label for="selected_senior_id" stlye="float:left;">어르신 선택:</label>
                 <select name="selected_senior_id" onchange="document.getElementById('seniorForm').submit();">
                     {% for senior in senior_list %}
                         <option value="{{ senior.id }}" {% if selected_senior_id == senior.id|stringformat:"s" %}selected{% endif %}>{{ senior.name }}</option>
                     {% endfor %}
                 </select>
-                <label for="sort_by">정렬:</label>
+                <label for="sort_by">날짜 정렬:</label>
                 <select name="sort_by" id="sort_by">
                     <option value="-created_at" {% if request.GET.sort_by == '-created_at' %}selected{% endif %}>최신순</option>
                     <option value="created_at" {% if request.GET.sort_by == 'created_at' %}selected{% endif %}>오래된 순</option>
                 </select>
                 {{ form.start_date.label_tag }}
-                <input type="text" id="start_date" name="start_date" class="date-picker" placeholder="날짜선택" value="{{ form.start_date.value|default_if_none:'' }}"/><br>
+                <input type="text" id="start_date" name="start_date" class="date-picker" placeholder="날짜선택" value="{{ form.start_date.value|default_if_none:'' }}"/>
                 {{ form.end_date.label_tag }}
                 <input type="text" id="end_date" name="end_date" class="date-picker" placeholder="날짜선택" value="{{ form.end_date.value|default_if_none:'' }}"/>
-                <br>
+                
+                <label for="type_filter">서비스 종류:</label>
                 <select name="type_filter" id="type_filter">
                     <option value="all" {% if type_filter == 'all' %}selected{% endif %}>전체</option>
-                    <option value="shop" {% if type_filter == 'shop' %}selected{% endif %}>쇼핑</option>
+                    <option value="shop" {% if type_filter == 'shop' %}selected{% endif %}>배송</option>
                     <option value="visit" {% if type_filter == 'visit' %}selected{% endif %}>방문</option>
                     <option value="hospital" {% if type_filter == 'hospital' %}selected{% endif %}>병원</option>
                 </select>
@@ -264,21 +57,23 @@
                 <thead>
                     <tr>
                         <th>이름</th>
-                        <th>케어</th>
+                        <th>종류</th>
                         <th>제목</th>
                         <th>내용</th>
                         <th>파킨슨 요청</th>
                         <th>주소</th>
-                        <th>신청날짜</th>
+                        <th>방문날짜</th>
                     </tr>
                 </thead>
                 <tbody>
                     {% for report_detail in reports_details %}
                     <tr class="clickable-row" 
                         data-care-type="{{ report_detail.report.care.care_type }}"
-                        data-datetime="{{ report_detail.report.created_at|date:"Y년 n월 j일 A g:i" }}"
+                        data-datetime="{{ report_detail.report.care.datetime|date:'Y년 n월 j일 A g:i' }}"
+                        data-visit_date="{{ report_detail.report.care.visit_date|date:'Y년 n월 j일' }} {{ report_detail.report.care.visit_time|date:'A g:i' }}"
                         data-title="{{ report_detail.report.care.title }}"
                         data-content="{{ report_detail.report.care.content }}"
+                        data-address= "{% for senior in report_detail.seniors.all %}{{ senior.address }} {{senior.detail_address}}{% if not forloop.last %}, {% endif %}{% endfor %}"
                         data-no-issue="{{ report_detail.report.no_issue }}"
                         data-eye="{{ report_detail.report.eye }}"
                         data-teeth="{{ report_detail.report.teeth }}"
@@ -297,15 +92,15 @@
                             {% endfor %}
                         </td>
                         <td>{{ report_detail.report.care.care_type }}</td>
-                        <td>{{ report_detail.report.care.title }}</td>
-                        <td>{{ report_detail.report.care.content }}</td>
+                        <td class="title-cell">{{ report_detail.report.care.title }}</td>
+                        <td class="content-cell">{{ report_detail.report.care.content }}</td>
                         <td>{% if report_detail.report.care.parkinson_diagnosis %} O {% else %}X {% endif %}</td>
                         <td>
                             {% for senior in report_detail.seniors %}
                                 {{ senior.address }} {{ senior.detail_address }}<br>
                             {% endfor %}
                         </td>
-                        <td>{{ report_detail.report.created_at|date:"Y년 n월 j일" }}</td>
+                        <td>{{ report_detail.report.care.visit_date|date:"Y년 n월 j일" }} {{ report_detail.report.care.visit_time|date:" A g:i" }}</td>
                     </tr>
                     {% endfor %}
                 </tbody>
@@ -336,124 +131,28 @@
     <div id="reportModal" class="modal">
         <div class="modal-content">
             <span class="close">&times;</span>
-            <h1>리포트 상세</h1>            
-            <div class="text"><span class="circle"></span><strong>리포트 종류: </strong> <span id="reportType"></span></div>
-            <div class="text"><span class="circle"></span><strong>등록 시간: </strong> <span id="reportTime"></span></div>
-            <div class="text"><span class="circle"></span><strong>제목: </strong> <span id="reportTitle"></span></div>
-            <div class="text"><span class="circle"></span><strong>내용: </strong> <span id="reportContent"></span></div>
-            <div class="text"><span class="circle"></span><strong>특이사항: </strong> <span id="reportIssues"></span></div>
-            <div class="text"><span class="circle"></span><strong>업로드 이미지: </strong><br> <div id="reportImages"></div></div>
-            <div class="text" id="doctorOpinionDiv"><span class="circle"></span><strong>의사소견: </strong> <span id="reportDoctorOpinion"></span></div>
-            <div class="text" id="parkinsonDiv"><span class="circle"></span><strong>파킨슨병 진단 결과: </strong> <span id="reportParkinson"></span></div>
-            <div class="text"><span class="circle"></span><strong>전달사항: </strong> <span id="reportUserRequest"></span></div>
-            
+            <h1>리포트 상세</h1>
+            <div class="modal-container">
+                <p><strong>ㆍ리포트 종류 : </strong> <span id="reportType"></span></p>
+                <p><strong>ㆍ서비스 신청 날짜 : </strong> <span id="reportTime"></span></p>
+                <p><strong>ㆍ방문 날짜 : </strong> <span id="visitTime"></span></p>
+                <p><strong>ㆍ제목 : </strong> <span id="reportTitle"></span></p>
+                <p><strong>ㆍ내용 : </strong> <span id="reportContent"></span></p>
+                <p><strong>ㆍ주소 : </strong> <span id="reportAddress"></span></p>
+                <p><strong>ㆍ특이사항 : </strong> <span id="reportIssues"></span></p>
+                <p><strong>ㆍ업로드 이미지 : </strong> <span id="reportImages"></span></p>
+                <p><strong id = "doctorOpinionDiv">ㆍ의사소견 : </strong> <span id="reportDoctorOpinion"></span></p>
+                <p id = "parkinsonDiv"><strong>ㆍ파킨슨병 진단 결과 : </strong> <span id="reportParkinson"></span></p>
+                <p><strong>ㆍ전달사항 : </strong> <span id="reportUserRequest"></span></p>
+            </div>
         </div>
     </div>
-
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            var startDatePicker = flatpickr("#start_date", {
-                locale: "ko",
-                dateFormat: "Y-m-d",
-                onChange: function(selectedDates, dateStr, instance) {
-                    if (selectedDates.length > 0) {
-                        endDatePicker.set('minDate', selectedDates[0]);
-                    }
-                }
-            });
-
-            var endDatePicker = flatpickr("#end_date", {
-                locale: "ko",
-                dateFormat: "Y-m-d",
-                onChange: function(selectedDates, dateStr, instance) {
-                    if (selectedDates.length > 0) {
-                        startDatePicker.set('maxDate', selectedDates[0]);
-                    }
-                }
-            });
-
-            // Modal handling
-            var modal = document.getElementById("reportModal");
-            var span = document.getElementsByClassName("close")[0];
-
-            document.querySelectorAll('.clickable-row').forEach(function(row) {
-                row.addEventListener('click', function() {
-                    // Populate modal with data from data attributes
-                    var careType = this.dataset.careType;
-                    document.getElementById('reportType').textContent = careType;
-                    document.getElementById('reportTime').textContent = this.dataset.datetime;
-                    document.getElementById('reportTitle').textContent = this.dataset.title;
-                    document.getElementById('reportContent').textContent = this.dataset.content;
-
-                    var issues = '';
-                    if (this.dataset.noIssue === 'True') {
-                        issues = '특이사항 없음';
-                    } else {
-                        if (this.dataset.eye === 'True') issues += '눈 ';
-                        if (this.dataset.teeth === 'True') issues += '치아 ';
-                        if (this.dataset.skin === 'True') issues += '피부 ';
-                        if (this.dataset.back === 'True') issues += '허리 ';
-                        if (issues != '') issues += '진찰 필요';
-                        if (this.dataset.other === 'True') issues += "<br> + 기타 사항: " + this.dataset.otherText;
-                    }
-                    if (issues === '') issues = '특이사항 없음';
-                    document.getElementById('reportIssues').innerHTML = issues;
-
-                    var imagesDiv = document.getElementById('reportImages');
-                    imagesDiv.innerHTML = '';
-                    var images = this.dataset.images.split(',');
-                    images.forEach(function(imageUrl) {
-                        if (imageUrl) {
-                            var imgElement = document.createElement('img');
-                            imgElement.src = imageUrl;
-                            imgElement.alt = 'Report Image';
-                            imgElement.className = 'report-image';  // 클래스 추가
-                            imagesDiv.appendChild(imgElement);
-                        }
-                    });
-
-                    var parkinsonDiagnosis = this.dataset.parkinsonDiagnosis === 'True';
-                    if (parkinsonDiagnosis) {
-                        document.getElementById('parkinsonDiv').style.display = 'block';
-                        document.getElementById('reportParkinson').textContent = this.dataset.audioTestResult;
-                    } else {
-                        document.getElementById('parkinsonDiv').style.display = 'none';
-                    }
-
-                    if (careType === '방문') {
-                        document.getElementById('doctorOpinionDiv').style.display = 'none';
-                    } else {
-                        document.getElementById('doctorOpinionDiv').style.display = 'block';
-                        document.getElementById('reportDoctorOpinion').textContent = this.dataset.doctorOpinion;
-                    }
-
-                    var userRequest = this.dataset.userRequest;
-                    document.getElementById('reportUserRequest').textContent = userRequest ? userRequest : '없음';
-
-                    // Show modal
-                    modal.style.display = "block";
-                    document.body.classList.add('modal-open');
-                });
-            });
-
-            span.onclick = function() {
-                modal.style.display = "none";
-                document.body.classList.remove('modal-open');
-            }
-
-            window.onclick = function(event) {
-                if (event.target == modal) {
-                    modal.style.display = "none";
-                    document.body.classList.remove('modal-open');
-                }
-            }
-
-            window.closeModal = function() {
-                modal.style.display = "none";
-                document.body.classList.remove('modal-open');
-            }
-        });
-    </script>
 </body>
+{% endblock %}
+
+{% block script %}
+<script src="{% static 'js/monitor_report_list.js' %}"></script>
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+<script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/ko.js"></script>
 {% endblock %}
 </html>

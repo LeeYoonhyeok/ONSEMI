@@ -55,7 +55,7 @@
                         {% if user == comment.user_id or user == post.user_id %}
                             <button onclick="confirmDeleteComment({{ post.pk }}, {{ comment.pk }})" class="delete-button" data-csrf-token="{{ csrf_token }}">댓글 삭제</button>
                         {% endif %}
-                        <span class="reply-link" data-id="{{ comment.id }}">답글</span>
+                        <span class="reply-link" data-id="{{ comment.id }}" onclick="showReplyForm(this)">답글</span>
                     </div>
                     {% if comment.replies %}
                         {% for reply in comment.replies.all %}

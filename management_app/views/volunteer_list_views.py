@@ -1,87 +1,105 @@
-
-
-# Create your views here.
-
-# 1 -> easy
-# user(보호자)가 노인을 등록하는 기능 (예상 : html파일 1+개?)
-#       -> 위에거 수정하는 페이지(html1개+)
-
-
-# 2 -> normal
-# user(보호자)가 Care를 등록하는 기능(예상 :html파일 1+개?) -> 어려움
-#       -> 위에거 수정하는 페이지(html1개+)
-
-# 3 ->개어렵
-# user(봉사자)가 user(보호자)가 올린 Care를 확인하는 = 조회하는 기능(예상 :html 1+개?)
-# 여러 방면으로 조회할 수 있어야함 ( 노인 카테고리로 조회, 오름차순, 내림차순, or 유저별로, 지역별로, 날짜별로 오름차순)
-# NOT_APPROVED, CONFIRMED, APPROVED
-
-
-# 4 ->hard
-# user(보호자)가 자신이 올린 Care를 확인하는 기능(예상: html 1개 이상)
-# 여러 방면으로 조회할 수 있어야함
-# 위에거랑 같은데 유저별은 없겠죠?
-# NOT_APPROVED, CONFIRMED, APPROVED
-
 from django.shortcuts import render, redirect, get_object_or_404
 from management_app.models import Care
 from auth_app.models import User
 from django.contrib.auth.decorators import login_required
 from auth_app.utils import volunteer_required
-from django.dispatch import Signal
 from monitoring_app.signals import my_signal
 from django.core.paginator import Paginator
 
+
+# 케어 목록(요청 승인 대기, 요청 승인 완료) 불러오기
 @login_required
 @volunteer_required
 def care_list(request):
-    sort_by = request.GET.get("sort_by", "datetime")
-    order = request.GET.get("order", "desc") # 내림차순으로 수정
-    user_id = request.GET.get("user", "")
-
-    if order == "desc":
-        sort_by = "-" + sort_by
-
-    # 상태가 NOT_APPROVED인 케어 요청 가져오기
-    not_approved_cares = Care.objects.filter(care_state='NOT_APPROVED')
-
-    # 상태가 APPROVED이고 현재 로그인한 사용자가 승인한 케어 요청만 가져오기
-    approved_cares = Care.objects.filter(care_state='APPROVED', approved_by=request.user)
-
-    if user_id:
-        not_approved_cares = not_approved_cares.filter(user_id=user_id)
-        approved_cares = approved_cares.filter(user_id=user_id)
-
-    # 케어 타입 or 케어 상태를 기준으로 정렬할 때 기본적으로 최신 care 요청부터 보임
-    not_approved_cares = not_approved_cares.order_by(sort_by)
-    approved_cares = approved_cares.order_by(sort_by)
+    not_approved_users = User.objects.filter(user_type='FAMILY')         # 보호자 목록 불러오기
+    approved_users = Care.objects.filter(approved_by=request.user)       # 해당 봉사자가 승인한 케어 목록 불러오기
     
-    users = User.objects.all()
-
+    
+    # GET방식: 케어목록 전체 출력
+    if request.method == 'GET':
+        not_approved_cares = Care.objects.filter(care_state='NOT_APPROVED')  # 요청 승인 대기 케어 불러오기
+        approved_cares = Care.objects.filter(care_state='APPROVED', approved_by=request.user)  # 요청 승인 완료 케어 불러오기
+        
+    # POST방식: 케어목록 필터링하여 출력
+    else:
+        
+        # NOT_APPROVED 상태 케어 필터링 값 불러오기
+        type_pending = request.POST.get('type_pending')     # 케어 타입
+        order_pending = request.POST.get('order_pending')   # 정렬 방법
+        user_pending = request.POST.get('user_pending')     # 케어 요청자
+        
+        # 케어 타입만 전체 조회한 경우
+        if type_pending == 'total' and user_pending != 'total':
+            not_approved_cares = Care.objects.filter(care_state='NOT_APPROVED',
+                                                     user_id=user_pending)
+        
+        # 케어 요청자만 전체 조회한 경우    
+        elif type_pending != 'total' and user_pending == 'total':
+            not_approved_cares = Care.objects.filter(care_state='NOT_APPROVED', 
+                                                     care_type=type_pending)
+        
+        # 케어 요청자, 케어 타입 모두 전체 조회한 경우
+        elif type_pending == 'total' and user_pending == 'total':
+            not_approved_cares = Care.objects.filter(care_state='NOT_APPROVED')
+        
+        try:  
+            not_approved_cares = not_approved_cares.order_by(order_pending)      # 필터링한 값 정렬
+        except:
+            not_approved_cares = Care.objects.filter(care_state='NOT_APPROVED')  # APPROVED에서 적용하기를 눌렀다면 아무작업도 안함
+        
+        
+        # APPROVED 상태 케어 필터링 값 불러오기
+        type_pending_approved = request.POST.get('type_pending_approved')
+        order_approved = request.POST.get('order_approved')
+        user_approved = request.POST.get('user_approved')
+        
+        if type_pending_approved == 'total' and user_approved != 'total':
+            approved_cares = Care.objects.filter(care_state='APPROVED',
+                                                 user_id=user_approved,
+                                                 approved_by=request.user)
+            
+        elif type_pending_approved != 'total' and user_approved == 'total':
+            approved_cares = Care.objects.filter(care_state='APPROVED',
+                                                 care_type=type_pending_approved,
+                                                 approved_by=request.user)
+            
+        elif type_pending_approved == 'total' and user_approved == 'total':
+            approved_cares = Care.objects.filter(care_state='APPROVED', 
+                                                 approved_by=request.user)
+        
+        try:
+            approved_cares = approved_cares.order_by(order_approved)
+            
+        except:
+            approved_cares = Care.objects.filter(care_state='APPROVED', 
+                                                 approved_by=request.user)
+        
+        
     # 페이지네이션 설정
-    paginator1 = Paginator(not_approved_cares, 5)  # 페이지당 10개의 객체를 보여줌
-    paginator2 = Paginator(approved_cares, 5)  # 페이지당 10개의 객체를 보여줌
+    paginator1 = Paginator(not_approved_cares, 5)   # 상태가 NOT_APPROVED인 케어를 페이지당 5개의 객체를 보여줌
+    paginator2 = Paginator(approved_cares, 5)       # 상태가 APPROVED인 케어를 페이지당 5개의 객체를 보여줌
     page_number1 = request.GET.get('page1')
     page_number2 = request.GET.get('page2')
     page_obj1 = paginator1.get_page(page_number1)
     page_obj2 = paginator2.get_page(page_number2)
-
+    
     context = {
-        "page_obj1": page_obj1,
-        "page_obj2": page_obj2,
-        "users": users,
-        "selected_user": user_id,
-        "current_sort_by": request.GET.get("sort_by", "datetime"),  # 요청된 sort_by 그대로 전달
-        "current_order": request.GET.get("order", "desc"),  # 요청된 order 그대로 전달
-    }
-
+            "page_obj1": page_obj1,                # NOT_APPROVED 페이지네이션
+            "page_obj2": page_obj2,                # APPROVED 페이지네이션
+            'not_approved_users': not_approved_users,
+            'approved_users': approved_users,
+            'not_approved_cares': not_approved_cares,
+            'approved_cares': approved_cares,
+        }
+        
     return render(request, "management_app/volunteer_care_list.html", context)
-
+    
 
 @login_required
 @volunteer_required
 def status_update(request, care_id):
     care = get_object_or_404(Care, id=care_id)
+    senior = care.seniors.first()
     
     if request.method == 'POST':
         care.care_state = request.POST.get('state')
@@ -93,7 +111,8 @@ def status_update(request, care_id):
         return redirect('/management/care/list/')
     
     context = {
-        'care': care
+        'care': care,
+        'senior': senior,
     }
     
     return render(request, "management_app/volunteer_care_status_update.html", context)

@@ -1,10 +1,7 @@
 from blog_app.models import Blog, BlogImage
 from django.shortcuts import render, redirect
-from auth_app.models import User
 from blog_app.forms import PostForm, ImageFormSet
 from django.contrib.auth.decorators import login_required
-
-
 
 @login_required
 # 게시글 업로드 기능

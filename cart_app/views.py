@@ -14,8 +14,13 @@ def cart_add(request, product_id):
     form = CartAddProductForm(request.POST)
     if form.is_valid():
         cd = form.cleaned_data
-        if cd['quantity'] > product.stock:
-            messages.error(request, '재고가 부족합니다.')
+        if form.is_valid():
+            cd = form.cleaned_data
+            if not cart.add(product=product,
+                            quantity=cd['quantity'],
+                            override_quantity=cd['override']):
+                messages.error(request, '재고가 부족합니다.')
+                return redirect('shop_app:product_detail',  id=product.id, slug=product.slug)
         else:
             cart.add(product=product,
                      quantity=cd['quantity'],
@@ -33,10 +38,22 @@ def cart_remove(request, product_id):
 @login_required
 def cart_detail(request):
     cart = Cart(request)
+    if request.method == 'POST':
+        form = CartAddProductForm(request.POST)
+        product_id = request.POST.get('product_id')
+        product = get_object_or_404(Product, id=product_id)
+        if form.is_valid():
+            cd = form.cleaned_data
+            if not cart.add(product=product, quantity=cd['quantity'], override_quantity=cd['override']):
+                messages.error(request, '재고가 부족합니다.')
+                return redirect('cart_app:cart_detail')
+            else:
+                messages.success(request, '수량이 변경되었습니다.')
     for item in cart:
         item['update_quantity_form'] = CartAddProductForm(initial={
-                            'quantity': item['quantity'],
-                            'override': True})
+            'quantity': item['quantity'],
+            'override': True
+        })
     return render(request, 'cart/detail.html', {'cart': cart})
 
 @login_required

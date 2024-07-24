@@ -9,78 +9,99 @@ from django.http import JsonResponse
 @login_required
 @volunteer_required
 def report_list(request):
-    user = request.user
-    sort_by = request.GET.get('sort_by', '-created_at')
-    volunteer_id = request.GET.get('volunteer_id', str(request.user.id))  # 현재 로그인한 봉사자의 ID로 기본값 설정
-    senior_ids = request.GET.getlist('senior_ids', ['all'])
-    print('처음 페이지에 접근했을 때 senior_ids :', senior_ids)
-    status_filter = request.GET.get('status_filter', 'all')
-
-    reports = Report.objects.all().order_by(sort_by)
-
-    # user_type이 'VOLUNTEER'인 봉사자 목록을 가져옴
-    volunteers = list(User.objects.filter(user_type='VOLUNTEER').exclude(id=request.user.id).order_by('username').values('id', 'username'))
-    current_user = {'id': request.user.id, 'username': request.user.username}
-    volunteers.insert(0, current_user)  # 현재 로그인한 사용자를 맨 앞에 추가
-
-    reports = reports.filter(user_id=volunteer_id)
-
-    if 'all' not in senior_ids:
-        print('senior_ids (before): ',senior_ids)
-        senior_ids_split = senior_ids.split('_')
-        senior_ids = senior_ids_split[0]
-        print('senior_ids (after): ',senior_ids)
-        user_id = senior_ids_split[1]
-        print('user_id: ',senior_ids)
-        seniors = Senior.objects.filter(id=senior_ids, user_id=user_id).select_related('user_id').values('id', 'name', 'user_id', 'user_id__username')
-        reports = reports.filter(care__seniors__id=senior_ids).distinct()
-    else:
-        user_id = None
-
-    if status_filter == 'completed':
-        reports = reports.filter(status='등록')
-    elif status_filter == 'not_completed':
-        reports = reports.filter(status='미등록')
-
-    seniors = Senior.objects.select_related('user_id').values('id', 'name', 'user_id', 'user_id__username')
-
-    # 봉사자가 보고서를 작성한 어르신들을 먼저 필터링
-    written_seniors = Senior.objects.filter(cares_seniors__report__user_id=volunteer_id).distinct().select_related('user_id').values('id', 'name', 'user_id', 'user_id__username').order_by('name')
-    # written_seniors에서 ID만 추출
-    written_senior_ids = written_seniors.values_list('id', flat=True)
+    volunteer_id = str(request.user.id)
     
-    # 보고서를 작성하지 않은 어르신들을 필터링
-    unwritten_seniors = Senior.objects.exclude(id__in=written_senior_ids).select_related('user_id').values('id', 'name', 'user_id', 'user_id__username').order_by('name', 'user_id__username')
-    # 두 그룹을 합침
-    seniors = list(written_seniors) + list(unwritten_seniors)
+    # GET 방식 : 작성 예정 보고서와 작성 완료 보고서 출력
+    if request.method == 'GET':
+        pending_cares = Care.objects.filter(care_state='APPROVED',
+                                            approved_by=volunteer_id).order_by('-datetime')
+        
+        reports = Report.objects.filter(care__approved_by_id=volunteer_id).order_by('-updated_at')
+    
+    # POST 방식 : 보고서 목록 필터링 하여 출력
+    else:
 
-    # 작성된 보고서를 위한 페이지네이션
-    report_paginator = Paginator(reports, 5)
-    report_page_number = request.GET.get('report_page')
-    report_page_obj = report_paginator.get_page(report_page_number)
+        # 작성 예정 보고서 필터링
+        type_pending = request.POST.get('type_pending')     # 케어 타입
+        order_pending = request.POST.get('order_pending')   # 정렬 방법
+        pending_report_user = request.POST.get('pending_report_user') # 케어 요청자
 
-    # 작성해야할 보고서를 위한 페이지네이션
-    pending_cares = Care.objects.filter(care_state='APPROVED').exclude(id__in=Report.objects.values('care_id')).order_by('-datetime')
+        # 케어 타입만 전체 조회한 경우
+        if type_pending == 'total' and pending_report_user != 'total':
+            pending_cares = Care.objects.filter(care_state='APPROVED', approved_by=volunteer_id, 
+                                                user_id=pending_report_user)
+        
+        # 케어 요청자만 전체 조회한 경우    
+        elif type_pending != 'total' and pending_report_user == 'total':
+            pending_cares = Care.objects.filter(care_state='APPROVED', approved_by=volunteer_id,
+                                                care_type=type_pending)
+        
+        # 케어 요청자, 케어 타입 모두 전체 조회한 경우
+        elif type_pending == 'total' and pending_report_user == 'total':
+            pending_cares = Care.objects.filter(care_state='APPROVED',approved_by=volunteer_id)
+        
+        try:  
+            pending_cares = pending_cares.order_by(order_pending)  # 필터링한 값 정렬
+        except:
+            pending_cares = Care.objects.filter(care_state='APPROVED',
+                                                approved_by=volunteer_id).order_by('-datetime')  # APPROVED에서 적용하기를 눌렀다면 아무작업도 안함
+
+        # 작성 완료 보고서 필터링
+        type_submitted = request.POST.get('type_submitted')     # 케어 타입
+        order_submitted = request.POST.get('order_submitted')   # 정렬 방법
+        submitted_report_user = request.POST.get('submitted_report_user') # 케어 요청자
+
+        # 케어 타입만 전체 조회한 경우
+        if type_submitted == 'total' and submitted_report_user != 'total':
+            reports = Report.objects.filter(care__approved_by_id=volunteer_id, 
+                                                user__id=submitted_report_user)
+        
+        # 케어 요청자만 전체 조회한 경우    
+        elif type_submitted != 'total' and submitted_report_user == 'total':
+            reports = Report.objects.filter(care__approved_by_id=volunteer_id,
+                                                care__care_type=type_submitted)
+        
+        # 케어 요청자, 케어 타입 모두 전체 조회한 경우
+        elif type_submitted == 'total' and submitted_report_user == 'total':
+            reports = Report.objects.filter(care__approved_by_id=volunteer_id)
+        
+        try:  
+            reports = reports.order_by(order_submitted)  # 필터링한 값 정렬
+        except:
+            reports = Report.objects.filter(care__approved_by_id=volunteer_id).order_by('-updated_at')  # APPROVED에서 적용하기를 눌렀다면 아무작업도 안함
+
+    # 작성 예정 보고서의 정렬 항목인 신청자 초기 value 설정
+    pending_report_users = User.objects.filter(care__approved_by_id=volunteer_id, care__care_state='APPROVED').distinct().values('id', 'username')
+
+    # 작성 완료 보고서의 정렬 항목인 신청자 초기 value 설정
+    submitted_report_users = User.objects.filter(care__approved_by_id=volunteer_id, care__care_state='COMPLETED').distinct().values('id', 'username')
+
+
+    # 작성 예정 보고서를 위한 페이지네이션
+
     pending_paginator = Paginator(pending_cares, 5)
     pending_page_number = request.GET.get('pending_page')
     pending_page_obj = pending_paginator.get_page(pending_page_number)
 
     pending_reports_count = pending_cares.count()
 
-    return render(request, 'management_app/volunteer_report_list.html', {
 
+    # 작성 완료 보고서를 위한 페이지네이션
+
+    report_paginator = Paginator(reports, 5)
+    report_page_number = request.GET.get('report_page')
+    report_page_obj = report_paginator.get_page(report_page_number)
+
+    context = {
         'report_page_obj': report_page_obj,
         'pending_page_obj': pending_page_obj,
-        'sort_by': sort_by,
-        'user_id': user_id,
-        'seniors': seniors,
-        'selected_senior_ids': senior_ids, # senior_ids는 단일 값으로 해서 나중에 확인 필요
-        'status_filter': status_filter,
-        'users': User.objects.all(),
         'pending_reports_count': pending_reports_count,
-        'volunteers': volunteers,
-        'senior_ids': senior_ids,  # 작성해야 할 보고서를 위한 key value
-    })
+        'pending_report_users': list(pending_report_users),
+        'submitted_report_users': list(submitted_report_users),
+    }
+
+
+    return render(request, 'management_app/volunteer_report_list.html', context)
 
 @login_required
 @volunteer_required

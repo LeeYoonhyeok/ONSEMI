@@ -14,7 +14,7 @@
 </head>
 <body>
     <div class="page-container">
-        <header>
+        <header id="start-image"> 
             <div class="container">
                 <div class="logo">
                     <a href="/">
@@ -27,8 +27,9 @@
                         {% comment %} <li> <a href="/introduce/">소개</a></li> {% endcomment %}
                         {% if request.user.is_authenticated %}
                         <li> <a href="/user/logout" class="logout">로그아웃</a></li>
-                        <li><a href="/user/profile">프로필</a></li>
-                        <li><a href="/blog/notice_list">커뮤니티</a></li>
+                        <li> <a href="/user_page/" class="logout">마이페이지</a></li>
+                        <li><a href="/cart/">장바구니</a></li>
+                        <li><a href="/blog/notice_list">게시판</a></li>
                         {% else %}
                         <li><a href="/user/login/">로그인</a></li>
                         <li><a href="/user/register/">회원가입</a></li>
@@ -41,7 +42,11 @@
         <div class="wrapper">
             {% block content %}{% endblock %}
         </div>
-        
+        <a href="#start-image" id="chat-link3">
+            <span class="material-symbols-outlined">
+                arrow_upward
+            </span>
+        </a>
         <footer id="footer">
             <div class="footer-content">
                
@@ -53,7 +58,24 @@
         </footer>
     </div>
     <script>
+        function handleScroll() {
+            const chatLink2 = document.getElementById('chat-link3');
+            const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+            if (scrollTop > 800) { // Show the button when scroll is greater than 800px
+                chatLink2.style.display = 'flex';
+            } else {
+                chatLink2.style.display = 'none';
+            }
+        }
 
+        // Ensure the button is hidden initially and only shown after scrolling
+        document.addEventListener('DOMContentLoaded', () => {
+            const chatLink2 = document.getElementById('chat-link3');
+            chatLink2.style.display = 'none';
+            window.addEventListener('scroll', handleScroll);
+
+            window.scrollTo(0, 0);
+        });
         document.addEventListener('DOMContentLoaded', function() {
             const hamburger = document.getElementById('hamburger');
             const menu = document.getElementById('menu');

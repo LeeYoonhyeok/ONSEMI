@@ -1,5 +1,4 @@
-from django.shortcuts import render, redirect
-from django.contrib import messages
+from django.shortcuts import render
 from auth_app.models import User
 from django.views.decorators.csrf import csrf_exempt
 from django.http import JsonResponse

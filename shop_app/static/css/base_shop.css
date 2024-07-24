@@ -69,8 +69,8 @@ a.button, input[type="submit"] {
 }
 
 .product-detail img.product-image {
-    width: 300px;
-    height: 300px;
+    width: 480px;
+    height: 480px;
     margin-right: 20px;
 }
 
@@ -79,7 +79,8 @@ a.button, input[type="submit"] {
 }
 
 #main {
-    width: 1000px;
+    /* width: 1000px; */
+    justify-content: flex-start;
 }
 
 .product-info {
@@ -105,13 +106,12 @@ a.button, input[type="submit"] {
     color: #333;
     font-size: 28px;
     font-weight: bold;
-    font-style: italic;
     margin-bottom: 10px;
 }
 
-.product-info form {
+/* .product-info form {
     margin-top: 20px;
-}
+} */
 
 .product-info form label {
     margin-right: 10px;
@@ -202,6 +202,11 @@ table.cart {
 table.cart img {
     width: 100px;
     height: 100px;
+    justify-content: center;
+    justify-items: center;
+   
+    display: block;
+    margin: 0 auto;
 }
 
 tbody td.num {
@@ -271,7 +276,7 @@ ul.errorlist {
 }
 
 #content {
-    padding: 0 50px;
+    padding: 0 30px;
     overflow: hidden;
     background-color: white;
 
@@ -341,10 +346,12 @@ ul.errorlist {
 
 
 .product-list .item img {
-    width: 285px;
-    height: 250px;
+    /* width: 100%; */
+    height: auto;
     margin-bottom: 10px;
     background-color: #f7f7f7;
+    object-fit: cover;
+    
 }
 
 .quantity {
@@ -408,9 +415,9 @@ a #text {
     float: right;
 }
 
-.order-info span {
+/* .order-info span {
     float: right;
-}
+} */
 
 .neg {
     color: #dc1616;
@@ -550,18 +557,23 @@ img {
 }
 
 .cart .product-image {
-    width: 60px;
-    height: 60px;
-    object-fit: cover;
-    border-radius: 5px;
-    border: 1px solid #ced4da;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100px;
+    height: 100px;
+    margin: 0 auto;
+}
+
+.cart .product-name {
+    text-align: center;
+    margin-top: 10px;
 }
 
 .cart .product-info {
     display: flex;
-    align-items: center;
-    justify-content: center;
     flex-direction: column;
+    align-items: center;
 }
 
 .cart .num {
@@ -594,7 +606,7 @@ img {
     border-radius: 5px;
     text-decoration: none;
     color: #fff;
-    transition: background-color 0.3s ease;
+    background-color: #156741;
     margin-top: 5px;
 }
 
@@ -655,11 +667,19 @@ img {
     nav ul li a{
         font-size:12px;
     }
+    .product-detail img.product-image{
+        width: 100px;
+        height: 100px;
+    }
 }
 
 @media (max-width: 780px) {
     .product-list .item {
         width: calc(50% - 20px); /* 두 개의 item이 50% 크기를 차지하도록 설정 */
         margin-bottom: 20px; /* 세로 간격을 일정하게 설정 */
+    }
+    .product-detail img.product-image{
+        width: 100px;
+        height: 100px;
     }
 }

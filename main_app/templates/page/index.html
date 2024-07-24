@@ -1,163 +1,117 @@
-{% extends 'layout.html' %}
+{% extends "layout.html" %}
 {% load static %}
 
-{% block title %}Main Page{% endblock %}
+{% block title %}ONSEMI{% endblock %}
 
 {% block extra_css %}
 <style>
-    body {
+    html, body {
+        height: 100%;
+        margin: 0;
+        padding: 0;
+        font-family: 'GmarketSansMedium';
         overflow: hidden;
     }
 
-    .header-wrapper {
-        position: relative;
-        width: 100%;
-        height: 100vh; /* 전체 뷰포트 높이 */
-        min-width: 100%;
-    }
-
-    .main-image {
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-        display: block;
-        min-width: 100%;
-        filter: brightness(60%);
-    }
-
     header {
-        position: absolute;
+        position: fixed;
         top: 0;
         left: 0;
         width: 100%;
-        background: transparent;
+        background: rgba(0, 0, 0, 0.2); /* 반투명 배경 */
         color: white;
     }
-
     .logo img {
         filter: brightness(0) invert(1);
     }
 
-    nav ul li a {
-        color: white;
-    }
-
-    .main-content {
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        width: 100%;
-        text-align: center;
-        color: white;
-        animation: enlargeText 2s ease-out forwards;
-        min-width: 100%;
-    }
-
-    @keyframes enlargeText {
-        0% {
-            font-size: 1.17em; /* 기본 h3 크기 */
-            font-weight: normal;
-            letter-spacing: normal;
-        }
-        100% {
-            font-size: 2em; /* h1 크기 */
-            font-weight: bold;
-            letter-spacing: 2px;
-        }
-    }
-
-    .scroll-button {
-        position: absolute;
-        bottom: 10px;
-        left: 50%;
-        transform: translateX(-50%);
-        background-color: rgba(0, 0, 0, 0.5);
-        color: white;
-        border: none;
-        padding: 10px 20px;
-        cursor: pointer;
-        font-size: 16px;
-    }
-
-    .content-wrapper {
-        display: none; /* 버튼 클릭 전까지 숨김 */
-        width: 100%;
-        box-sizing: border-box; /* 패딩을 포함한 너비 계산 */
-        margin: 0;
-        padding: 0;
-    }
-
-    h1, h2, h3 {
-        text-align: center;
-        color: black;
-        margin: 0;
-    }
-
     .main {
-        padding: 0;
-        background-color: #fff;
-        margin: 0;
+        overflow-y: hidden; /* Prevent default scroll behavior */
+        height: 100vh;        
     }
 
-    .vision-section {
+    section {
+        overflow: hidden;
+        height: 100vh; /* Ensure each section takes full viewport height */
+        display: flex;
+        justify-content: center;
+        align-items: center;
         position: relative;
-        text-align: center;
-        margin: 0;
-        padding: 0;
-        height: 100vh;
     }
 
-    .vision-section img {
+    section video {
+        position: absolute;
+        top: 0;
+        left: 0;
         width: 100%;
         height: 100%;
-        brightness(40%);
-        margin: 0;
-        padding: 0;
+        object-fit: cover;
+        z-index: -1;
     }
 
-    .vision-text {
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        margin: 0;
-        padding: 0;
+    .text-box1, .text-box2, .text-box3 {
+        position: relative;
+        z-index: 1;
     }
 
-    .vision-text h1 {
-        font-size: 36px;
-        margin: 0;
-    }
-
-    .vision-text p {
-        font-size: 18px;
-        margin: 0;
-    }
-
-    .values-section {
+   .text-box1 {
         text-align: center;
-        padding: 40px 20px;
-        margin: 0;
+        color: black;
     }
 
-    .values-section h2 {
-        font-size: 28px;
+    .onsemi {
+        font-size: 45px;
+        margin-bottom: 50px;
+    }
+
+    .text-box2 {
+        width: 800px;
+        text-align: left;
+        word-break: keep-all;
+        color : white;
+        background: rgba(051, 051, 051, 0.3); /* 반투명 배경 */
+        padding: 20px;
+        border-radius: 30px;
+        margin-left: 60px;
+        margin-top: 70px;
+    }
+
+    .story {
+        font-size: 45px;
+    }
+
+    .text-box2 p {
+        margin: 12px 0px;
+    }
+
+    .text-box3 {
+        display: flex;
+        justify-content: right;
+        flex-wrap: wrap;
+        width: 600px;
+        text-align: center;
+        word-break: keep-all;
+        color: white;
+        padding: 20px;
+        margin-right: 60px;
+        margin-top: 70px;
+    }
+
+    .service {
+        font-size: 45px;
+        margin-right: 10px;
+    }
+
+    .values-section h1 {
         margin-bottom: 20px;
     }
 
-    .values-container {
-        display: flex;
-        justify-content: space-around;
-        flex-wrap: wrap;
-    }
-
     .value-box {
-        background-color: #f0f4f8;
+        background-color: rgba(2, 103, 56, 0.4);
         padding: 20px;
         margin: 10px;
-        border-radius: 8px;
-        width: 45%;
+        border-radius: 10px;
+        width: 80%;
         display: flex;
         align-items: center;
         justify-content: space-between;
@@ -170,86 +124,160 @@
     }
 
     .value-box .text {
-        text-align: left;
+        text-align: right;
     }
 
     .value-box .text h3 {
         margin: 0;
-        font-size: 18px;
+        font-size: 20px;
         font-weight: bold;
     }
-
-    .animated-text {
-        font-size: 50px;
+    .story-section {
+        justify-content: left;
     }
-
-    .animated-small-text {
-        font-size: 20px;
+    .values-section {
+        justify-content: right;
+    }
+    .footer {
+        display: none;
+    }
+    nav ul li a {
+        color: white;
     }
 </style>
 {% endblock %}
 
 {% block content %}
-<div class="header-wrapper">
-    <img src="{% static 'main/onsemi_main.png' %}" alt="Main Image" class="main-image">
-    <div class="main-content">
-        <p class="animated-text">부모님께 효도를 대신해 드리겠습니다.</p>
-        <p class="animated-small-text">방문 케어와 신선한 음식 배달을 통해<br>
-            노부모와 보호자의 행복과 마음의 평화를 보장합니다.<br>
-            Caring for Your Loved Ones, Wherever You Are
-        </p>
-    </div>
-    <button class="scroll-button" onclick="showContent()">더보기</button>
-</div>
-<div class="content-wrapper" id="extra-content">
-    <div class="main">
-        <div class="vision-section">
-            <img src="{% static 'main/submainimg.png' %}" alt="Sub Image">
-            <div class="vision-text">
-                <h3>식료품을 구하는 것도 녹록지 않은 동네</h3>
-                <h3>그 안에서 지긋한 연세가 되어버린 우리 부모님</h3>
-                <h3>서로에게 보내지 못한 마음과 소식들</h3>
-                <h2>그 모든 갈증,
-                    이 땅에서 솟아나는 샘물 되어
-                    온새미가 채우겠습니다</h2>
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+
+<div class="main">
+    <section class="vision-section">
+        <video autoplay muted loop>
+            <source src="{% static 'main/intro.mp4' %}" type="video/mp4">
+            Your browser does not support HTML5 video.
+        </video>
+        <div class="text-box1">
+            <h1 class="onsemi">온새미(ONSEMI)</h1>
+            <h3>식료품을 구하는 것도 녹록지 않은 동네</h3>
+            <h3>그 안에서 지긋한 연세가 되어버린 우리 부모님</h3>
+            <h3>서로에게 보내지 못한 마음과 소식들</h3>
+            <h2>그 모든 갈증, 이 땅에서 솟아나는 샘물 되어 온새미가 채우겠습니다</h2>
+        </div>
+    </section>
+
+    <section class="story-section">
+        <video autoplay muted loop>
+            <source src="{% static 'main/story.mp4' %}" type="video/mp4" />
+        </video>
+        <div class="text-box2">
+            <h1 class="story">Story</h1>
+            <p>"사막에서 필요한 식품을 구하기 어려운 것처럼 몸에 좋은 식품을 판매하는 상점이 없어 멀리 가서야만 필요한 식품을 구할 수 있는 지역"</p>
+            <p>바로 '식품사막'입니다.</p>
+            <p>인구절벽의 현실화와 함께 2020년 전후로 더 심각한 사회문제로 대두 중인 '식품사막'</p>
+            <p>그리고 이러한 지역에 거주하는 분들은 '쇼핑 난민', '장보기 약자' 등으로 불립니다.</p>
+            <p>그 중에서도 보다 큰 어려움을 겪는 분들은 누구일까요?</p>
+            <p>바로 노쇠하고 거동이 불편한 어르신. 우리의 부모님입니다.</p>
+            <p>저희 [온새미]는 이런 부모님을 돌봐드리고 싶은 마음에도 상황이 여의치 않아 고민인 자녀 분들을 위해 태어났습니다.</p>
+            <p>단순한 방문이나 식료품 전달로 그치지 않고 건강상태 확인, 파킨슨병 간이체크, 병원 진료, 상호 메시지 전달 등 자녀가 직접 찾아뵈었을 때가 아니면 일어나기 어렵던 일들이 필요한 매 순간 가능해집니다.</p>
+            <p>부모님과 나 사이 전하고픈 모든 마음. [온새미]가 더 가득히 채워드리겠습니다.</p>
+            <p>- [온새미]는 '전부의, 모두의'를 뜻하는 순우리말 '온'과 '샘물이 솟아나는 곳, 또는 그 물'을 뜻하는 순우리말 '샘'의 합성어입니다. -</p>
+        </div>
+    </section>
+
+    <section class="values-section">
+        <video autoplay muted loop>
+            <source src="{% static 'main/services.mp4' %}" type="video/mp4" />
+        </video>
+        <div class="text-box3">
+            <h1 class="service">서비스</h1>
+            <div class="value-box">
+                <div class="icon"><img src="{% static 'main/delivery.png' %}" alt="Delivery Icon"></div>
+                <div class="text">
+                    <h3>방문</h3>
+                    <p>신선식품 전달, 건강상태 확인, 병원 진료</p>
+                </div>
+            </div>
+            <div class="value-box">
+                <div class="icon"><img src="{% static 'main/ai.png' %}" alt="AI Icon"></div>
+                <div class="text">
+                    <h3>AI</h3>
+                    <p>식품 가격 예측, 파킨슨병 의심 여부 분석, 챗봇</p>
+                </div>
+            </div>
+            <div class="value-box">
+                <div class="icon"><img src="{% static 'main/shop.png' %}" alt="Shop Icon"></div>
+                <div class="text">
+                    <h3>온새미마트</h3>
+                    <p>신선식품 구매</p>
+                </div>
+            </div>
+            <div class="value-box">
+                <div class="icon"><img src="{% static 'main/monitoring.png' %}" alt="Monitoring Icon"></div>
+                <div class="text">
+                    <h3>모니터링</h3>
+                    <p>배송상태/방문/진료 결과 확인, 메시지 전달</p>
+                </div>
             </div>
         </div>
-    </div>
+    </section>
 </div>
 
-{% endblock %}
-
-{% block script %}
 <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        // 페이지가 로드된 후 항상 맨 위로 스크롤
-        window.scrollTo(0, 0);
-        // 페이지가 로드된 후 실행
-        document.body.style.overflow = 'hidden'; // 처음에 숨김
-        document.querySelector('.scroll-button').style.display = 'block'; // 버튼 표시
-        document.getElementById('extra-content').style.display = 'none'; // 추가 콘텐츠 숨김
-    });
+document.addEventListener("DOMContentLoaded", function() {
+    const sections = document.querySelectorAll('section');
+    let currentSectionIndex = 0;
+    let isThrottled = false;
 
-    function showContent() {
-        document.body.style.overflowY = 'auto'; /* 세로 스크롤만 활성화 */
-        document.body.style.overflowX = 'hidden'; /* 가로 스크롤 비활성화 */
-        document.querySelector('.scroll-button').style.display = 'none'; /* 버튼 숨기기 */
-        document.getElementById('extra-content').style.display = 'block'; /* 추가 콘텐츠 표시 */
-        document.getElementById('extra-content').scrollIntoView({ behavior: 'smooth' }); /* 부드럽게 스크롤 */
-    }
+    const scrollToSection = (index) => {
+        sections[index].scrollIntoView({ behavior: 'smooth' });
+    };
 
-    // Wheel event to handle visibility
-    let scrolled = false;
-    window.addEventListener('wheel', function(event) {
-        if (event.deltaY > 0 && !scrolled) {
-            scrolled = true;
-            showContent();
+    const handleWheelEvent = (e) => {
+        if (isThrottled) return;
+        isThrottled = true;
+
+        if (e.deltaY > 0) {
+            currentSectionIndex = Math.min(sections.length - 1, currentSectionIndex + 1);
+        } else {
+            currentSectionIndex = Math.max(0, currentSectionIndex - 1);
         }
-    });
 
-    // Prevent default behavior of refreshing to top of the page
-    window.addEventListener('beforeunload', function () {
-        window.scrollTo(0, 0);
-    });
+        scrollToSection(currentSectionIndex);
+
+        setTimeout(() => {
+            isThrottled = false;
+        }, 1000); // 1 second throttle
+    };
+
+    const handleTouchEvent = (() => {
+        let startY;
+        const touchThreshold = 50; // Minimum distance for swipe to be considered
+
+        return {
+            start(e) {
+                startY = e.touches[0].clientY;
+            },
+            move(e) {
+                const endY = e.touches[0].clientY;
+                if (startY - endY > touchThreshold) {
+                    currentSectionIndex = Math.min(sections.length - 1, currentSectionIndex + 1);
+                } else if (endY - startY > touchThreshold) {
+                    currentSectionIndex = Math.max(0, currentSectionIndex - 1);
+                }
+
+                scrollToSection(currentSectionIndex);
+            }
+        };
+    })();
+
+    window.addEventListener('wheel', handleWheelEvent);
+    window.addEventListener('touchstart', handleTouchEvent.start);
+    window.addEventListener('touchmove', handleTouchEvent.move);
+    
+    // For initial load
+    scrollToSection(currentSectionIndex);
+});
 </script>
 {% endblock %}
