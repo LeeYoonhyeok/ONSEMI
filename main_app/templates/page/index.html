@@ -54,13 +54,13 @@
         z-index: 1;
     }
 
-    .text-box1 {
+   .text-box1 {
         text-align: center;
         color: black;
     }
 
     .onsemi {
-        font-size: 35px;
+        font-size: 45px;
         margin-bottom: 50px;
     }
 
@@ -75,13 +75,18 @@
         margin-left: 60px;
         margin-top: 70px;
     }
+
+    .story {
+        font-size: 45px;
+    }
+
     .text-box2 p {
         margin: 12px 0px;
     }
 
     .text-box3 {
         display: flex;
-        justify-content: space-around;
+        justify-content: right;
         flex-wrap: wrap;
         width: 600px;
         text-align: center;
@@ -90,6 +95,11 @@
         padding: 20px;
         margin-right: 60px;
         margin-top: 70px;
+    }
+
+    .service {
+        font-size: 45px;
+        margin-right: 10px;
     }
 
     .values-section h1 {
@@ -162,7 +172,7 @@
             <source src="{% static 'main/story.mp4' %}" type="video/mp4" />
         </video>
         <div class="text-box2">
-            <h1>Story</h1>
+            <h1 class="story">Story</h1>
             <p>"사막에서 필요한 식품을 구하기 어려운 것처럼 몸에 좋은 식품을 판매하는 상점이 없어 멀리 가서야만 필요한 식품을 구할 수 있는 지역"</p>
             <p>바로 '식품사막'입니다.</p>
             <p>인구절벽의 현실화와 함께 2020년 전후로 더 심각한 사회문제로 대두 중인 '식품사막'</p>
@@ -181,7 +191,7 @@
             <source src="{% static 'main/services.mp4' %}" type="video/mp4" />
         </video>
         <div class="text-box3">
-            <h1>서비스</h1>
+            <h1 class="service">서비스</h1>
             <div class="value-box">
                 <div class="icon"><img src="{% static 'main/delivery.png' %}" alt="Delivery Icon"></div>
                 <div class="text">
