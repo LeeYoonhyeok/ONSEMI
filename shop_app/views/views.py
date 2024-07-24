@@ -35,12 +35,6 @@ def product_list(request, category_slug=None):
         except Exception as e:
             print(f'Error updating product {row["작물명"]}: {e}')
 
-    # # 가격 상승 상품 3개 저장
-    # increases = price_predict.iloc[: 3].values.tolist()
-    
-    # # 가격 하락 상품 3개 저장
-    # decreases = price_predict.iloc[-1: -4: -1].values.tolist()
-
     # 가격 상승 상품 3개 저장
     increases = price_predict[price_predict['상승 비율'] > 0].nlargest(3, '상승 비율')
     increases = increases.apply(lambda x: [x['작물명'], f"{x['시작 가격']:,}", f"{x['종료 가격']:,}"], axis=1).values.tolist()
@@ -52,18 +46,21 @@ def product_list(request, category_slug=None):
     category = None
     categories = Category.objects.all()
     products = Product.objects.filter(available=True)
+
+    # 검색 기능 추가
+    query = request.GET.get('query')
+    if query:
+        products = products.filter(name__icontains=query)
+    
     if category_slug:
         category = get_object_or_404(Category, slug=category_slug)
         products = products.filter(category=category)
 
     recent_products_ids = request.session.get('recent_products', [])
-    # 빈 리스트를 생성합니다.
     recent_products = []
-
-    # for 문을 사용하여 각 ID로 Product 객체를 쿼리하고 리스트에 저장합니다.
     for product_id in recent_products_ids:
         product = Product.objects.get(id=product_id)
-        recent_products.insert(0,product)
+        recent_products.insert(0, product)
 
     return render(request,
                   'shop/product/list.html',
@@ -72,7 +69,9 @@ def product_list(request, category_slug=None):
                    'products': products,
                    'recent_products': recent_products,
                    'increases': increases,
-                   'decreases': decreases})
+                   'decreases': decreases,
+                   'query': query})
+
 
 
 @login_required

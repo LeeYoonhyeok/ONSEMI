@@ -1,0 +1,151 @@
+body, html {
+    margin: 0;
+    padding: 0;
+    height: 125%;
+    width: 100%;       
+}
+.container {
+    display: flex;
+    
+}
+.sidebar{
+background-color: #fff;
+color: black;
+padding: 20px;
+width: 300px;
+display: flex;
+flex-direction: column;
+align-items: center;
+box-sizing: border-box;
+height: 125%;
+overflow-y: auto;
+-ms-overflow-style: none;
+}
+.sidebar h2 {
+    text-align: center;
+    margin-bottom: 20px;
+    width: 100%;
+}
+.sidebar form {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    align-items: center;
+}
+.sidebar form .form-group {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+.sidebar form label {
+    margin-bottom: 5px;
+    font-size: 12px;
+    width: 100%;
+    text-align: center;
+}
+.sidebar form input,
+.sidebar form select,
+.sidebar form button {
+    margin-bottom: 10px;
+    padding: 10px;
+    font-size: 1rem;
+    border-radius: 4px;
+    border: none;
+    width: 100%;
+    max-width: 220px;
+    border: 1px solid #ccc;
+    color: black; /* Ensure the text color is visible */
+    box-sizing: border-box; /* Add this to ensure consistent sizing */
+    text-align: center; /* Center text horizontally */
+}
+.sidebar form select {
+    text-align: center;
+    text-align-last: center; /* For modern browsers */
+    appearance: none; /* Remove default dropdown arrow for better control */
+    -webkit-appearance: none; /* For Safari */
+    -moz-appearance: none; /* For Firefox */
+}
+.sidebar form select option {
+    text-align: center; /* Center text in options */
+}
+.sidebar form button {
+    background-color: #007bff;
+    color: white;
+    cursor: pointer;
+}
+.sidebar form button:hover {
+    background-color: #0056b3;
+}
+.main-content {
+    flex: 1;
+    padding: 20px;
+    overflow-y: auto;
+}
+.heading-download-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.download-link {
+    text-align: right;
+}
+.approval-bar-container {
+    margin: 20px 0;
+    width: 100%;
+    background-color: #c0c0c0;
+    border-radius: 25px;
+    overflow: hidden;
+}
+.completed-bar {
+    height: 20px;
+    background-color: #4caf50;
+    text-align: center;
+    line-height: 20px; /* Center text vertically */
+    color: white;
+    border-radius: 25px;
+}
+/* Hide the hamburger menu */
+.hamburger-menu {
+    display: none !important; 
+}
+
+.sidebar form select option {
+    
+    color: black;
+    text-align: center;
+}
+
+form.selected_senior{
+    background:green ! important; 
+}
+
+.sidebar form select option:hover {
+    background:green ! important; 
+    color: black;
+    text-align: center;
+}
+
+/* Hover effect for select options */
+.custom-select:hover .custom-option:hover {
+    background-color: green !important;
+}
+
+/* Style the select element */
+.custom-select {
+display: block;
+margin: 0 auto;
+text-align: center;
+font-size: 16px;
+padding: 10px;
+}
+
+/* Change the background color on hover */
+.custom-select:hover {
+background-color: lightgreen;
+}
+
+/* Change the text color on focus and when the option is selected */
+.custom-select:focus, .custom-select option:checked {
+color: green;
+}

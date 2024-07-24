@@ -3,7 +3,6 @@
     src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_2001@1.1/GmarketSansMedium.woff') format('woff');
     font-weight: normal;
     font-style: normal;
-
 }
 
 body {
@@ -142,7 +141,8 @@ li{
     padding-left: 20px;
     padding-right: 20px;
     padding-bottom: 20px;
-    height: 100vh;
+    
+    overflow-y: auto;
     
 }
 
@@ -459,8 +459,8 @@ th {
 }
 
 .senior-photo img {
-    max-width: 150px;
-    height: auto;
+    max-width: 90px;
+    height: 90px;
     border-radius: 10px;
 }
 

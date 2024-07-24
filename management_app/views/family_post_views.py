@@ -1,13 +1,8 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
-from django.views.decorators.csrf import csrf_exempt
-from django.contrib import messages
-from django.db import IntegrityError
-from auth_app.models import User
 from management_app.models import Care, Senior
-from auth_app.utils import family_required  # 해당 페이지는 보호자로 로그인했을 때만 접근이 가능하게 수정!!
+from auth_app.utils import family_required
 from datetime import datetime
-from django.contrib.auth import get_user_model
 from datetime import date
 
 

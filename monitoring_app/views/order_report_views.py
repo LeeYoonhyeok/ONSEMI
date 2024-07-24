@@ -18,15 +18,9 @@ from matplotlib import font_manager, rc
 import matplotlib.font_manager as fm
 
 # 한글 폰트 설정
-
-# font_path = '/usr/share/fonts/truetype/nanum/NanumGothic.ttf'
-# font_name = fm.FontProperties(fname=font_path, size=10).get_name()
-# plt.rcParams['font.family'] = font_name
-
 font_path = 'C:\\Windows\\Fonts\\Arial.ttf'
 font_name = fm.FontProperties(fname=font_path, size=10).get_name()
 plt.rcParams['font.family'] = font_name
-
 
 # 주문 데이터 DataFrame으로 변환
 def order_to_dataframe(orders):
@@ -43,32 +37,22 @@ def order_to_dataframe(orders):
                 'created': order.created.isoformat(),
             })
     df = pd.DataFrame(data)
-    if 'created' in df.columns: #임의로 만든 데이터들은 created고 서비스 상에서 데이터를 쌓으면 Created임
-
-        df['Created'] = pd.to_datetime(df['created'], format='ISO8601', errors='coerce') # 21일 새벽 오류 발견하여 최종 수정
-
-    if 'Created' in df.columns: #임의로 만든 데이터들은 created고 서비스 상에서 데이터를 쌓으면 Created임
+    if 'created' in df.columns: # 임의로 만든 데이터들은 created고 서비스 상에서 데이터를 쌓으면 Created임
+        df['Created'] = pd.to_datetime(df['created'], format='ISO8601', errors='coerce')
+    if 'Created' in df.columns:
         df['Created'] = pd.to_datetime(df['Created'], format='ISO8601', errors='coerce')
-
     if 'Date' in df.columns:
         df['Date'] = pd.to_datetime(df['Date'], format='ISO8601', errors='coerce')
-
-    if 'quantity' in df.columns: #임의로 만든 데이터들은 created고 서비스 상에서 데이터를 쌓으면 Created임
-
-        df['Quantity'] = df['quantity'].astype(float) # 21일 새벽 오류 발견하여 최종 수정
-
-
-    if 'Quantity' in df.columns: #임의로 만든 데이터들은 created고 서비스 상에서 데이터를 쌓으면 Created임
+    if 'quantity' in df.columns:
+        df['Quantity'] = df['quantity'].astype(float)
+    if 'Quantity' in df.columns:
         df['Quantity'] = df['Quantity'].astype(float)
         
     return df, data
 
-##########################################################################################################
-
 # 케어 데이터 DataFrame으로 변환
 def care_to_dataframe(cares, start_date, end_date, category_service, selected_senior):
     data_care = []
-        
     if start_date:
         cares = cares.filter(datetime__gte=start_date)
     if end_date:
@@ -97,11 +81,8 @@ def care_to_dataframe(cares, start_date, end_date, category_service, selected_se
         
     return df_care, data_care, completed_rate
 
-##########################################################################################################
-
 @login_required
 def generate(request):
-    
     # 현재 로그인한 유저에 해당되는 데이터 DB에서 불러오기
     form = FilterForm(request.POST or None, user=request.user)
     seniors = Senior.objects.filter(user_id=request.user)
@@ -115,7 +96,6 @@ def generate(request):
     # 한글화 하면서 해당 코드 삭제
     
     if request.method == 'POST' and form.is_valid():
-        
         # 사용자가 선택한 필터 값 불러오기
         start_date = form.cleaned_data.get('start_date')
         end_date = form.cleaned_data.get('end_date')
@@ -141,22 +121,20 @@ def generate(request):
         if selected_senior and selected_senior != 'all':
             orders = orders.filter(senior_id=selected_senior)
 
-####################################################################################
-
         # 주문 데이터를 데이터프레임으로 변환
         df, data = order_to_dataframe(orders)
         
         # 서비스 요청 데이터를 데이터프레임으로 변환
         df_care, data_care, completed_rate = care_to_dataframe(cares, start_date, end_date, category_service, selected_senior)
         
-####################################################################################
+        colors = ['#2D4059', '#EA5455', '#F07B3F', '#FFD460', '#CABBE9','#111111']  # 필요한 색상을 리스트로 정의
+        
         if not df_care.empty:
             # 꺾은선 그래프 생성 (주간 단위)
             df_care['Week'] = df_care['datetime'].dt.to_period('W').apply(lambda r: r.start_time)
             weekly_data = df_care.groupby(['Week', 'care_type']).size().unstack().fillna(0)
 
             plt.figure(figsize=(10, 6))
-            colors = ['#2D4059', '#EA5455', '#F07B3F', '#FFD460', '#CABBE9']  # 필요한 색상을 리스트로 정의
             for idx, column in enumerate(weekly_data.columns):
                 plt.plot(weekly_data.index, weekly_data[column], marker='o', label=column, color=colors[idx % len(colors)])
             
@@ -177,7 +155,6 @@ def generate(request):
 
             graph_url = base64.b64encode(image_png).decode('utf-8')
             graph_url = 'data:image/png;base64,' + graph_url
-
         else:
             # 데이터가 없을 경우 빈 꺾은선 그래프 생성
             plt.figure(figsize=(10, 6))
@@ -194,7 +171,6 @@ def generate(request):
             graph_url = base64.b64encode(image_png).decode('utf-8')
             graph_url = 'data:image/png;base64,' + graph_url
 
-####################################################################################
         # 전체 데이터 기반 원형 그래프 생성
         if start_date:
             orders = orders.filter(created__gte=start_date)
@@ -211,8 +187,7 @@ def generate(request):
         all_df = pd.DataFrame(all_data)
 
         if not all_df.empty:
-
-            all_df['Quantity'] = all_df['Quantity'].astype(float) # 21일 새벽 오류 발견하여 최종 수정
+            all_df['Quantity'] = all_df['Quantity'].astype(float)
 
             plt.figure(figsize=(10, 6))
             category_counts = all_df.groupby('Category')['Quantity'].sum()
@@ -228,7 +203,6 @@ def generate(request):
 
             pie_chart_url = base64.b64encode(image_png).decode('utf-8')
             pie_chart_url = 'data:image/png;base64,' + pie_chart_url
-
         else:
             plt.figure(figsize=(10, 6))
             plt.title('요청된 데이터가 없습니다', fontproperties=fm.FontProperties(fname=font_path))
@@ -255,10 +229,8 @@ def generate(request):
         request.session['completed_rate'] = completed_rate
         request.session['selected_senior'] = selected_senior
         
-        
     return render(request, 'monitoring_app/generate.html', {
         'form': form, 
         'graph_url': graph_url, 
         'pie_chart_url': pie_chart_url
     })
-####################################################################################

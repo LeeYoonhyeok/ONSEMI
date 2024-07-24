@@ -1,6 +1,5 @@
-from django.shortcuts import render, get_object_or_404, redirect
-from orders_app.models import Order, OrderItem
-from shop_app.models import Product
+from django.shortcuts import render, get_object_or_404
+from orders_app.models import Order
 from django.contrib import messages
 from management_app.models import Care
 from django.db import transaction

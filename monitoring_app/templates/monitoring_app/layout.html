@@ -10,200 +10,6 @@
     <title>{% block title %}{% endblock %}</title>
     {% block extra_css %}{% endblock %}
 </head>
-<style>
-    .tooltip {
-        visibility: hidden;
-        background-color: #555;
-        color: #fff;
-        text-align: center;
-        border-radius: 5px;
-        padding: 5px 10px;
-        position: absolute;
-        z-index: 1;
-        top: 125%;
-        left: 50%;
-        transform: translateX(-50%);
-        opacity: 0;
-        transition: opacity 0.3s;
-        white-space: nowrap;
-    }
-    .tooltip::after {
-        content: '';
-        position: absolute;
-        bottom: 100%;
-        left: 50%;
-        margin-left: -5px;
-        border-width: 5px;
-        border-style: solid;
-        border-color: transparent transparent #555 transparent;
-    }
-
-    .nav-item:hover .tooltip {
-        visibility: visible;
-        opacity: 1;
-    }
-    .user-controls:hover .tooltip {
-        visibility: visible;
-        opacity: 1;
-    }
-
-    /* Chatbot Styles */
-    .chat-modal {
-        display: none; /* Initially hide the chat modal */
-        position: fixed;
-        bottom: 70px;
-        right: 10px;
-        width: 300px;
-        max-height: 400px;
-        background-color: white;
-        border: 1px solid #ccc;
-        border-radius: 10px;
-        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-        z-index: 1001;
-        overflow: hidden;
-        flex-direction: column;
-    }
-
-    .chat-header {
-        padding: 10px;
-        background-color: #4CAF50;
-        color: white;
-        text-align: center;
-        border-bottom: 1px solid #ccc;
-    }
-
-    .chat-body {
-        
-        padding: 10px;
-        overflow-y: auto;
-        height:500px;
-    }
-
-    .chat-message {
-        margin-bottom: 10px;
-    }
-
-    .chat-message.user {
-        text-align: right;
-    }
-
-    .chat-message.bot {
-        text-align: left;
-    }
-
-    .chat-footer {
-        padding: 10px;
-        background-color: #f1f1f1;
-        display: flex;
-        align-items: center;
-        border-top: 1px solid #ccc;
-    }
-
-    .chat-footer2 {
-        margin-top: 10px;
-        display: flex;
-        justify-content: space-between;
-    }
-
-    .chat-footer input[type="text"] {
-        flex: 1;
-        padding: 10px;
-        border: 1px solid #ccc;
-        border-radius: 5px;
-        margin-right: 10px;
-    }
-
-    .chat-footer button {
-        background-color: #4CAF50;
-        color: white;
-        border: none;
-        padding: 10px 15px;
-        cursor: pointer;
-        border-radius: 5px;
-    }
-
-    .chat-footer2 button {
-        background-color: #f44336;
-        color: white;
-        border: none;
-        padding: 10px 15px;
-        cursor: pointer;
-        border-radius: 5px;
-    }
-
-    .chat-footer2 button:nth-child(2) {
-        background-color: #f39c12;
-    }
-
-    
-
-    /* Responsive Styles */
-    @media (max-width: 1200px) {
-        .container {
-            padding: 0 15px;
-        }
-    }
-
-    @media (max-width: 992px) {
-        .container {
-            padding: 0 10px;
-        }
-        .logo img {
-            height: 45px;
-            width: 45px;
-        }
-        nav ul li a {
-            padding: 5px 8px;
-        }
-    }
-
-    @media (max-width: 768px) {
-        .container {
-            flex-direction: column;
-            align-items: flex-start;
-        }
-        nav ul {
-            flex-direction: column;
-            gap: 10px;
-            width: 100%;
-        }
-        nav ul li {
-            justify-content: center;
-            width: 100%;
-        }
-        .logo img {
-            height: 40px;
-            width: 40px;
-        }
-        nav ul li a {
-            padding: 5px 6px;
-        }
-    }
-
-    @media (max-width: 576px) {
-        .container {
-            padding: 0 5px;
-        }
-        .logo img {
-            height: 35px;
-            width: 35px;
-        }
-        nav ul {
-            flex-direction: row;
-            flex-wrap: wrap;
-            justify-content: center;
-        }
-        nav ul li {
-            width: auto;
-            flex: 1 1 auto;
-            display: flex;
-            justify-content: center;
-        }
-        nav ul li a {
-            padding: 5px 4px;
-        }
-    }
-</style>
 <body>
     <div class="header">
         <div class="left-controls">
@@ -212,22 +18,17 @@
             <img src="{% static 'main/onsemi_logos.png' %}" alt="Main Image">
             </a>
         </div>
-       
         <div class="user-controls" class="home">
             <div class="nav-item">
-            <a href="/">
-                <span class="material-symbols-outlined nav-icon selected" title="홈" id="home">home</span>
-                <span class="tooltip">홈</span>
-            </a>
+                <a href="/introduce/" class="green">소개</a>
         </div>
- 
-            <a href="/shop">
-                <span class="material-symbols-outlined nav-icon" title="상점" id="shop">storefront</span>
-            </a>
-            <a href="/user_page/">
-            <span class="material-symbols-outlined" title="마이페이지">
-                account_circle
-                </span></a>
+            <a href="/user/logout" class="green">로그아웃</a>
+            <a href="/blog/notice_list" class="green">게시판</a>
+            <a href="/user_page/" class="green">마이페이지</a>
+            <a href="/shop/" class="green">온새미마트</a>
+            <br>
+
+
             <div class="user-profile" onclick="toggleInfoBox()">
                 <span class="material-symbols-outlined icon" id="notification-icon" title="알림">notifications</span>
                 <div id="infoBox" class="info-box">
@@ -241,9 +42,6 @@
                     </div>
                 </div>
             </div>
-            <a href="/user/logout/" class="logout">
-                <span class="material-symbols-outlined icon" title="로그아웃">logout</span>
-            </a>
         </div>
     </div>
     <div class="wrapper">
@@ -257,19 +55,15 @@
             </span>
         </button>
     </div>
-    
-    <div class="chat-modal" id="chatModal">
+     <div class="chat-modal" id="chatModal">
         <div class="chat-header">
             <p>온새미 챗봇</p>
+            <button id="closeChat" class="close-button">X</button>
         </div>
         <div class="chat-body" id="chatBody"></div>
         <div class="chat-footer">
             <input type="text" id="chatInput" placeholder="질문을 입력하세요..." />
             <button id="sendChat">보내기</button>
-        </div>
-        <div class="chat-footer2">
-            <button id="closeChat">뒤돌아가기</button>
-            <button id="resetChat">대화내용 초기화</button>
         </div>
     </div>
     {% endif %}
@@ -290,7 +84,7 @@
             }
  
             // 시그널을 받았을 때 메시지를 표시할 HTML 요소 업데이트
-            const message = seniorname + ' 어르신 케어 서비스가 ' + state + ' 되었습니다. 방문 예정 날짜는 ' + visit_date + ' ' + visit_time + ' 입니다.';
+            const message = seniorname + ' 어르신 서비스 요청이 ' + state + ' 되었습니다. 방문 예정 날짜는 ' + visit_date + ' ' + visit_time + ' 입니다.';
             var temp = document.getElementById("signal-message1").textContent;
             console.log(temp);
             if(temp === '알림이 없습니다.'){
@@ -319,7 +113,7 @@
                     console.log('Error polling for signal:', textStatus, errorThrown);
                 },
                 complete: function() {
-                    setTimeout(pollSignal, 1000);  // 1초마다 시그널 체크
+                    setTimeout(pollSignal, 10000);  // 10초마다 시그널 체크
                 }
             });
         }
@@ -352,18 +146,27 @@
         const chatInput = document.getElementById('chatInput');
         const chatBody = document.getElementById('chatBody');
 
+        chatModal.style.display = 'none';
+
         chatLink.addEventListener('click', () => {
             if (chatModal.style.display === 'flex') {
                 chatModal.style.display = 'none';
             } else {
                 chatModal.style.display = 'flex';
-                loadChatHistory();
+                appendMessage('bot', '안녕하세요 온새미 챗봇입니다. 궁금하신 것이 있다면 말씀해주세요');
+                chatLink.disabled = true; // chat 버튼 비활성화
             }
         });
-
         closeChat.addEventListener('click', () => {
             chatModal.style.display = 'none';
+            resetChatHistory(); // 대화 내용 초기화
+            chatLink.disabled = false; // chat 버튼 활성화
         });
+
+        sendChat.addEventListener('click', () => {
+            sendMessage();
+        });
+
 
         resetChat.addEventListener('click', () => {
             resetChatHistory();
@@ -463,9 +266,6 @@
                 infoBox.style.display = 'none';
             }
         });
-   
- 
- 
 </script>
 {% block script %}
 {% endblock %}

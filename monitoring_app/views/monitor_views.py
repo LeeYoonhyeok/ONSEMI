@@ -1,11 +1,11 @@
-from django.shortcuts import render, reverse
+from django.shortcuts import render
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.dispatch import receiver
 from django.db.models import Max
 
 from monitoring_app.signals import my_signal
-from management_app.models import Care, Senior, Report, ReportImage
+from management_app.models import Care, Senior, Report
 from auth_app.models import User
 
 # 시그널을 받았는지 여부를 저장할 변수

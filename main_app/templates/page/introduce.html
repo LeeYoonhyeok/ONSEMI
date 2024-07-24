@@ -1,214 +1,97 @@
-{% extends "layout.html" %}
+{% extends 'layout.html' %}
+
+{% block title %}소개{% endblock %}
 {% load static %}
-
-{% block title %}ONSEMI{% endblock %}
-
-{% block extra_css %}
-<link rel="stylesheet" href="{% static 'introduce.css' %}">
-<style>
-    html, body {
-        height: 100%;
-        margin: 0;
-        padding: 0;
-        font-family: 'GmarketSansMedium';
-        min-width:100%;
-        width: 100%;
-    }
-
-    nav ul li a {
-        color: black;
-    }
-
-    .vision-section {
-        margin-top: ;
-        position: relative;
-        text-align: center;
-        color: black;
-    }
-
-    .vision-text {
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-    }
-
-    .vision-text h1 {
-        font-size: 36px;
-        margin: 0;
-    }
-
-    .vision-text p {
-        font-size: 18px;
-    }
-
-    .story-section {
-        position: relative;
-        text-align: center;
-    }
-
-    .story-subject {
-        margin-bottom: 70px;
-    }
-
-    .story-text {
-        position: absolute;
-        top: 180%;
-        left: 85%;
-        transform: translate(-50%, -50%);
-        color: white;
-        width: 500px;
-        word-break: keep-all;
-        text-align: right;
-        line-height: 175%;
-    }
-
-    .values-section {
-        text-align: center;
-        padding: 40px 20px;
-    }
-
-    .values-section h2 {
-        font-size: 28px;
-        margin-bottom: 20px;
-    }
-
-    .values-container {
-        display: flex;
-        justify-content: space-around;
-        flex-wrap: wrap;
-    }
-
-    .value-box {
-        background-color: #f0f4f8;
-        padding: 20px;
-        margin: 10px;
-        border-radius: 8px;
-        width: 45%;
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-    }
-
-    .value-box img {
-        width: 50px;
-        height: 50px;
-        margin-right: 20px;
-    }
-
-    .value-box .text {
-        text-align: left;
-    }
-
-    .value-box .text h3 {
-        margin: 0;
-        font-size: 18px;
-        font-weight: bold;
-    }
-
-    .footer {
-        background-color: #f8f9fa;
-        padding: 10px;
-        text-align: center;
-        font-size: 14px;
-    }
-
-    .page-container {
-        display: flex;
-        flex-direction: column;
-        min-height: 100vh;
-    }
-
-    .wrapper {
-        flex: 1;
-    }
-
-  
-</style>
-{% endblock %}
-
 {% block content %}
-
-<div class="main">
-    <div class="vision-section">
-        <video autoplay muted loop>
-            <source src="{% static 'main/intro.mp4' %}" type="video/mp4" />
-        </video>
-        <div class="vision-text">
-            <h1>온새미(ONSEMI)</h1>
-            <h3>식료품을 구하는 것도 녹록지 않은 동네</h3>
-            <h3>그 안에서 지긋한 연세가 되어버린 우리 부모님</h3>
-            <h3>서로에게 보내지 못한 마음과 소식들</h3>
-            <h2>그 모든 갈증,
-                이 땅에서 솟아나는 샘물 되어
-                온새미가 채우겠습니다</h2>
+<div class="introduce-container">
+    <div class="image-grid">
+        <div class="image-item">
+            <img src="{% static 'main/member-.jpg' %}" alt="member">
+            <p>소개<br>블라블라</p>
         </div>
-    </div>
-
-    <div class="story-section">
-        <video autoplay muted loop>
-            <source src="{% static 'main/story.mp4' %}" type="video/mp4" />
-        </video>
+        <div class="image-item">
+            <img src="{% static 'main/member-yj.jpg' %}" alt="member">
+            <p>소개<br>블라블라</p>
         </div>
-        <div class="story-text">
-            <h1 class="story-subject">Story</h1>
-            <h3>"사막에서 필요한 식품을 구하기 어려운 것처럼 몸에 좋은 식품을 판매하는 상점이 없어 멀리 가서야만 필요한 식품을 구할 수 있는 지역"</h3>
-            <h3>바로 '식품사막'입니다.</h3>
-            <h3>인구절벽의 현실화와 함께 2020년 전후로 더 심각한 사회문제로 대두 중인 '식품사막'</h3>
-            <h3>그리고 이러한 지역에 거주하는 분들은 '쇼핑 난민', '장보기 약자' 등으로 불립니다.</h3>
-            <h3>그 중에서도 보다 큰 어려움을 겪는 분들은 누구일까요?</h3>
-            <h3>바로 노쇠하고 거동이 불편한 어르신. 우리의 부모님입니다.</h3>
-            <h3>저희 [온새미]는 이런 부모님을 돌봐드리고 싶은 마음에도 상황이 여의치 않아 고민인 자녀 분들을 위해 태어났습니다.</h3>
-            <h3>단순한 방문이나 식료품 전달로 그치지 않고
-                건강상태 확인, 파킨슨병 간이체크, 병원 진료, 상호 메시지 전달 등
-                자녀가 직접 찾아뵈었을 때가 아니면 일어나기 어렵던 일들이
-                필요한 매 순간 가능해집니다.</h3>
-            <h3>부모님과 나 사이 전하고픈 모든 마음.
-                [온새미]가 더 가득히 채워드리겠습니다.</h3>
-            <h3>- [온새미]는 '전부의, 모두의'를 뜻하는 순우리말 '온'과
-                '샘물이 솟아나는 곳, 또는 그 물'을 뜻하는 순우리말 '샘'의 합성어입니다. -</h3>
+        <div class="image-item">
+            <img src="{% static 'main/member-g.jpg' %}" alt="member">
+            <p>소개<br>블라블라</p>
         </div>
-
-
-    </div>
-
-
-    <div class="values-section">
-        <video autoplay muted loop>
-            <source src="{% static 'main/services.mp4' %}" type="video/mp4" />
-        </video>
-        <h2>온새미의 서비스</h2>
-        <div class="values-container">
-            <div class="value-box">
-                <div class="icon"><img src="{% static 'images/customer.png' %}" alt="Customer Icon"></div>
-                <div class="text">
-                    <h3>고객</h3>
-                    <p>고객</p>
-                </div>
-            </div>
-            <div class="value-box">
-                <div class="icon"><img src="{% static 'images/competence.png' %}" alt="Competence Icon"></div>
-                <div class="text">
-                    <h3>어르신</h3>
-                    <p>어르신</p>
-                </div>
-            </div>
-            <div class="value-box">
-                <div class="icon"><img src="{% static 'images/reality.png' %}" alt="Reality Icon"></div>
-                <div class="text">
-                    <h3>봉사자</h3>
-                    <p>봉사자</p>
-                </div>
-            </div>
-            <div class="value-box">
-                <div class="icon"><img src="{% static 'images/harmony.png' %}" alt="Harmony Icon"></div>
-                <div class="text">
-                    <h3>-</h3>
-                    <p>-</p>
-                </div>
-            </div>
+        <div class="image-item">
+            <img src="{% static 'main/member-sp.jpg' %}" alt="member">
+            <p>소개<br>블라블라</p>
+        </div>
+        <div class="image-item">
+            <img src="{% static 'main/member-dv.jpg' %}" alt="member">
+            <p>소개<br>블라블라</p>
+        </div>
+        <div class="image-item">
+            <img src="{% static 'main/member-yh.jpg' %}" alt="member">
+            <p>소개<br>블라블라</p>
+        </div>
+        <div class="image-item">
+            <img src="{% static 'main/member-.jpg' %}" alt="member">
+            <p>소개<br>블라블라</p>
+        </div>
+        <div class="image-item">
+            <img src="{% static 'main/member-js.jpg' %}" alt="member">
+            <p>소개<br>블라블라</p>
         </div>
     </div>
 </div>
+{% endblock %}
 
+{% block extra_css %}
+<style>
+    .introduce-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
+        padding: 40px 20px;
+    }
+
+    .image-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 30px;
+    }
+
+    .image-item {
+        text-align: center;
+        max-width: 150px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .image-item img {
+        width: 100%;
+        height: 200px;
+        border: 1px solid #ddd;
+        padding: 10px;
+        background-color: #f9f9f9;
+    }
+
+    .image-item p {
+        margin-top: 10px;
+        font-size: 14px;
+        color: #333;
+        text-align: center;
+    }
+
+    @media (max-width: 992px) {
+        .image-grid {
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+        }
+    }
+
+    @media (max-width: 576px) {
+        .image-grid {
+            grid-template-columns: 1fr;
+            gap: 15px;
+        }
+    }
+</style>
 {% endblock %}

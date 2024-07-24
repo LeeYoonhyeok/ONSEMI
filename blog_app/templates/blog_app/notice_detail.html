@@ -46,7 +46,7 @@
         </div>
 
         <div class="comment-section">
-            <h2>댓글 <span> [{{comment_count}}] </span> </h2>
+            <h2>댓글 <span> [{{ comment_count }}] </span> </h2>
             {% for comment in comments %}
                 <div class="comment" style="margin-left: {% if comment.parent %}40px{% endif %};">
                     <p><span class="comment-author">{{ comment.user_id }}</span> <span class="bar">|</span> <span class="comment-time">  {{ comment.datetime }}</span></p>
@@ -55,7 +55,7 @@
                         {% if user == comment.user_id or user == post.user_id %}
                             <button onclick="confirmDeleteComment({{ post.pk }}, {{ comment.pk }})" class="delete-button" data-csrf-token="{{ csrf_token }}">댓글 삭제</button>
                         {% endif %}
-                        <span class="reply-link" data-id="{{ comment.id }}">답글</span>
+                        <span class="reply-link" data-id="{{ comment.id }}" onclick="showReplyForm(this)">답글</span>
                     </div>
                     {% if comment.replies %}
                         {% for reply in comment.replies.all %}

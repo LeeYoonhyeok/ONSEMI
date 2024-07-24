@@ -1,4 +1,5 @@
-
+<!DOCTYPE html>
+<html lang="ko">
 {% extends "shop/product/base_shop.html" %}
 {% load static %}
 
@@ -68,7 +69,7 @@
     display: flex;
     flex-direction: column;
     align-items: flex-start;
-    width: 20%;
+    width: 25%; /* Increased width */
     padding: 20px;
     border-right: 1px solid #ddd;
     box-sizing: border-box;
@@ -133,7 +134,7 @@
 
   .main-content {
     flex-direction: column;
-    width: 60%;
+    width: 65%; /* Adjusted width */
     margin-left: 20px;
   }
 
@@ -168,7 +169,7 @@
   .item-name {
     font-weight: bold;
     display: inline-block;
-    width: 15%;
+    width: 25%; /* Increased width */
   }
 
   .price {
@@ -257,10 +258,11 @@
   .product-list {
     display: flex;
     flex-wrap: wrap;
-    justify-content: space-around;
+    justify-content: flex-start; /* Left align the items */
     width: 100%;
+    padding: 0; /* Ensure there is no padding */
   }
-
+  
   .product-list .item {
     background-color: #fff;
     border: 1px solid #ddd;
@@ -275,6 +277,7 @@
     display: flex;
     flex-direction: column;
     justify-content: space-between;
+    margin-right: 20px; /* Add margin to the right */
   }
 
   .product-list .item:hover {
@@ -361,7 +364,7 @@
   }
 
   .price-prediction {
-    width: 100%;
+    width: 100%; /* Adjusted width */
     margin-top: 20px;
   }
 
@@ -373,13 +376,20 @@
     padding: 10px;
     background-color: #f8f9fa;
     border: 1px solid #ddd;
-    border-radius: 4px;
+    
+    {% comment %} width: calc(100% + 17px);  {% endcomment %}
+    box-sizing: border-box;
   }
 
   .price-prediction-content {
     padding: 10px;
     border: 1px solid #ddd;
     border-top: none;
+    {% comment %} width: calc(100% - 4px);  {% endcomment %}
+  }
+
+  .predict-price-section {
+    width: 100%;
   }
 
   .predict-price {
@@ -416,7 +426,34 @@
     background-color: darkblue; /* 하락 예측 버튼 호버 효과 */
   }
 
+  /* 검색 스타일 추가 */
+  .search-box {
+    align-items: center;
+    margin-bottom: 20px;
+    background-color: #026738;
+    width: 100%;
+    color:white;
+  }
 
+  .search-box input[type="text"] {
+    padding: 10px;
+    font-size: 16px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    flex: 1;
+    margin-right: 10px;
+    width: 80%;
+  }
+
+  .search-box button:hover {
+    background-color: #218838;
+  }
+  .search-title {
+    padding: 20px 20px 0px 20px;
+  }
+  .search-box form {
+    padding: 0px 20px 20px 20px;
+  }
 </style>
 
 <body>
@@ -429,6 +466,14 @@
   </div>
   <div id="content">
     <div class="categories">
+      <div class="search-box">
+        <div class="search-title">
+          <h2>제품 검색</h2><hr>
+        </div>
+        <form method="get" action="{% url 'shop_app:product_list' %}">
+          <input type="text" name="query" placeholder="검색어 입력" value="{{ query|default_if_none:'' }}">
+        </form>
+      </div>
       <h1 class="cate">카테고리</h1>
       <ul>
         <li {% if not category %}class="selected"{% endif %}>

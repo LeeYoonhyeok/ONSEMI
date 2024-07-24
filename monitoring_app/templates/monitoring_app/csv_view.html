@@ -6,168 +6,11 @@
 <html lang="ko">
 {% block extra_css %}
 <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+<link rel="stylesheet" href="{% static 'css/csv_view.css' %}">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0">
-<script src="{% static 'js/scripts.js' %}"></script>
-<!-- Flatpickr CSS -->
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
-<!-- Flatpickr JS -->
-<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
-<!-- Include Korean locale for Flatpickr -->
-<script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/ko.js"></script>
-<style>
-    body, html {
-        margin: 0;
-        padding: 0;
-        height: 100%;
-        width: 100%;
-        overflow: hidden; /* Prevent scrolling */
-        font-family: Arial, sans-serif;
-    }
-    .container {
-        display: flex;
-    }
-    .sidebar{
-    background-color: #fff;
-    color: black;
-    padding: 20px;
-    width: 300px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    box-sizing: border-box;
-    height: 100%;
-    overflow-y: auto;
-    }
-    .sidebar h2 {
-        text-align: center;
-        margin-bottom: 20px;
-        width: 100%;
-    }
-    .sidebar form {
-        display: flex;
-        flex-direction: column;
-        width: 100%;
-        align-items: center;
-    }
-    .sidebar form .form-group {
-        width: 100%;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-    }
-    .sidebar form label {
-        margin-bottom: 5px;
-        font-size: 12px;
-        width: 100%;
-        text-align: center;
-    }
-    .sidebar form input,
-    .sidebar form select,
-    .sidebar form button {
-        margin-bottom: 10px;
-        padding: 10px;
-        font-size: 1rem;
-        border-radius: 4px;
-        border: none;
-        width: 100%;
-        max-width: 220px;
-        border: 1px solid #ccc;
-        color: black; /* Ensure the text color is visible */
-        box-sizing: border-box; /* Add this to ensure consistent sizing */
-        text-align: center; /* Center text horizontally */
-    }
-    .sidebar form select {
-        text-align: center;
-        text-align-last: center; /* For modern browsers */
-        appearance: none; /* Remove default dropdown arrow for better control */
-        -webkit-appearance: none; /* For Safari */
-        -moz-appearance: none; /* For Firefox */
-    }
-    .sidebar form select option {
-        text-align: center; /* Center text in options */
-    }
-    .sidebar form button {
-        background-color: #007bff;
-        color: white;
-        cursor: pointer;
-    }
-    .sidebar form button:hover {
-        background-color: #0056b3;
-    }
-    .main-content {
-        flex: 1;
-        padding: 20px;
-    }
-    .heading-download-container {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-    }
-    .download-link {
-        text-align: right;
-    }
-    .approval-bar-container {
-        margin: 20px 0;
-        width: 100%;
-        background-color: #c0c0c0;
-        border-radius: 25px;
-        overflow: hidden;
-    }
-    .completed-bar {
-        height: 20px;
-        background-color: #4caf50;
-        text-align: center;
-        line-height: 20px; /* Center text vertically */
-        color: white;
-        border-radius: 25px;
-    }
-    /* Hide the hamburger menu */
-    .hamburger-menu {
-        display: none !important; 
-    }
-
-    .sidebar form select option {
-        
-        color: black;
-        text-align: center;
-    }
-
-    form.selected_senior{
-        background:green ! important; 
-    }
-
-    .sidebar form select option:hover {
-        background:green ! important; 
-        color: black;
-        text-align: center;
-    }
-
-    /* Hover effect for select options */
-    .custom-select:hover .custom-option:hover {
-        background-color: green !important;
-    }
-
-    /* Style the select element */
-.custom-select {
-    display: block;
-    margin: 0 auto;
-    text-align: center;
-    font-size: 16px;
-    padding: 10px;
-}
-
-/* Change the background color on hover */
-.custom-select:hover {
-    background-color: lightgreen;
-}
-
-/* Change the text color on focus and when the option is selected */
-.custom-select:focus, .custom-select option:checked {
-    color: green;
-}
-  
-</style>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">  <!-- Flatpickr CSS -->
 {% endblock %}
+
 {% block content %}
 <head>
 </head>
@@ -188,10 +31,6 @@
                 <div class="form-group">
                     {{ form.category_order.label_tag }}
                     {{ form.category_order }}
-                </div>
-                <div class="form-group">
-                    {{ form.category_service.label_tag }}
-                    {{ form.category_service }}
                 </div>
                 <div class="form-group">
                     {{ form.selected_senior.label_tag }}
@@ -248,12 +87,6 @@
                     </span>
                     </a>
                 </div>
-
-            </div>
-            <div class="approval-bar-container">
-                <div class="completed-bar" style="width: {{ completed_rate|floatformat:1 }}%;">
-                    <span>{{ completed_rate|floatformat:1 }}%</span>
-                </div>
             </div>
             <table class="table">
                 <thead>
@@ -296,49 +129,15 @@
             {% endif %}
         </div>
     </div>
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const startDatePicker = flatpickr("#id_start_date", {
-                dateFormat: "Y-m-d",
-                locale: "ko", // Set locale to Korean
-                clickOpens: false,
-                onChange: function(selectedDates, dateStr, instance) {
-                    endDatePicker.set('minDate', dateStr);
-                }
-            });
-
-            const endDatePicker = flatpickr("#id_end_date", {
-                dateFormat: "Y-m-d",
-                locale: "ko", // Set locale to Korean
-                clickOpens: false,
-                onChange: function(selectedDates, dateStr, instance) {
-                    const startDate = document.getElementById('id_start_date').value;
-                    if (selectedDates.length > 0 && new Date(dateStr) < new Date(startDate)) {
-                        alert("종료 날짜는 시작 날짜 이후여야 합니다. 다시 선택해주세요.");
-                        this.clear();
-                    }
-                }
-            });
-
-            document.getElementById('id_start_date').addEventListener('click', function () {
-                startDatePicker.open();
-            });
-
-            document.getElementById('id_end_date').addEventListener('click', function () {
-                endDatePicker.open();
-            });
-
-            // Add hover effect to select options
-            const style = document.createElement('style');
-            style.innerHTML = `
-                .sidebar form select option:hover {
-                    background-color: green !important;
-                }
-            `;
-            document.head.appendChild(style);
-        });
-    </script>
+    
 </body>
+{% endblock %}
+
+{% block script %}
+<script src="{% static 'js/scripts.js' %}"></script>
+<script src="{% static 'js/csv_view.js' %}"></script>
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>                  <!-- Flatpickr JS -->
+<script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/ko.js"></script>  <!-- Include Korean locale for Flatpickr -->
 {% endblock %}
 </html>
 
