@@ -493,6 +493,67 @@
                 }
             };
         });
+
+        document.addEventListener('DOMContentLoaded', function() {
+            function updateUserPendingOptions(selectElement, userSelectId) {
+                var careType = selectElement.value;  // selectElement의 현재 값을 careType 변수에 할당
+                var csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+
+                fetch("api/filter_users_pending_by_care_type/", {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': csrfToken
+                    },
+                    body: JSON.stringify({ care_type: careType })  // care_type만 사용
+                })
+                .then(response => response.json())
+                .then(data => {
+                    var userSelect = document.getElementById(userSelectId);
+                    userSelect.innerHTML = '<option selected value="total">전체</option>';
+                    data.users.forEach(function(user) {
+                        var option = document.createElement('option');
+                        option.value = user.id;
+                        option.textContent = user.username;
+                        userSelect.appendChild(option);
+                    });
+                });
+            }
+
+            document.getElementById('type_pending').addEventListener('change', function() {
+                updateUserPendingOptions(this, 'pending_report_user');
+            });
+        });
+        document.addEventListener('DOMContentLoaded', function() {
+            function updateUserSubmittedOptions(selectElement, userSelectId) {
+                var careType = selectElement.value;  // selectElement의 현재 값을 careType 변수에 할당
+                var csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+
+                fetch("api/filter_users_submitted_by_care_type/", {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': csrfToken
+                    },
+                    body: JSON.stringify({ care_type: careType })  // care_type만 사용
+                })
+                .then(response => response.json())
+                .then(data => {
+                    var userSelect = document.getElementById(userSelectId);
+                    userSelect.innerHTML = '<option selected value="total">전체</option>';
+                    data.users.forEach(function(user) {
+                        var option = document.createElement('option');
+                        option.value = user.id;
+                        option.textContent = user.username;
+                        userSelect.appendChild(option);
+                    });
+                });
+            }
+
+            document.getElementById('type_submitted').addEventListener('change', function() {
+                updateUserSubmittedOptions(this, 'submitted_report_user');
+            });
+        });
     </script>
     {% endblock %}
 </body>

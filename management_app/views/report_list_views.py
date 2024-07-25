@@ -5,6 +5,7 @@ from django.core.paginator import Paginator
 from management_app.models import Report, Care, Senior
 from auth_app.models import User
 from django.http import JsonResponse
+import json
 
 @login_required
 @volunteer_required
@@ -108,3 +109,41 @@ def report_list(request):
 def seniors_for_volunteer(request, volunteer_id):
     seniors = Senior.objects.filter(cares_seniors__report__user_id=volunteer_id).distinct().select_related('user_id').values('id', 'name', 'user_id', 'user_id__username')
     return JsonResponse({'seniors': list(seniors)})
+
+@login_required
+@volunteer_required
+def filter_users_pending_by_care_type(request):
+    if request.method == 'POST':
+        data = json.loads(request.body)
+        care_type = data.get('care_type', 'total')
+        volunteer_id = str(request.user.id)
+
+        if care_type == 'total':
+            users = User.objects.filter(care__approved_by=volunteer_id,
+                                        care__care_state='APPROVED').distinct().values('id', 'username')
+        else:
+            users = User.objects.filter(care__approved_by=volunteer_id,
+                                        care__care_state='APPROVED', care__care_type=care_type).distinct().values('id', 'username')
+        
+        return JsonResponse({'users': list(users)})
+    else:
+        return JsonResponse({'error': 'Invalid request method.'}, status=400)
+
+@login_required
+@volunteer_required
+def filter_users_submitted_by_care_type(request):
+    if request.method == 'POST':
+        data = json.loads(request.body)
+        care_type = data.get('care_type', 'total')
+        volunteer_id = str(request.user.id)
+
+        if care_type == 'total':
+            users = User.objects.filter(care__approved_by=volunteer_id,
+                                        care__care_state='COMPLETED').distinct().values('id', 'username')
+        else:
+            users = User.objects.filter(care__approved_by=volunteer_id,
+                                        care__care_state='COMPLETED', care__care_type=care_type).distinct().values('id', 'username')
+        
+        return JsonResponse({'users': list(users)})
+    else:
+        return JsonResponse({'error': 'Invalid request method.'}, status=400)
