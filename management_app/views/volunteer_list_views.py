@@ -11,16 +11,20 @@ from django.core.paginator import Paginator
 @login_required
 @volunteer_required
 def care_list(request):
-    not_approved_users = User.objects.filter(user_type='FAMILY')         # 보호자 목록 불러오기
-    approved_users = Care.objects.filter(approved_by=request.user)       # 해당 봉사자가 승인한 케어 목록 불러오기
+    not_approved_users = User.objects.filter(user_type='FAMILY',
+                                             care__care_state="NOT_APPROVED").distinct().values('id','username')         # 보호자 목록 불러오기    
     
-    
-    # GET방식: 케어목록 전체 출력
+    approved_users = User.objects.filter(care__approved_by=request.user.id,
+                                         care__care_state="APPROVED").distinct().values('id','username')       # 해당 봉사자가 승인한 케어 목록 불러오기
+
+    # GET 방식: 케어목록 전체 출력
     if request.method == 'GET':
-        not_approved_cares = Care.objects.filter(care_state='NOT_APPROVED')  # 요청 승인 대기 케어 불러오기
-        approved_cares = Care.objects.filter(care_state='APPROVED', approved_by=request.user)  # 요청 승인 완료 케어 불러오기
+        not_approved_cares = Care.objects.filter(care_state='NOT_APPROVED').order_by('datetime')  # 요청 승인 대기 케어 불러오기
         
-    # POST방식: 케어목록 필터링하여 출력
+        approved_cares = Care.objects.filter(care_state='APPROVED',
+                                              approved_by=request.user).order_by('datetime')  # 요청 승인 완료 케어 불러오기
+        
+    # POST 방식: 케어목록 필터링하여 출력
     else:
         
         # NOT_APPROVED 상태 케어 필터링 값 불러오기
@@ -43,9 +47,9 @@ def care_list(request):
             not_approved_cares = Care.objects.filter(care_state='NOT_APPROVED')
         
         try:  
-            not_approved_cares = not_approved_cares.order_by(order_pending)      # 필터링한 값 정렬
+            not_approved_cares = not_approved_cares.order_by(order_pending)  # 필터링한 값 정렬
         except:
-            not_approved_cares = Care.objects.filter(care_state='NOT_APPROVED')  # APPROVED에서 적용하기를 눌렀다면 아무작업도 안함
+            not_approved_cares = Care.objects.filter(care_state='NOT_APPROVED').order_by('datetime')  # APPROVED에서 적용하기를 눌렀다면 아무작업도 안함
         
         
         # APPROVED 상태 케어 필터링 값 불러오기
@@ -74,7 +78,6 @@ def care_list(request):
             approved_cares = Care.objects.filter(care_state='APPROVED', 
                                                  approved_by=request.user)
         
-        
     # 페이지네이션 설정
     paginator1 = Paginator(not_approved_cares, 5)   # 상태가 NOT_APPROVED인 케어를 페이지당 5개의 객체를 보여줌
     paginator2 = Paginator(approved_cares, 5)       # 상태가 APPROVED인 케어를 페이지당 5개의 객체를 보여줌
@@ -84,8 +87,8 @@ def care_list(request):
     page_obj2 = paginator2.get_page(page_number2)
     
     context = {
-            "page_obj1": page_obj1,                # NOT_APPROVED 페이지네이션
-            "page_obj2": page_obj2,                # APPROVED 페이지네이션
+            "page_obj1": page_obj1,         # NOT_APPROVED 페이지네이션
+            "page_obj2": page_obj2,         # APPROVED 페이지네이션
             'not_approved_users': not_approved_users,
             'approved_users': approved_users,
             'not_approved_cares': not_approved_cares,

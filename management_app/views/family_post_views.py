@@ -54,6 +54,8 @@ def add_care(request):
         existing_care = Care.objects.filter(
             seniors=senior,
             care_state='NOT_APPROVED'
+        ).exclude(
+            care_type='배송'
         ).first()
 
         if existing_care:

@@ -57,8 +57,11 @@ def family_monitor(request):
     
     latest_date = sorted_cares.aggregate(latest_date=Max('datetime__date'))['latest_date']
     sorted_cares_latest = sorted_cares.filter(datetime__date=latest_date)[:3] # 최근 3개만 불러오기
-    recent_not_approved_care = Care.objects.filter(seniors=selected_senior, care_state='NOT_APPROVED').order_by('-datetime').first()
-
+    
+    # 최근 승인되지 않은 '배송'이 아닌 Care 객체 필터링
+    recent_not_approved_care = Care.objects.filter(
+        seniors=selected_senior, care_state='NOT_APPROVED'
+    ).exclude(care_type='배송').order_by('-datetime').first()
     
     context = {
         "cares" : cares,
