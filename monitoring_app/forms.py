@@ -17,17 +17,17 @@ class FilterForm(forms.Form):
     category_order = forms.ChoiceField(
         choices=[], 
         required=False,
-        label='카테고리 주문'
+        label='주문 종류'
     )
     category_service = forms.ChoiceField(
         choices=[], 
         required=False,
-        label='카테고리 서비스'
+        label='서비스 종류'
     )
     selected_senior = forms.ChoiceField(
         choices=[('all', '전체')], 
         required=False,
-        label='선택된 시니어'
+        label='선택된 어르신'
     )
 
     def __init__(self, *args, **kwargs):

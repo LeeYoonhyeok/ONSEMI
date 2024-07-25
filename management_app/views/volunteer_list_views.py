@@ -12,17 +12,17 @@ from django.core.paginator import Paginator
 @volunteer_required
 def care_list(request):
     not_approved_users = User.objects.filter(user_type='FAMILY',
-                                             care__care_state="NOT_APPROVED").distinct().values('id','username')         # 보호자 목록 불러오기
+                                             care__care_state="NOT_APPROVED").distinct().values('id','username')         # 보호자 목록 불러오기    
     
     approved_users = User.objects.filter(care__approved_by=request.user.id,
                                          care__care_state="APPROVED").distinct().values('id','username')       # 해당 봉사자가 승인한 케어 목록 불러오기
 
     # GET 방식: 케어목록 전체 출력
     if request.method == 'GET':
-        not_approved_cares = Care.objects.filter(care_state='NOT_APPROVED').order_by('-datetime')  # 요청 승인 대기 케어 불러오기
+        not_approved_cares = Care.objects.filter(care_state='NOT_APPROVED').order_by('datetime')  # 요청 승인 대기 케어 불러오기
         
         approved_cares = Care.objects.filter(care_state='APPROVED',
-                                              approved_by=request.user).order_by('-datetime')  # 요청 승인 완료 케어 불러오기
+                                              approved_by=request.user).order_by('datetime')  # 요청 승인 완료 케어 불러오기
         
     # POST 방식: 케어목록 필터링하여 출력
     else:
@@ -49,7 +49,7 @@ def care_list(request):
         try:  
             not_approved_cares = not_approved_cares.order_by(order_pending)  # 필터링한 값 정렬
         except:
-            not_approved_cares = Care.objects.filter(care_state='NOT_APPROVED').order_by('-datetime')  # APPROVED에서 적용하기를 눌렀다면 아무작업도 안함
+            not_approved_cares = Care.objects.filter(care_state='NOT_APPROVED').order_by('datetime')  # APPROVED에서 적용하기를 눌렀다면 아무작업도 안함
         
         
         # APPROVED 상태 케어 필터링 값 불러오기

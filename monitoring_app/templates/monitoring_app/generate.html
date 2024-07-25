@@ -57,9 +57,9 @@
                 {% endif %}
                 {% if graph_url %}
                     <div class="chart-container">
-                        <h3>주간별 케어 요청량</h3>
+                        <h3>주간별 서비스 요청량</h3>
                         {% if request.method == 'POST' %}
-                            <p><a class="detail" href="{% url 'monitoring_app:csv_view' %}?type=care">케어 요청 데이터 자세히 보기</a></p>
+                            <p><a class="detail" href="{% url 'monitoring_app:csv_view' %}?type=care">서비스 요청 데이터 자세히 보기</a></p>
                         {% endif %}
                         <img src="{{ graph_url }}" alt="Daily Order Quantity by Category">
                     </div>
