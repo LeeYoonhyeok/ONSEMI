@@ -26,7 +26,12 @@ urlpatterns = [
     path('report/update/<int:report_id>/', report_post_views.update_report, name='update_report'),
 
     # AJAX
-    path('report/list/api/seniors_for_volunteer/<int:volunteer_id>/', report_list_views.seniors_for_volunteer, name='seniors_for_volunteer'),
+    path('report/list/api/seniors_for_volunteer/<int:volunteer_id>/', 
+         report_list_views.seniors_for_volunteer, name='seniors_for_volunteer'),
+    path('report/list/api/filter_users_pending_by_care_type/',
+         report_list_views.filter_users_pending_by_care_type, name='filter_users_pending_by_care_type'),
+    path('report/list/api/filter_users_submitted_by_care_type/',
+         report_list_views.filter_users_submitted_by_care_type, name='filter_users_submiited_by_care_type'),
 ]
 
 if settings.DEBUG:

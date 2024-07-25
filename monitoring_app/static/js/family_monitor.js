@@ -1,4 +1,3 @@
-// 모달 정보
 function openModal(title, careType, requestDate, visitDate, visitTime, careState, content, seniors, username, careId) {
     document.getElementById('modal').style.display = 'block';
     document.getElementById('modal-care-type').textContent = careType;
@@ -12,19 +11,24 @@ function openModal(title, careType, requestDate, visitDate, visitTime, careState
     const deleteForm = document.getElementById('delete-form');
     deleteForm.action = `/management/care/delete/${careId}/`;
 
-    if (careState === '요청 승인 대기') {
-        var editButton = document.getElementById('edit-button');
-        var deleteButton = document.getElementById('delete-button');
+    const editButton = document.getElementById('edit-button');
+    const deleteButton = document.getElementById('delete-button');
+
+    if (careType === '배송') {
+        editButton.style.display = 'none';
+        deleteButton.style.display = 'none';
+        document.querySelector('#modal .modal-content').style.height = 'auto'; // Adjust the selector as needed
+    } else if (careState === '요청 승인 대기') {
         editButton.style.display = 'block';
         deleteButton.style.display = 'block';
         editButton.onclick = function() {
             window.location.href = '/management/care/update/' + careId + '/';
         };
-        document.getElementById('modal-content').style.height = 'auto'; // 모달 크기 조정
+        document.querySelector('#modal .modal-content').style.height = 'auto'; // Adjust the selector as needed
     } else {
-        document.getElementById('edit-button').style.display = 'none';
-        document.getElementById('delete-button').style.display = 'none';
-        document.getElementById('modal-content').style.height = '80%'; // 기본 모달 크기
+        editButton.style.display = 'none';
+        deleteButton.style.display = 'none';
+        document.querySelector('#modal .modal-content').style.height = 'auto'; // Adjust the selector as needed
     }
 }
 
