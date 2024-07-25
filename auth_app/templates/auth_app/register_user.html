@@ -39,7 +39,7 @@
             <label for="email">이메일:</label>
             <input type="email" id="email" name="email" required>
         </div>
-        <div class="form-group">
+        {% comment %} <div class="form-group">
             <label>사용자 유형:</label>
             <div class="radio-group">
                 <input type="radio" id="volunteer" name="user_type" value="VOLUNTEER" required>
@@ -47,18 +47,19 @@
                 <input type="radio" id="family" name="user_type" value="FAMILY" required>
                 <label for="family">보호자</label>
             </div>
-        </div>
+        </div> {% endcomment %}
+        <input type="radio" id="family" name="user_type" value="FAMILY" hidden checked required>
         <div class="button-group">
             <button type="submit">가입하기</button>
             <button type="button" onclick="window.location.href = '/'">취소</button>
         </div>
     </form>
-    <div class="line-separator">간단 회원가입</div>
+    {% comment %} <div class="line-separator">간단 회원가입</div>
     <div class="simple-signup">
         <a href="{% provider_login_url 'google' %}">
             <img src="{% static 'auth/google_logo.png' %}" alt="구글"/>
         </a>
-    </div>
+    </div> {% endcomment %}
 </div>
 </body>
 </html>
