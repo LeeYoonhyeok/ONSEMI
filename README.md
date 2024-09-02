@@ -19,7 +19,8 @@
 ## 프로젝트 상세내용
 
 ### [시연영상]
-[![My Video](https://img.youtube.com/vi/BIZnV5NwnrQ/0.jpg)](https://www.youtube.com/watch?v=BIZnV5NwnrQ)
+[![시연 영상 보러 가기](https://img.shields.io/badge/YouTube-시연%20영상%20보러%20가기-red?style=for-the-badge&logo=youtube)](https://www.youtube.com/watch?v=BIZnV5NwnrQ)
+
 
 ### [과제 선정 배경]
 현대인 관점에서 일자리를 찾아 많은 젊은 사람들이 도시로 몰리면서 부모와의 물리적인 거리가 멀어졌다. 바쁜 현대인의 삶은 자신의 부모님에게 관심을 쏟을 수 있는 여유조차 허락하지 않았고, 많은 사람들은 그저 잘 지내시리라 믿으며 하루하루를 살아간다. 
