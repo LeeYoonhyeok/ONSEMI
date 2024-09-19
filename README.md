@@ -10,7 +10,7 @@
 
 * 목표 고객 : B2B.B2G 대상 (기존에 식품 및 상품 배달을 진행하던 회사 ex) CJ, 쿠팡)
 
-* 개발 환경 : Django framwork, python modeling, aws
+* 개발 환경 : Django framwork(html, css, js), python(modeling), aws
 
 * 활용 데이터 : 실시간 식품 데이터, 파킨슨병 환자 목소리
 
